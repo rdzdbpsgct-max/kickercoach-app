@@ -58,7 +58,7 @@ export const TEAM_COLORS: Record<string, string> = {
 /** Canvas colors matching theme */
 export const BOARD_COLORS = {
   field: "#1a5c2a",
-  fieldLine: "rgba(255, 255, 255, 0.2)",
+  fieldLine: "rgba(255, 255, 255, 0.55)",
   fieldBorder: "#5c3a1a",
   ball: "#f59e0b",
   text: "#e8eaf0",
