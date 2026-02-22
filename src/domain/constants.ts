@@ -33,6 +33,7 @@ export const STORAGE_KEYS = {
   sessions: "kickercoach-sessions",
   matchplans: "kickercoach-matchplans",
   autoAdvance: "kickercoach-autoadvance",
+  boardScenes: "kickercoach-board-scenes",
 } as const;
 
 export const MAX_VISIBLE_TAGS = 3;
