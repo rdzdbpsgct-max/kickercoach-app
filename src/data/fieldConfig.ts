@@ -68,7 +68,7 @@ export const BOARD_COLORS = {
 export const FIGURE_RADIUS = 18;
 
 /** Ball marker radius in field coordinates */
-export const BALL_RADIUS = 10;
+export const BALL_RADIUS = 12;
 
 /**
  * Figure spacing from real Soccer table measurements (DTFB norm).

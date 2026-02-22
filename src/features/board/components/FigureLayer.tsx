@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Layer, Group, Circle, Line } from "react-konva";
+import { Layer, Group, Circle, Line, Shape } from "react-konva";
 import type {
   FigureMarker,
   BallMarker,
@@ -9,7 +9,6 @@ import {
   TEAM_COLORS,
   FIGURE_RADIUS,
   BALL_RADIUS,
-  BOARD_COLORS,
   FIELD,
   FIELD_MARGIN,
   RODS,
@@ -126,17 +125,11 @@ export default function FigureLayer({
         );
       })}
 
-      {/* Ball (freely draggable, independent of rods) */}
+      {/* Ball (soccer/kicker ball style, freely draggable) */}
       {ball && (
-        <Circle
+        <Group
           x={ball.position.x}
           y={ball.position.y}
-          radius={BALL_RADIUS}
-          fill={BOARD_COLORS.ball}
-          stroke="rgba(255,255,255,0.8)"
-          strokeWidth={1.5}
-          shadowColor="rgba(0,0,0,0.4)"
-          shadowBlur={3}
           draggable={isDraggable}
           onDragMove={(e) => {
             const node = e.target;
@@ -148,7 +141,84 @@ export default function FigureLayer({
           onDragEnd={(e) => {
             onMoveBall({ x: e.target.x(), y: e.target.y() });
           }}
-        />
+          onMouseEnter={(e) => {
+            if (isDraggable) {
+              const container = e.target.getStage()?.container();
+              if (container) container.style.cursor = "grab";
+            }
+          }}
+          onMouseLeave={(e) => {
+            const container = e.target.getStage()?.container();
+            if (container) container.style.cursor = "default";
+          }}
+        >
+          {/* Ball shadow */}
+          <Circle
+            x={1}
+            y={2}
+            radius={BALL_RADIUS + 1}
+            fill="rgba(0,0,0,0.3)"
+          />
+          {/* White base */}
+          <Circle
+            radius={BALL_RADIUS}
+            fill="#f5f5f0"
+            stroke="rgba(100,100,100,0.5)"
+            strokeWidth={1}
+          />
+          {/* Soccer ball pentagon pattern */}
+          <Shape
+            sceneFunc={(ctx, shape) => {
+              const r = BALL_RADIUS;
+              const pr = r * 0.38; // pentagon radius
+              // Center pentagon
+              ctx.beginPath();
+              for (let i = 0; i < 5; i++) {
+                const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+                const px = Math.cos(angle) * pr;
+                const py = Math.sin(angle) * pr;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+              }
+              ctx.closePath();
+              ctx.fillStrokeShape(shape);
+              // Lines from pentagon corners to edge
+              for (let i = 0; i < 5; i++) {
+                const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+                const px = Math.cos(angle) * pr;
+                const py = Math.sin(angle) * pr;
+                const ex = Math.cos(angle) * r * 0.82;
+                const ey = Math.sin(angle) * r * 0.82;
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                ctx.lineTo(ex, ey);
+                ctx.fillStrokeShape(shape);
+              }
+              // Small edge pentagons (partial)
+              for (let i = 0; i < 5; i++) {
+                const angle = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+                const cx = Math.cos(angle) * r * 0.72;
+                const cy = Math.sin(angle) * r * 0.72;
+                const epr = r * 0.22;
+                const a1 = angle - Math.PI * 0.35;
+                const a2 = angle + Math.PI * 0.35;
+                ctx.beginPath();
+                ctx.moveTo(
+                  cx + Math.cos(a1) * epr,
+                  cy + Math.sin(a1) * epr,
+                );
+                ctx.lineTo(
+                  cx + Math.cos(a2) * epr,
+                  cy + Math.sin(a2) * epr,
+                );
+                ctx.fillStrokeShape(shape);
+              }
+            }}
+            fill="rgba(60,60,60,0.7)"
+            stroke="rgba(80,80,80,0.4)"
+            strokeWidth={0.5}
+          />
+        </Group>
       )}
     </Layer>
   );
