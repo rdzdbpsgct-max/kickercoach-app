@@ -2,6 +2,7 @@ import { Suspense, lazy, Component, type ReactNode } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
 
+const HomePage = lazy(() => import("./features/home/HomePage"));
 const LearnMode = lazy(() => import("./features/learn/LearnMode"));
 const TrainMode = lazy(() => import("./features/train/TrainMode"));
 const PlanMode = lazy(() => import("./features/plan/PlanMode"));
@@ -60,10 +61,11 @@ export default function App() {
       <Layout>
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
+            <Route path="/" element={<HomePage />} />
             <Route path="/learn" element={<LearnMode />} />
             <Route path="/train" element={<TrainMode />} />
             <Route path="/plan" element={<PlanMode />} />
-            <Route path="*" element={<Navigate to="/learn" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </Layout>

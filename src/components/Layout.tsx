@@ -12,7 +12,15 @@ export default function Layout({ children }: { children: ReactNode }) {
     <div className="flex h-full flex-col bg-bg text-text">
       {/* Header */}
       <header className="flex shrink-0 items-center justify-between border-b border-border bg-surface px-5 py-3">
-        <div className="flex items-center gap-2.5">
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) =>
+            `flex items-center gap-2.5 rounded-xl p-1 transition-all ${
+              isActive ? "ring-2 ring-accent/40" : "hover:opacity-80"
+            }`
+          }
+        >
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-kicker-blue text-lg font-bold text-white">
             K
           </div>
@@ -24,7 +32,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               by SpielerGeist
             </div>
           </div>
-        </div>
+        </NavLink>
 
         <nav className="flex gap-1.5" aria-label="Hauptnavigation">
           {tabs.map((tab) => (
