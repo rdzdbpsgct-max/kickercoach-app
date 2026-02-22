@@ -71,13 +71,17 @@ export const FIGURE_RADIUS = 18;
 export const BALL_RADIUS = 10;
 
 /**
- * Realistic figure spacing per figure count (Leo model).
- * On a real table, figures are rigidly fixed on the rod.
- * Values in field coordinate units.
+ * Figure spacing from real Soccer table measurements (DTFB norm).
+ * 680 units = 68 cm field width → 10 units per cm.
+ *
+ * Source: Bohrungsabstände Soccer-Stangen:
+ * - 5er: 12,1 cm → 121 units
+ * - 3er: 18,3 cm → 183 units
+ * - 2er: 23,2 cm → 232 units
  */
 export const FIGURE_SPACING: Record<number, number> = {
-  1: 0, // Goalkeeper – single figure, centered
-  2: 190, // 2er-Stange – ~28% of field height
-  3: 115, // 3er-Stange – ~17% of field height
-  5: 70, // 5er-Stange – ~10% of field height
+  1: 0, // Torwart – single figure, centered
+  2: 232, // 2er-Stange – 23,2 cm Bohrungsabstand
+  3: 183, // 3er-Stange – 18,3 cm Bohrungsabstand
+  5: 121, // 5er-Stange – 12,1 cm Bohrungsabstand
 };
