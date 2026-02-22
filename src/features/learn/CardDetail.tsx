@@ -1,16 +1,8 @@
 import type { CoachCard } from "../../domain/models/CoachCard";
-
-const DIFFICULTY_LABELS: Record<string, string> = {
-  beginner: "Einsteiger",
-  intermediate: "Fortgeschritten",
-  advanced: "Profi",
-};
-
-const DIFFICULTY_COLORS: Record<string, string> = {
-  beginner: "text-kicker-green",
-  intermediate: "text-kicker-orange",
-  advanced: "text-kicker-red",
-};
+import {
+  DIFFICULTY_LABELS,
+  DIFFICULTY_TEXT_COLORS,
+} from "../../domain/constants";
 
 interface CardDetailProps {
   card: CoachCard;
@@ -41,6 +33,7 @@ export default function CardDetail({
       <div>
         <button
           onClick={onBack}
+          aria-label="Zurueck zur Bibliothek"
           className="mb-2 text-xs text-text-dim hover:text-accent transition-colors"
         >
           &larr; Zurueck zur Bibliothek
@@ -50,7 +43,7 @@ export default function CardDetail({
             <h1 className="text-2xl font-bold">{card.title}</h1>
             <div className="mt-1 flex items-center gap-3 text-sm">
               <span
-                className={`font-medium ${DIFFICULTY_COLORS[card.difficulty]}`}
+                className={`font-medium ${DIFFICULTY_TEXT_COLORS[card.difficulty]}`}
               >
                 {DIFFICULTY_LABELS[card.difficulty]}
               </span>
@@ -60,6 +53,8 @@ export default function CardDetail({
           </div>
           <button
             onClick={onToggleFavorite}
+            aria-label={isFavorite ? "Von Favoriten entfernen" : "Zu Favoriten hinzufuegen"}
+            aria-pressed={isFavorite}
             className={`text-2xl transition-transform hover:scale-110 ${
               isFavorite ? "text-kicker-orange" : "text-text-dim"
             }`}

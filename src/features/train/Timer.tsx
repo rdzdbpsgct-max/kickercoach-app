@@ -23,7 +23,10 @@ export default function Timer({
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className={`font-mono text-8xl font-bold tabular-nums tracking-tight ${colorClass} transition-colors`}
+        role="timer"
+        aria-live="polite"
+        aria-label={formatTime(remainingSeconds)}
+        className={`font-mono text-6xl md:text-8xl font-bold tabular-nums tracking-tight ${colorClass} transition-colors`}
       >
         {formatTime(remainingSeconds)}
       </div>

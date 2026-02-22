@@ -1,20 +1,10 @@
 import { useState } from "react";
-import type { Drill, DrillDifficulty } from "../../domain/models/Drill";
+import type { Drill } from "../../domain/models/Drill";
+import type { Difficulty } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
+import { DIFFICULTY_LABELS, DIFFICULTY_COLORS } from "../../domain/constants";
 
-const DIFFICULTY_LABELS: Record<string, string> = {
-  beginner: "Einsteiger",
-  intermediate: "Fortgeschritten",
-  advanced: "Profi",
-};
-
-const DIFFICULTY_COLORS: Record<string, string> = {
-  beginner: "bg-kicker-green/15 text-kicker-green",
-  intermediate: "bg-kicker-orange/15 text-kicker-orange",
-  advanced: "bg-kicker-red/15 text-kicker-red",
-};
-
-const FILTER_OPTIONS: (DrillDifficulty | "Alle")[] = [
+const FILTER_OPTIONS: (Difficulty | "Alle")[] = [
   "Alle",
   "beginner",
   "intermediate",
@@ -32,7 +22,7 @@ export default function DrillSelector({
   selectedId,
   onSelect,
 }: DrillSelectorProps) {
-  const [filter, setFilter] = useState<DrillDifficulty | "Alle">("Alle");
+  const [filter, setFilter] = useState<Difficulty | "Alle">("Alle");
 
   const filtered =
     filter === "Alle" ? drills : drills.filter((d) => d.difficulty === filter);
@@ -40,11 +30,12 @@ export default function DrillSelector({
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
       {/* Difficulty filter */}
-      <div className="flex gap-1.5">
+      <div className="flex flex-wrap gap-1.5">
         {FILTER_OPTIONS.map((opt) => (
           <button
             key={opt}
             onClick={() => setFilter(opt)}
+            aria-pressed={filter === opt}
             className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
               filter === opt
                 ? "border-2 border-accent bg-accent-dim text-accent-hover"
@@ -72,7 +63,7 @@ export default function DrillSelector({
             }`}
           >
             <div className="flex-1">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm font-semibold">{drill.name}</span>
                 {drill.difficulty && (
                   <span

@@ -70,7 +70,7 @@ export default function LearnMode() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
-      <h1 className="text-xl font-bold">Learn Mode</h1>
+      <h1 className="text-xl font-bold">Lernen</h1>
 
       <SearchFilter
         searchQuery={searchQuery}

@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-kicker-blue text-lg font-bold text-white">
             K
           </div>
-          <div>
+          <div className="hidden md:block">
             <div className="text-base font-bold tracking-tight">
               KickerCoach
             </div>
@@ -26,13 +26,13 @@ export default function Layout({ children }: { children: ReactNode }) {
           </div>
         </div>
 
-        <nav className="flex gap-1.5">
+        <nav className="flex gap-1.5" aria-label="Hauptnavigation">
           {tabs.map((tab) => (
             <NavLink
               key={tab.to}
               to={tab.to}
               className={({ isActive }) =>
-                `flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-all ${
+                `flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm font-medium transition-all ${
                   isActive
                     ? "border-2 border-accent bg-accent-dim text-accent-hover"
                     : "border border-border text-text-muted hover:border-accent/50 hover:text-text"
@@ -47,7 +47,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Main content */}
-      <main className="flex flex-1 flex-col overflow-hidden p-5">
+      <main className="flex flex-1 flex-col overflow-hidden p-3 md:p-5">
         {children}
       </main>
     </div>

@@ -4,6 +4,7 @@ import type { Session } from "../../domain/models/Session";
 import { advanceBlock, previousBlock } from "../../domain/logic/drill";
 import { useTimer } from "../../hooks/useTimer";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { STORAGE_KEYS } from "../../domain/constants";
 import Timer from "./Timer";
 import BlockProgress from "./BlockProgress";
 import DrillSelector from "./DrillSelector";
@@ -18,11 +19,11 @@ export default function TrainMode() {
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
   const [blockIndex, setBlockIndex] = useState(0);
   const [autoAdvance, setAutoAdvance] = useLocalStorage(
-    "kickercoach-autoadvance",
+    STORAGE_KEYS.autoAdvance,
     true,
   );
   const [sessions, setSessions] = useLocalStorage<Session[]>(
-    "kickercoach-sessions",
+    STORAGE_KEYS.sessions,
     [],
   );
   const [editSession, setEditSession] = useState<Session | null>(null);
@@ -229,7 +230,7 @@ export default function TrainMode() {
                   disabled={blockIndex === 0}
                   className="rounded-xl border border-border px-4 py-2 text-sm font-medium text-text-muted transition-all hover:border-accent/50 hover:text-text disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  Prev
+                  Zur&uuml;ck
                 </button>
                 <button
                   onClick={timer.toggle}
@@ -246,7 +247,7 @@ export default function TrainMode() {
                   disabled={blockIndex === selectedDrill.blocks.length - 1}
                   className="rounded-xl border border-border px-4 py-2 text-sm font-medium text-text-muted transition-all hover:border-accent/50 hover:text-text disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  Next
+                  Weiter
                 </button>
               </div>
 
@@ -279,7 +280,7 @@ export default function TrainMode() {
   return (
     <div className="flex flex-1 flex-col gap-4 overflow-hidden">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">Train Mode</h1>
+        <h1 className="text-xl font-bold">Training</h1>
         <div className="flex gap-2">
           <button
             onClick={() => setView("journal")}

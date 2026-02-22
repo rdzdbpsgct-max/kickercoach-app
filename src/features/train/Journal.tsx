@@ -19,7 +19,7 @@ export default function Journal({
     <div className="flex flex-col gap-4 overflow-hidden">
       {/* Stats */}
       {sessions.length > 0 && (
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatBox label="Sessions" value={String(stats.totalSessions)} />
           <StatBox label="Gesamt (min)" value={String(stats.totalMinutes)} />
           <StatBox
@@ -63,6 +63,7 @@ export default function Journal({
               </button>
               <button
                 onClick={() => onDelete(session.id)}
+                aria-label="Session loeschen"
                 className="ml-3 rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-kicker-red/50 hover:text-kicker-red transition-all"
               >
                 &#10005;

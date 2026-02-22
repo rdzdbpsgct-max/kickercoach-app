@@ -10,7 +10,7 @@ export default function BlockProgress({
   currentIndex,
 }: BlockProgressProps) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" role="progressbar" aria-valuenow={currentIndex + 1} aria-valuemin={1} aria-valuemax={blocks.length} aria-label="Trainingsfortschritt">
       <div className="flex items-center gap-1">
         {blocks.map((block, i) => (
           <div

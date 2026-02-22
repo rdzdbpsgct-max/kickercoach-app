@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import type { MatchPlan } from "../../domain/models/MatchPlan";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { STORAGE_KEYS } from "../../domain/constants";
 import MatchPlanEditor from "./MatchPlanEditor";
 import MatchPlanList from "./MatchPlanList";
 
@@ -20,7 +21,7 @@ function createEmptyPlan(): MatchPlan {
 
 export default function PlanMode() {
   const [plans, setPlans] = useLocalStorage<MatchPlan[]>(
-    "kickercoach-matchplans",
+    STORAGE_KEYS.matchplans,
     [],
   );
   const [editingPlan, setEditingPlan] = useState<MatchPlan | null>(null);
@@ -66,11 +67,21 @@ export default function PlanMode() {
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
-        const plan = JSON.parse(event.target?.result as string) as MatchPlan;
+        const data = JSON.parse(event.target?.result as string);
+        if (
+          !data ||
+          typeof data !== "object" ||
+          typeof data.opponent !== "string" ||
+          typeof data.date !== "string"
+        ) {
+          alert("Ungueltige Matchplan-Datei. Bitte eine gueltige JSON-Datei waehlen.");
+          return;
+        }
+        const plan = data as MatchPlan;
         plan.id = crypto.randomUUID();
         setPlans((prev) => [...prev, plan]);
       } catch {
-        // Invalid JSON
+        alert("Die Datei konnte nicht gelesen werden. Bitte eine gueltige JSON-Datei waehlen.");
       }
     };
     reader.readAsText(file);
@@ -92,7 +103,7 @@ export default function PlanMode() {
   return (
     <div className="flex flex-1 flex-col gap-4 overflow-hidden">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">Plan Mode</h1>
+        <h1 className="text-xl font-bold">Matchplan</h1>
         <div className="flex gap-2">
           <input
             ref={fileInputRef}

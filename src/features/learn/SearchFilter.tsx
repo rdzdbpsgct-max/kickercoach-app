@@ -1,4 +1,5 @@
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
+import { DIFFICULTY_LABELS } from "../../domain/constants";
 
 const CATEGORIES: (Category | "Alle")[] = [
   "Alle",
@@ -18,11 +19,9 @@ const DIFFICULTIES: (Difficulty | "Alle")[] = [
   "advanced",
 ];
 
-const DIFFICULTY_LABELS: Record<string, string> = {
+const DIFFICULTY_FILTER_LABELS: Record<string, string> = {
   Alle: "Alle Stufen",
-  beginner: "Einsteiger",
-  intermediate: "Fortgeschritten",
-  advanced: "Profi",
+  ...DIFFICULTY_LABELS,
 };
 
 interface SearchFilterProps {
@@ -57,10 +56,12 @@ export default function SearchFilter({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Technik suchen..."
+          aria-label="Technik suchen"
           className="flex-1 rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none"
         />
         <button
           onClick={onToggleFavorites}
+          aria-pressed={showFavoritesOnly}
           className={`rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
             showFavoritesOnly
               ? "border-kicker-orange bg-kicker-orange/15 text-kicker-orange"
@@ -72,11 +73,12 @@ export default function SearchFilter({
       </div>
 
       {/* Category filter */}
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Kategorie Filter">
         {CATEGORIES.map((cat) => (
           <button
             key={cat}
             onClick={() => onCategoryChange(cat)}
+            aria-pressed={category === cat}
             className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
               category === cat
                 ? "border-2 border-accent bg-accent-dim text-accent-hover"
@@ -90,18 +92,19 @@ export default function SearchFilter({
 
       {/* Difficulty filter */}
       <div className="flex items-center gap-3">
-        <div className="flex gap-1.5">
+        <div className="flex gap-1.5" role="radiogroup" aria-label="Schwierigkeitsgrad Filter">
           {DIFFICULTIES.map((diff) => (
             <button
               key={diff}
               onClick={() => onDifficultyChange(diff)}
+              aria-pressed={difficulty === diff}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
                 difficulty === diff
                   ? "border-2 border-accent bg-accent-dim text-accent-hover"
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
-              {DIFFICULTY_LABELS[diff]}
+              {DIFFICULTY_FILTER_LABELS[diff]}
             </button>
           ))}
         </div>
