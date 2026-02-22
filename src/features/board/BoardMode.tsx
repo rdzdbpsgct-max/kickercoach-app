@@ -2,7 +2,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import type Konva from "konva";
 import type { TacticalScene } from "../../domain/models/TacticalBoard";
 import { STORAGE_KEYS } from "../../domain/constants";
-import { createDefaultScene } from "./logic/sceneFactory";
+import { createDefaultScene, createDefaultFigures } from "./logic/sceneFactory";
 import { useBoardReducer } from "./hooks/useBoardReducer";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
 import BoardCanvas from "./components/BoardCanvas";
@@ -110,6 +110,9 @@ export default function BoardMode() {
         onExport={handleExport}
         onSave={handleSave}
         onShowScenes={() => setShowScenes(true)}
+        onResetFigures={() =>
+          dispatch({ type: "RESET_FIGURES", figures: createDefaultFigures() })
+        }
       />
 
       <BoardCanvas state={state} dispatch={dispatch} stageRef={stageRef} />

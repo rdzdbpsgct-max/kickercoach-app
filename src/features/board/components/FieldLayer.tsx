@@ -27,26 +27,48 @@ function FieldLayerInner() {
         fill={BOARD_COLORS.field}
       />
 
-      {/* Left goal */}
+      {/* Left goal (inside field edge) */}
       <Rect
-        x={-GOAL.width}
+        x={0}
         y={goalY}
         width={GOAL.width}
         height={GOAL.height}
-        stroke={BOARD_COLORS.fieldLine}
-        strokeWidth={2}
-        fill="rgba(255,255,255,0.05)"
+        stroke="rgba(255,255,255,0.8)"
+        strokeWidth={3}
+        fill="rgba(0,0,0,0.3)"
+      />
+      {/* Left goal net lines */}
+      <Line
+        points={[GOAL.width / 3, goalY, GOAL.width / 3, goalY + GOAL.height]}
+        stroke="rgba(255,255,255,0.2)"
+        strokeWidth={1}
+      />
+      <Line
+        points={[(GOAL.width * 2) / 3, goalY, (GOAL.width * 2) / 3, goalY + GOAL.height]}
+        stroke="rgba(255,255,255,0.2)"
+        strokeWidth={1}
       />
 
-      {/* Right goal */}
+      {/* Right goal (inside field edge) */}
       <Rect
-        x={FIELD.width}
+        x={FIELD.width - GOAL.width}
         y={goalY}
         width={GOAL.width}
         height={GOAL.height}
-        stroke={BOARD_COLORS.fieldLine}
-        strokeWidth={2}
-        fill="rgba(255,255,255,0.05)"
+        stroke="rgba(255,255,255,0.8)"
+        strokeWidth={3}
+        fill="rgba(0,0,0,0.3)"
+      />
+      {/* Right goal net lines */}
+      <Line
+        points={[FIELD.width - GOAL.width / 3, goalY, FIELD.width - GOAL.width / 3, goalY + GOAL.height]}
+        stroke="rgba(255,255,255,0.2)"
+        strokeWidth={1}
+      />
+      <Line
+        points={[FIELD.width - (GOAL.width * 2) / 3, goalY, FIELD.width - (GOAL.width * 2) / 3, goalY + GOAL.height]}
+        stroke="rgba(255,255,255,0.2)"
+        strokeWidth={1}
       />
 
       {/* Center line */}

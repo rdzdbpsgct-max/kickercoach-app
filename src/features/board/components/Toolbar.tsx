@@ -11,6 +11,7 @@ interface ToolbarProps {
   onExport: () => void;
   onSave: () => void;
   onShowScenes: () => void;
+  onResetFigures: () => void;
 }
 
 const TOOLS: { type: ToolType; label: string; icon: string; key: string }[] = [
@@ -40,6 +41,7 @@ export default function Toolbar({
   onExport,
   onSave,
   onShowScenes,
+  onResetFigures,
 }: ToolbarProps) {
   return (
     <div className="flex flex-col gap-2">
@@ -83,6 +85,15 @@ export default function Toolbar({
           className="rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 transition-all"
         >
           &#9917;
+        </button>
+
+        {/* Reset figures to default */}
+        <button
+          onClick={onResetFigures}
+          title="Stangen zur&uuml;cksetzen"
+          className="rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 transition-all"
+        >
+          &#8634;
         </button>
 
         <div className="mx-1 h-6 w-px bg-border" />

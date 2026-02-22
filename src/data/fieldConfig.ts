@@ -4,7 +4,7 @@ import type { RodConfig, Size } from "../domain/models/TacticalBoard";
 export const FIELD: Size = { width: 1200, height: 680 };
 
 /** Goal dimensions */
-export const GOAL: Size = { width: 20, height: 200 };
+export const GOAL: Size = { width: 40, height: 200 };
 
 /** Playable Y margins (figures stay within) */
 export const FIELD_MARGIN = 50;

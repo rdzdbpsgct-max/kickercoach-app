@@ -66,12 +66,14 @@ export default function FigureLayer({
               // Lock horizontal movement
               node.x(0);
               // Clamp vertical to keep all figures within field
-              const y = node.y();
-              const clamped = Math.max(
-                minGroupDelta,
-                Math.min(maxGroupDelta, y),
-              );
-              if (y !== clamped) node.y(clamped);
+              let y = node.y();
+              y = Math.max(minGroupDelta, Math.min(maxGroupDelta, y));
+              // Snap to center (default position) when close
+              const SNAP_THRESHOLD = 8;
+              if (Math.abs(y) < SNAP_THRESHOLD) {
+                y = 0;
+              }
+              node.y(y);
             }}
             onDragEnd={(e) => {
               const deltaY = e.target.y();
