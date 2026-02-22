@@ -80,19 +80,20 @@ export default function HomePage() {
         <p className="text-sm leading-relaxed text-text-muted md:text-base">
           Deine digitale Coaching-App f&uuml;r Tischfussball.{" "}
           <span className="text-text">
-            Technik lernen, gezielt trainieren, taktisch planen.
+            Technik lernen, gezielt trainieren, taktisch planen und Spielz&uuml;ge
+            visualisieren.
           </span>
         </p>
       </div>
 
       {/* Feature-Cards */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <FeatureCard
           icon={"\uD83D\uDCDA"}
           title="Lernen"
           stat="48 Coaching-Karten"
           statColor="bg-kicker-blue/15 text-kicker-blue"
-          description="7 Kategorien &ndash; von Torschuss &uuml;ber Passspiel und Ballkontrolle bis hin zu Defensive, Taktik, Offensive und Mental. Schritt-f&uuml;r-Schritt-Anleitungen, h&auml;ufige Fehler, Coach-Tipps und verkn&uuml;pfte Lernpfade."
+          description="7 Kategorien &ndash; von Torschuss &uuml;ber Passspiel und Ballkontrolle bis hin zu Defensive, Taktik, Offensive und Mental. Schritt-f&uuml;r-Schritt-Anleitungen, Coach-Tipps und Lernpfade."
           to="/learn"
           cta="Zur Bibliothek &rarr;"
         />
@@ -101,7 +102,7 @@ export default function HomePage() {
           title="Training"
           stat="20 Drills"
           statColor="bg-kicker-orange/15 text-kicker-orange"
-          description="Timer-gest&uuml;tzte Trainingsbl&ouml;cke mit Auto-Advance, Schwierigkeitsfilter und Session-Builder. Halte deinen Fortschritt im integrierten Trainingstagebuch fest."
+          description="Timer-gest&uuml;tzte Trainingsbl&ouml;cke mit Auto-Advance, Schwierigkeitsfilter und Session-Builder. Halte deinen Fortschritt im Trainingstagebuch fest."
           to="/train"
           cta="Zum Training &rarr;"
         />
@@ -113,6 +114,15 @@ export default function HomePage() {
           description="Erstelle individuelle Matchpl&auml;ne mit Gegneranalyse, Gameplan, Timeout-Strategien sowie offensiven und defensiven Taktikvorlagen. Import &amp; Export als JSON."
           to="/plan"
           cta="Zum Matchplan &rarr;"
+        />
+        <FeatureCard
+          icon={"\uD83C\uDFAF"}
+          title="Taktikboard"
+          stat="Interaktiv"
+          statColor="bg-accent/15 text-accent"
+          description="Spielz&uuml;ge auf dem Canvas-Taktikboard planen. Figuren verschieben, Pfeile und Zonen zeichnen, Szenen speichern und als PNG exportieren."
+          to="/board"
+          cta="Zum Taktikboard &rarr;"
         />
       </div>
     </div>
