@@ -2,9 +2,9 @@ import { type ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 
 const tabs = [
-  { to: "/learn", label: "Learn", icon: "\uD83D\uDCDA" },
-  { to: "/train", label: "Train", icon: "\u23F1\uFE0F" },
-  { to: "/plan", label: "Plan", icon: "\uD83D\uDCCB" },
+  { to: "/learn", label: "Lernen", icon: "\uD83D\uDCDA" },
+  { to: "/train", label: "Training", icon: "\u23F1\uFE0F" },
+  { to: "/plan", label: "Matchplan", icon: "\uD83D\uDCCB" },
 ] as const;
 
 export default function Layout({ children }: { children: ReactNode }) {
