@@ -6,12 +6,12 @@ export const COACH_CARDS: CoachCard[] = [
   // ─────────────────────────────────────────────────────────────────────────────
   {
     id: "torschuss-jet",
-    title: "Jet / Pinshot",
+    title: "Pin-Shot (Abroller)",
     summary:
-      "Der Jet ist einer der wichtigsten Grundschüsse im Tischfussball. Aus der vorderen Pin-Position wird der Ball durch eine explosive Handgelenkrotation über die Stange gerollt und ins Tor befördert. Er bildet die Basis für viele fortgeschrittene Schusstechniken.",
+      "Der Pin-Shot (Abroller) ist einer der wichtigsten Grundschüsse im Tischfussball und besonders in Europa weit verbreitet. Aus der vorderen Pin-Position wird der Ball durch eine explosive Handgelenkrotation über die Stange gerollt und ins Tor befördert. Er bildet die Basis für viele fortgeschrittene Schusstechniken wie den Snake/Jet.",
     difficulty: "beginner",
     category: "Torschuss",
-    tags: ["jet", "pinshot", "3er-reihe", "handgelenk", "grundtechnik"],
+    tags: ["pin-shot", "abroller", "3er-reihe", "handgelenk", "grundtechnik"],
     steps: [
       "Lege den Ball in die vordere Pin-Position unter die mittlere Figur der 3er-Reihe. Die Figur ist leicht nach vorne geneigt und fixiert den Ball zwischen Sohle und Spielfeld.",
       "Positioniere dein Handgelenk locker oben auf dem Griff. Der Arm bleibt ruhig, die gesamte Kraft kommt aus dem Handgelenk.",
@@ -91,12 +91,12 @@ export const COACH_CARDS: CoachCard[] = [
   },
   {
     id: "torschuss-snake",
-    title: "Snake / Slingshot",
+    title: "Snake / Jet",
     summary:
-      "Der Snake-Shot ist eine fortgeschrittene Variante des Jet/Pinshot mit einer zusätzlichen lateralen Rollbewegung. Der Ball wird aus der Pin-Position seitlich gerollt und dann blitzschnell ins Tor geschossen. Er gehört zu den schnellsten und effektivsten Schüssen im Wettkampf.",
+      "Der Snake-Shot (auch Jet genannt) ist eine der gefährlichsten Schusstechniken im Wettkampf-Tischfussball. Aufbauend auf dem Pin-Shot wird der Ball aus der vorderen Pin-Position seitlich gerollt und dann blitzschnell durch eine explosive Überrollbewegung ins Tor geschossen. Er gehört zu den schnellsten und effektivsten Schüssen im professionellen Spiel.",
     difficulty: "intermediate",
     category: "Torschuss",
-    tags: ["snake", "slingshot", "3er-reihe", "pin-position", "wettkampf"],
+    tags: ["snake", "jet", "3er-reihe", "pin-position", "wettkampf"],
     steps: [
       "Fixiere den Ball in der vorderen Pin-Position unter der mittleren Figur der 3er-Reihe. Die Handinnenfläche liegt oben auf dem Griff.",
       "Beginne eine laterale Rollbewegung, indem du den Ball seitlich unter der Figur entlangführst. Die Figur rollt dabei auf dem Ball.",
@@ -808,7 +808,7 @@ export const COACH_CARDS: CoachCard[] = [
     steps: [
       "Nimm jeden Ball sauber an und bringe ihn sofort in eine kontrollierte Pin-Position.",
       "Überstürze nichts: Halte den Ball in der Pin-Position und analysiere die Situation, bevor du agierst.",
-      "Nutze die erlaubte Zeit am Ball voll aus. Du hast auf jeder Reihe eine bestimmte Zeit, bevor du weiterspielen musst.",
+      "Nutze die erlaubte Zeit am Ball aus: Nach ITSF-Regeln 10 Sekunden auf der 5er-Reihe, 15 Sekunden auf allen anderen Stangen. Die 2er-Reihe und der Torwart zählen zusammen als eine Zone.",
       "Spiele nur Pässe und Schüsse, die du sicher beherrschst. Vermeide riskante Aktionen ohne Not.",
       "Wenn kein guter Pass oder Schuss möglich ist, halte den Ball und warte auf eine bessere Gelegenheit.",
     ],
@@ -884,26 +884,28 @@ export const COACH_CARDS: CoachCard[] = [
     id: "taktik-timeout",
     title: "Timeout-Nutzung",
     summary:
-      "Das Timeout ist ein mächtiges taktisches Werkzeug im Wettkampf. Richtig eingesetzt, kann es das Momentum des Gegners brechen, dem eigenen Team eine Denkpause verschaffen und die Dynamik eines Satzes komplett verändern. Strategischer Timeout-Einsatz unterscheidet erfahrene von unerfahrenen Spielern.",
+      "Das Timeout ist ein mächtiges taktisches Werkzeug im Wettkampf. Nach ITSF-Regeln hat jedes Team 2 Timeouts pro Satz, je maximal 30 Sekunden. Ein Timeout darf nur von der ballbesitzenden Mannschaft ausgerufen werden (zwischen den Punkten von beiden). Strategischer Timeout-Einsatz unterscheidet erfahrene von unerfahrenen Spielern.",
     difficulty: "intermediate",
     category: "Taktik",
-    tags: ["timeout", "pause", "strategie", "momentum", "wettkampf"],
+    tags: ["timeout", "pause", "strategie", "momentum", "wettkampf", "itsf"],
     steps: [
+      "Kenne die Regeln: 2 Timeouts pro Team pro Satz, maximal 30 Sekunden. Nur bei eigenem Ballbesitz während des Spiels aufrufbar, zwischen Punkten von beiden.",
       "Nimm ein Timeout, wenn der Gegner einen Lauf hat und mehrere Punkte hintereinander erzielt hat. Unterbreche sein Momentum.",
-      "Nutze die Pause, um die Taktik des Gegners zu analysieren und konkrete Anpassungen zu besprechen.",
+      "Nutze die 30 Sekunden aktiv: Taktik des Gegners analysieren, konkrete Anpassungen besprechen, Hände trocknen.",
       "Nimm kein Timeout, wenn du selbst im Spielfluss bist - unterbreche dein eigenes Momentum nicht.",
-      "Spare mindestens ein Timeout für kritische Situationen im letzten Satz auf.",
-      "Nutze das Timeout auch zur physischen Erholung: Hände trocknen, Griff nachfassen, kurz durchatmen.",
+      "Spare mindestens ein Timeout für kritische Situationen gegen Ende des Satzes auf.",
+      "Beachte auch die Ballbesitz-Zeitlimits: 10 Sekunden auf der 5er-Reihe, 15 Sekunden auf allen anderen Stangen (ITSF-Regel).",
     ],
     commonMistakes: [
-      "Alle Timeouts werden zu früh verbraucht, und in der entscheidenden Endphase steht keines mehr zur Verfügung.",
-      "Das Timeout wird nicht für taktische Anpassungen genutzt - es wird nur gewartet, bis die Zeit abgelaufen ist.",
+      "Beide Timeouts werden zu früh verbraucht, und in der entscheidenden Endphase steht keines mehr zur Verfügung.",
+      "Das Timeout wird nicht für taktische Anpassungen genutzt - es wird nur gewartet, bis die 30 Sekunden abgelaufen sind.",
       "Das Timeout wird aus Frustration genommen statt aus strategischem Kalkül.",
+      "Timeout wird ausgerufen ohne Ballbesitz - das ist ein Foul und wird als Ablenkung gewertet (ITSF-Regel).",
     ],
     coachCues: [
       "Ein Timeout unterbricht das Momentum des Gegners - nutze es gezielt, wenn er einen Lauf hat.",
       "Besprich in der Pause konkret: Was machen wir anders? Nicht: Was lief schlecht?",
-      "Halte immer mindestens ein Timeout in Reserve für den entscheidenden Moment im Spiel.",
+      "Halte immer mindestens ein Timeout in Reserve für den entscheidenden Moment im Satz.",
     ],
   },
   {
