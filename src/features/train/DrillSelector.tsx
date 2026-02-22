@@ -13,7 +13,7 @@ export default function DrillSelector({
   onSelect,
 }: DrillSelectorProps) {
   return (
-    <div className="flex flex-col gap-2 overflow-auto">
+    <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-auto">
       {drills.map((drill) => (
         <button
           key={drill.id}

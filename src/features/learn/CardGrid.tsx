@@ -33,7 +33,7 @@ export default function CardGrid({
   onSelect,
 }: CardGridProps) {
   return (
-    <div className="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-3 overflow-auto pb-4">
+    <div className="grid min-h-0 flex-1 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] content-start gap-3 overflow-auto pb-4">
       {cards.map((card) => (
         <CardItem
           key={card.id}
