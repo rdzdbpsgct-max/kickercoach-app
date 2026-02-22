@@ -91,9 +91,10 @@ export default function Toolbar({
         <button
           onClick={onResetFigures}
           title="Stangen zur&uuml;cksetzen"
-          className="rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 transition-all"
+          className="flex items-center gap-1 rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 transition-all"
         >
-          &#8634;
+          <span>&#8634;</span>
+          <span className="hidden md:inline">Reset</span>
         </button>
 
         <div className="mx-1 h-6 w-px bg-border" />

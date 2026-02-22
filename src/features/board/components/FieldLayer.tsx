@@ -121,8 +121,8 @@ function FieldLayerInner() {
         width={GOAL.width}
         height={GOAL.height}
         stroke={line}
-        strokeWidth={3}
-        fill="rgba(0,0,0,0.25)"
+        strokeWidth={2}
+        fill="rgba(0,0,0,0.15)"
       />
 
       {/* ── Right side ── */}
@@ -179,8 +179,8 @@ function FieldLayerInner() {
         width={GOAL.width}
         height={GOAL.height}
         stroke={line}
-        strokeWidth={3}
-        fill="rgba(0,0,0,0.25)"
+        strokeWidth={2}
+        fill="rgba(0,0,0,0.15)"
       />
 
       {/* ── Rod lines (dashed, subtle) ── */}

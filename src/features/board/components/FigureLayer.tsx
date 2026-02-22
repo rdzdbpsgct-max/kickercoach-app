@@ -94,13 +94,13 @@ export default function FigureLayer({
               if (container) container.style.cursor = "default";
             }}
           >
-            {/* Rod line (silver bar connecting all figures) */}
+            {/* Rod line (silver bar spanning entire field height) */}
             <Line
               points={[
                 rod.xPosition,
-                FIELD_MARGIN - 10,
+                -10,
                 rod.xPosition,
-                FIELD.height - FIELD_MARGIN + 10,
+                FIELD.height + 10,
               ]}
               stroke="rgba(180, 180, 190, 0.5)"
               strokeWidth={6}
@@ -141,10 +141,7 @@ export default function FigureLayer({
           onDragMove={(e) => {
             const node = e.target;
             const x = Math.max(0, Math.min(FIELD.width, node.x()));
-            const y = Math.max(
-              FIELD_MARGIN,
-              Math.min(FIELD.height - FIELD_MARGIN, node.y()),
-            );
+            const y = Math.max(0, Math.min(FIELD.height, node.y()));
             node.x(x);
             node.y(y);
           }}
