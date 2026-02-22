@@ -44,6 +44,19 @@ export default function FigureLayer({
 
   return (
     <Layer>
+      {/* Static rod lines — always visible, never move */}
+      {RODS.map((rod) => (
+        <Line
+          key={`rod-line-${rod.index}`}
+          points={[rod.xPosition, -10, rod.xPosition, FIELD.height + 10]}
+          stroke="rgba(180, 180, 190, 0.45)"
+          strokeWidth={6}
+          lineCap="round"
+          listening={false}
+        />
+      ))}
+
+      {/* Draggable rod groups (figures only) */}
       {Object.entries(rodGroups).map(([rodIndexStr, figs]) => {
         const rodIndex = Number(rodIndexStr);
         const rod = RODS.find((r) => r.index === rodIndex);
@@ -94,19 +107,6 @@ export default function FigureLayer({
               if (container) container.style.cursor = "default";
             }}
           >
-            {/* Rod line (silver bar spanning entire field height) */}
-            <Line
-              points={[
-                rod.xPosition,
-                -10,
-                rod.xPosition,
-                FIELD.height + 10,
-              ]}
-              stroke="rgba(180, 180, 190, 0.5)"
-              strokeWidth={6}
-              lineCap="round"
-            />
-
             {/* Figures on this rod */}
             {figs.map((fig) => (
               <Circle

@@ -1,27 +1,29 @@
 import { memo } from "react";
 import { Layer, Rect, Line, Circle, Shape } from "react-konva";
-import { FIELD, GOAL, RODS, BOARD_COLORS } from "../../../data/fieldConfig";
+import { FIELD, GOAL, BOARD_COLORS } from "../../../data/fieldConfig";
 
 /**
  * Static foosball field background with soccer-style markings.
- * Memoized since it never changes.
+ * Markings are sized to fall BETWEEN rod positions so they stay visible.
+ *
+ * Rod X-positions: 60, 180, 330, 480, 720, 870, 1020, 1140
+ * Markings are placed in gaps between rods.
  */
 function FieldLayerInner() {
   const midY = FIELD.height / 2;
   const line = BOARD_COLORS.fieldLine;
   const lw = 2;
 
-  // Soccer-style markings scaled to 1200×680
-  const penaltyW = 180; // penalty area width from goal line
-  const penaltyH = 400; // penalty area height (centered)
-  const goalAreaW = 60; // goal area width from goal line
-  const goalAreaH = 180; // goal area height (centered)
-  const penaltySpot = 120; // penalty spot distance from goal line
-  const arcR = 90; // penalty arc radius
-  const centerR = 90; // center circle radius
+  // Soccer-style markings — sized to avoid rod positions
+  const penaltyW = 230; // ends at x=230 (between rod 1 @180 and rod 2 @330)
+  const penaltyH = 400;
+  const goalAreaW = 110; // ends at x=110 (between rod 0 @60 and rod 1 @180)
+  const goalAreaH = 180;
+  const penaltySpot = 150; // between rod 1 @180 and rod 0 @60
+  const arcR = 90;
+  const centerR = 90;
 
   // Penalty arc: only draw the part outside the penalty area
-  // Distance from penalty spot to penalty area edge = penaltyW - penaltySpot = 60
   const arcAngle = Math.acos((penaltyW - penaltySpot) / arcR);
 
   // Goal position
@@ -80,7 +82,7 @@ function FieldLayerInner() {
 
       {/* ── Left side ── */}
 
-      {/* Left penalty area (Strafraum) */}
+      {/* Left penalty area (Strafraum) — ends at x=230 */}
       <Rect
         x={0}
         y={midY - penaltyH / 2}
@@ -90,7 +92,7 @@ function FieldLayerInner() {
         strokeWidth={lw}
       />
 
-      {/* Left goal area (Torraum) */}
+      {/* Left goal area (Torraum) — ends at x=110 */}
       <Rect
         x={0}
         y={midY - goalAreaH / 2}
@@ -127,7 +129,7 @@ function FieldLayerInner() {
 
       {/* ── Right side ── */}
 
-      {/* Right penalty area (Strafraum) */}
+      {/* Right penalty area (Strafraum) — starts at x=970 */}
       <Rect
         x={FIELD.width - penaltyW}
         y={midY - penaltyH / 2}
@@ -137,7 +139,7 @@ function FieldLayerInner() {
         strokeWidth={lw}
       />
 
-      {/* Right goal area (Torraum) */}
+      {/* Right goal area (Torraum) — starts at x=1090 */}
       <Rect
         x={FIELD.width - goalAreaW}
         y={midY - goalAreaH / 2}
@@ -182,18 +184,6 @@ function FieldLayerInner() {
         strokeWidth={2}
         fill="rgba(0,0,0,0.15)"
       />
-
-      {/* ── Rod lines (dashed, subtle) ── */}
-      {RODS.map((rod) => (
-        <Line
-          key={rod.index}
-          points={[rod.xPosition, 0, rod.xPosition, FIELD.height]}
-          stroke={line}
-          strokeWidth={1}
-          dash={[8, 8]}
-          opacity={0.5}
-        />
-      ))}
     </Layer>
   );
 }
