@@ -1,8 +1,8 @@
-import { Layer, Circle } from "react-konva";
+import { useMemo } from "react";
+import { Layer, Group, Circle, Line } from "react-konva";
 import type {
   FigureMarker,
   BallMarker,
-  Point,
   ToolType,
 } from "../../../domain/models/TacticalBoard";
 import {
@@ -12,57 +12,65 @@ import {
   BOARD_COLORS,
   FIELD,
   FIELD_MARGIN,
+  RODS,
 } from "../../../data/fieldConfig";
-import { getRodConstraint } from "../logic/fieldGeometry";
 
 interface FigureLayerProps {
   figures: FigureMarker[];
   ball: BallMarker | null;
   activeTool: ToolType;
-  onMoveFigure: (id: string, position: Point) => void;
-  onMoveBall: (position: Point) => void;
+  onMoveRod: (rodIndex: number, deltaY: number) => void;
+  onMoveBall: (position: { x: number; y: number }) => void;
 }
 
 export default function FigureLayer({
   figures,
   ball,
   activeTool,
-  onMoveFigure,
+  onMoveRod,
   onMoveBall,
 }: FigureLayerProps) {
   const isDraggable = activeTool === "select";
 
+  // Group figures by rod index
+  const rodGroups = useMemo(() => {
+    const groups: Record<number, FigureMarker[]> = {};
+    for (const fig of figures) {
+      if (!groups[fig.rodIndex]) groups[fig.rodIndex] = [];
+      groups[fig.rodIndex].push(fig);
+    }
+    return groups;
+  }, [figures]);
+
   return (
     <Layer>
-      {figures.map((fig) => {
-        const constraint = getRodConstraint(fig.rodIndex);
+      {Object.entries(rodGroups).map(([rodIndexStr, figs]) => {
+        const rodIndex = Number(rodIndexStr);
+        const rod = RODS.find((r) => r.index === rodIndex);
+        if (!rod) return null;
+
+        // Determine bounds for the entire rod group
+        const minFigY = Math.min(...figs.map((f) => f.position.y));
+        const maxFigY = Math.max(...figs.map((f) => f.position.y));
+        const minGroupDelta = FIELD_MARGIN + FIGURE_RADIUS - minFigY;
+        const maxGroupDelta =
+          FIELD.height - FIELD_MARGIN - FIGURE_RADIUS - maxFigY;
 
         return (
-          <Circle
-            key={fig.id}
-            x={fig.position.x}
-            y={fig.position.y}
-            radius={FIGURE_RADIUS}
-            fill={TEAM_COLORS[fig.team]}
-            stroke="rgba(255,255,255,0.6)"
-            strokeWidth={2}
-            shadowColor="rgba(0,0,0,0.3)"
-            shadowBlur={4}
-            shadowOffsetY={2}
+          <Group
+            key={rodIndex}
             draggable={isDraggable}
             dragBoundFunc={(pos) => ({
-              x: constraint.x,
-              y: Math.max(
-                constraint.minY,
-                Math.min(constraint.maxY, pos.y),
-              ),
+              x: 0, // Rod group stays at x=0 (figures have absolute x)
+              y: Math.max(minGroupDelta, Math.min(maxGroupDelta, pos.y)),
             })}
             onDragEnd={(e) => {
-              const node = e.target;
-              onMoveFigure(fig.id, {
-                x: node.x(),
-                y: node.y(),
-              });
+              const deltaY = e.target.y();
+              if (Math.abs(deltaY) > 0.5) {
+                onMoveRod(rodIndex, deltaY);
+              }
+              // Reset group position (offsets are now baked into figure positions)
+              e.target.y(0);
             }}
             onMouseEnter={(e) => {
               if (isDraggable) {
@@ -74,11 +82,40 @@ export default function FigureLayer({
               const container = e.target.getStage()?.container();
               if (container) container.style.cursor = "default";
             }}
-          />
+          >
+            {/* Rod line (silver bar connecting all figures) */}
+            <Line
+              points={[
+                rod.xPosition,
+                FIELD_MARGIN - 10,
+                rod.xPosition,
+                FIELD.height - FIELD_MARGIN + 10,
+              ]}
+              stroke="rgba(180, 180, 190, 0.5)"
+              strokeWidth={6}
+              lineCap="round"
+            />
+
+            {/* Figures on this rod */}
+            {figs.map((fig) => (
+              <Circle
+                key={fig.id}
+                x={fig.position.x}
+                y={fig.position.y}
+                radius={FIGURE_RADIUS}
+                fill={TEAM_COLORS[fig.team]}
+                stroke="rgba(255,255,255,0.6)"
+                strokeWidth={2}
+                shadowColor="rgba(0,0,0,0.3)"
+                shadowBlur={4}
+                shadowOffsetY={2}
+              />
+            ))}
+          </Group>
         );
       })}
 
-      {/* Ball */}
+      {/* Ball (freely draggable, independent of rods) */}
       {ball && (
         <Circle
           x={ball.position.x}
@@ -92,7 +129,10 @@ export default function FigureLayer({
           draggable={isDraggable}
           dragBoundFunc={(pos) => ({
             x: Math.max(0, Math.min(FIELD.width, pos.x)),
-            y: Math.max(FIELD_MARGIN, Math.min(FIELD.height - FIELD_MARGIN, pos.y)),
+            y: Math.max(
+              FIELD_MARGIN,
+              Math.min(FIELD.height - FIELD_MARGIN, pos.y),
+            ),
           })}
           onDragEnd={(e) => {
             onMoveBall({ x: e.target.x(), y: e.target.y() });

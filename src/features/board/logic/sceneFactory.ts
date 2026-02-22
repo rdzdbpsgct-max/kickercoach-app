@@ -3,24 +3,28 @@ import type {
   FigureMarker,
   BallMarker,
 } from "../../../domain/models/TacticalBoard";
-import { RODS, FIELD, FIELD_MARGIN } from "../../../data/fieldConfig";
+import { RODS, FIELD, FIGURE_SPACING } from "../../../data/fieldConfig";
 
-/** Distribute N figures evenly along a rod's playable Y range */
+/**
+ * Distribute figures on a rod using realistic fixed spacing.
+ * Figures are centered vertically on the field, just like on a real table.
+ */
 function distributeOnRod(
   rodIndex: number,
   team: "red" | "blue",
   figureCount: number,
   rodX: number,
 ): FigureMarker[] {
-  const minY = FIELD_MARGIN;
-  const maxY = FIELD.height - FIELD_MARGIN;
-  const spacing = (maxY - minY) / (figureCount + 1);
+  const centerY = FIELD.height / 2;
+  const spacing = FIGURE_SPACING[figureCount] ?? 80;
+  const totalSpan = spacing * (figureCount - 1);
+  const startY = centerY - totalSpan / 2;
 
   return Array.from({ length: figureCount }, (_, i) => ({
     id: `fig-${rodIndex}-${i}`,
     rodIndex,
     team,
-    position: { x: rodX, y: minY + spacing * (i + 1) },
+    position: { x: rodX, y: startY + spacing * i },
     figureIndex: i,
   }));
 }
@@ -41,7 +45,9 @@ export function createDefaultBall(): BallMarker {
 }
 
 /** Create a new empty/default tactical scene */
-export function createDefaultScene(name: string = "Neue Szene"): TacticalScene {
+export function createDefaultScene(
+  name: string = "Neue Szene",
+): TacticalScene {
   return {
     id: crypto.randomUUID(),
     name,

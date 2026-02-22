@@ -32,6 +32,7 @@ const MAX_HISTORY = 50;
 
 export type BoardAction =
   | { type: "MOVE_FIGURE"; id: string; position: Point }
+  | { type: "MOVE_ROD"; rodIndex: number; deltaY: number }
   | { type: "RESET_FIGURES"; figures: FigureMarker[] }
   | { type: "ADD_ARROW"; arrow: ArrowElement }
   | { type: "REMOVE_ARROW"; id: string }
@@ -63,6 +64,23 @@ function updateScene(
         updatedAt: new Date().toISOString(),
         figures: scene.figures.map((f) =>
           f.id === action.id ? { ...f, position: action.position } : f,
+        ),
+      };
+
+    case "MOVE_ROD":
+      return {
+        ...scene,
+        updatedAt: new Date().toISOString(),
+        figures: scene.figures.map((f) =>
+          f.rodIndex === action.rodIndex
+            ? {
+                ...f,
+                position: {
+                  ...f.position,
+                  y: f.position.y + action.deltaY,
+                },
+              }
+            : f,
         ),
       };
 

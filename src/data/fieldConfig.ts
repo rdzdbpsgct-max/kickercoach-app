@@ -65,3 +65,15 @@ export const FIGURE_RADIUS = 18;
 
 /** Ball marker radius in field coordinates */
 export const BALL_RADIUS = 10;
+
+/**
+ * Realistic figure spacing per figure count (Leo model).
+ * On a real table, figures are rigidly fixed on the rod.
+ * Values in field coordinate units.
+ */
+export const FIGURE_SPACING: Record<number, number> = {
+  1: 0, // Goalkeeper – single figure, centered
+  2: 190, // 2er-Stange – ~28% of field height
+  3: 115, // 3er-Stange – ~17% of field height
+  5: 70, // 5er-Stange – ~10% of field height
+};

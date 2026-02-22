@@ -190,8 +190,8 @@ export default function BoardCanvas({
           figures={scene.figures}
           ball={scene.ball}
           activeTool={tool.activeTool}
-          onMoveFigure={(id, pos) =>
-            dispatch({ type: "MOVE_FIGURE", id, position: pos })
+          onMoveRod={(rodIndex, deltaY) =>
+            dispatch({ type: "MOVE_ROD", rodIndex, deltaY })
           }
           onMoveBall={(pos) => dispatch({ type: "MOVE_BALL", position: pos })}
         />
