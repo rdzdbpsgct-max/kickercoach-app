@@ -9,15 +9,19 @@ export const GOAL: Size = { width: 20, height: 200 };
 /** Playable Y margins (figures stay within) */
 export const FIELD_MARGIN = 50;
 
-/** Standard Leo model rod configuration */
+/**
+ * Standard rod configuration (1/2/3/5 | 5/3/2/1).
+ * From left (Red goal) to right (Blue goal), teams alternate:
+ * Red TW, Red 2er, Blue 3er, Red 5er | Blue 5er, Red 3er, Blue 2er, Blue TW
+ */
 export const RODS: RodConfig[] = [
   { index: 0, team: "red", xPosition: 60, figureCount: 1, label: "Torwart" },
   { index: 1, team: "red", xPosition: 180, figureCount: 2, label: "2er" },
-  { index: 2, team: "blue", xPosition: 340, figureCount: 5, label: "5er" },
-  { index: 3, team: "red", xPosition: 460, figureCount: 5, label: "5er" },
-  { index: 4, team: "blue", xPosition: 600, figureCount: 3, label: "3er" },
-  { index: 5, team: "red", xPosition: 740, figureCount: 3, label: "3er" },
-  { index: 6, team: "blue", xPosition: 860, figureCount: 2, label: "2er" },
+  { index: 2, team: "blue", xPosition: 330, figureCount: 3, label: "3er" },
+  { index: 3, team: "red", xPosition: 480, figureCount: 5, label: "5er" },
+  { index: 4, team: "blue", xPosition: 720, figureCount: 5, label: "5er" },
+  { index: 5, team: "red", xPosition: 870, figureCount: 3, label: "3er" },
+  { index: 6, team: "blue", xPosition: 1020, figureCount: 2, label: "2er" },
   {
     index: 7,
     team: "blue",

@@ -49,7 +49,7 @@ export default function FigureLayer({
         const rod = RODS.find((r) => r.index === rodIndex);
         if (!rod) return null;
 
-        // Determine bounds for the entire rod group
+        // Determine Y bounds for the entire rod group (in field coordinates)
         const minFigY = Math.min(...figs.map((f) => f.position.y));
         const maxFigY = Math.max(...figs.map((f) => f.position.y));
         const minGroupDelta = FIELD_MARGIN + FIGURE_RADIUS - minFigY;
@@ -60,10 +60,19 @@ export default function FigureLayer({
           <Group
             key={rodIndex}
             draggable={isDraggable}
-            dragBoundFunc={(pos) => ({
-              x: 0, // Rod group stays at x=0 (figures have absolute x)
-              y: Math.max(minGroupDelta, Math.min(maxGroupDelta, pos.y)),
-            })}
+            // Constrain to vertical only, clamp within field bounds
+            onDragMove={(e) => {
+              const node = e.target;
+              // Lock horizontal movement
+              node.x(0);
+              // Clamp vertical to keep all figures within field
+              const y = node.y();
+              const clamped = Math.max(
+                minGroupDelta,
+                Math.min(maxGroupDelta, y),
+              );
+              if (y !== clamped) node.y(clamped);
+            }}
             onDragEnd={(e) => {
               const deltaY = e.target.y();
               if (Math.abs(deltaY) > 0.5) {
@@ -127,13 +136,16 @@ export default function FigureLayer({
           shadowColor="rgba(0,0,0,0.4)"
           shadowBlur={3}
           draggable={isDraggable}
-          dragBoundFunc={(pos) => ({
-            x: Math.max(0, Math.min(FIELD.width, pos.x)),
-            y: Math.max(
+          onDragMove={(e) => {
+            const node = e.target;
+            const x = Math.max(0, Math.min(FIELD.width, node.x()));
+            const y = Math.max(
               FIELD_MARGIN,
-              Math.min(FIELD.height - FIELD_MARGIN, pos.y),
-            ),
-          })}
+              Math.min(FIELD.height - FIELD_MARGIN, node.y()),
+            );
+            node.x(x);
+            node.y(y);
+          }}
           onDragEnd={(e) => {
             onMoveBall({ x: e.target.x(), y: e.target.y() });
           }}
