@@ -191,6 +191,11 @@ export default function TrainMode() {
             <p className="text-sm text-text-muted">
               {selectedDrill.focusSkill}
             </p>
+            {selectedDrill.description && (
+              <p className="mt-0.5 text-xs text-text-dim">
+                {selectedDrill.description}
+              </p>
+            )}
           </div>
           <label className="flex items-center gap-2 cursor-pointer text-sm text-text-muted">
             <input

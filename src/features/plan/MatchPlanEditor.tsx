@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { MatchPlan } from "../../domain/models/MatchPlan";
+import { useState, useEffect } from "react";
+import type { MatchPlan, StrategyTemplate } from "../../domain/models/MatchPlan";
 
 interface MatchPlanEditorProps {
   plan: MatchPlan;
@@ -15,6 +15,23 @@ export default function MatchPlanEditor({
   onCancel,
 }: MatchPlanEditorProps) {
   const [newStrategy, setNewStrategy] = useState("");
+  const [templates, setTemplates] = useState<StrategyTemplate[]>([]);
+
+  useEffect(() => {
+    import("../../data/strategyTemplates").then((mod) => {
+      setTemplates(mod.STRATEGY_TEMPLATES);
+    });
+  }, []);
+
+  const offensiveTemplates = templates.filter((t) => t.category === "offensive");
+  const defensiveTemplates = templates.filter((t) => t.category === "defensive");
+
+  const selectedOffensive = templates.find(
+    (t) => t.id === plan.offensiveStrategy,
+  );
+  const selectedDefensive = templates.find(
+    (t) => t.id === plan.defensiveStrategy,
+  );
 
   const update = (field: keyof MatchPlan, value: string | string[]) => {
     onChange({ ...plan, [field]: value });
@@ -88,6 +105,81 @@ export default function MatchPlanEditor({
           rows={4}
           className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none resize-none"
         />
+      </div>
+
+      {/* Strategy Templates */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-medium text-text-dim">
+            Offensive Strategie
+          </label>
+          <select
+            value={plan.offensiveStrategy ?? ""}
+            onChange={(e) => update("offensiveStrategy", e.target.value)}
+            className="rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text focus:border-accent focus:outline-none"
+          >
+            <option value="">Keine Vorlage</option>
+            {offensiveTemplates.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+          {selectedOffensive && (
+            <div className="rounded-lg border border-kicker-blue/20 bg-kicker-blue/5 p-3">
+              <p className="mb-2 text-xs leading-relaxed text-text-muted">
+                {selectedOffensive.description}
+              </p>
+              <ul className="flex flex-col gap-1">
+                {selectedOffensive.tips.map((tip, i) => (
+                  <li
+                    key={i}
+                    className="flex gap-1.5 text-[11px] leading-relaxed text-text-dim"
+                  >
+                    <span className="text-kicker-blue">&#8226;</span>
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-medium text-text-dim">
+            Defensive Strategie
+          </label>
+          <select
+            value={plan.defensiveStrategy ?? ""}
+            onChange={(e) => update("defensiveStrategy", e.target.value)}
+            className="rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text focus:border-accent focus:outline-none"
+          >
+            <option value="">Keine Vorlage</option>
+            {defensiveTemplates.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+          {selectedDefensive && (
+            <div className="rounded-lg border border-kicker-green/20 bg-kicker-green/5 p-3">
+              <p className="mb-2 text-xs leading-relaxed text-text-muted">
+                {selectedDefensive.description}
+              </p>
+              <ul className="flex flex-col gap-1">
+                {selectedDefensive.tips.map((tip, i) => (
+                  <li
+                    key={i}
+                    className="flex gap-1.5 text-[11px] leading-relaxed text-text-dim"
+                  >
+                    <span className="text-kicker-green">&#8226;</span>
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Gameplan */}

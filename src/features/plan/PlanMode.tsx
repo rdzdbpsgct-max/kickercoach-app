@@ -13,6 +13,8 @@ function createEmptyPlan(): MatchPlan {
     gameplan: "",
     timeoutStrategies: [],
     notes: "",
+    offensiveStrategy: "",
+    defensiveStrategy: "",
   };
 }
 

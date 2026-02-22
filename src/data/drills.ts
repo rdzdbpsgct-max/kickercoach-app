@@ -6,6 +6,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-pull-shot-basics",
     name: "Pull-Shot Basics",
     focusSkill: "Pull-Shot / Ziehen",
+    difficulty: "beginner",
+    description:
+      "Grundlagen des Pull-Shots: Seitliche Ballmitnahme und Schuss in einer flüssigen Bewegung üben.",
     blocks: [
       {
         type: "work",
@@ -30,6 +33,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-push-shot-basics",
     name: "Push-Shot Basics",
     focusSkill: "Push-Shot / Schieben",
+    difficulty: "beginner",
+    description:
+      "Push-Shot Grundlagen trainieren: Ball wegschieben und im selben Fluss aufs Tor schießen.",
     blocks: [
       {
         type: "work",
@@ -54,6 +60,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-pin-shot",
     name: "Pin-Shot Training",
     focusSkill: "Pin-Shot / Abroller",
+    difficulty: "intermediate",
+    description:
+      "Pin-Shot Technik vertiefen: Ball pinnen, lateral versetzen und per Handgelenkrotation abschließen.",
     blocks: [
       {
         type: "work",
@@ -83,6 +92,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-jet-snake",
     name: "Jet / Snake Intensive",
     focusSkill: "Jet-Shot (Snake)",
+    difficulty: "advanced",
+    description:
+      "Intensive Jet/Snake Übung: Fortgeschrittene Rollbewegung mit Fakes und Tempovariationen unter Druck.",
     blocks: [
       {
         type: "work",
@@ -117,6 +129,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-5er-tic-tac",
     name: "5er-Reihe Tic-Tac",
     focusSkill: "Mittelfeld-Passspiel",
+    difficulty: "intermediate",
+    description:
+      "Tic-Tac-Passspiel auf der 5er-Reihe: Rhythmus aufbauen, Lücken erkennen und mit Abschluss kombinieren.",
     blocks: [
       {
         type: "work",
@@ -146,6 +161,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-brush-pass",
     name: "Brush-Pass Technik",
     focusSkill: "Brush-Pass / Schraeganspiel",
+    difficulty: "advanced",
+    description:
+      "Brush-Pass Technik perfektionieren: Diagonale Anspiele von der 5er auf die 3er-Reihe mit sauberer Annahme.",
     blocks: [
       {
         type: "work",
@@ -175,6 +193,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-bandenpass",
     name: "Bandenpass Drill",
     focusSkill: "Bandenpass / Wandspiel",
+    difficulty: "beginner",
+    description:
+      "Bandenpässe von der 5er auf die 3er-Reihe: Winkel und Härte dosieren, saubere Annahme trainieren.",
     blocks: [
       {
         type: "work",
@@ -199,6 +220,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-ballkontrolle",
     name: "Ballkontrolle Basics",
     focusSkill: "Ballannahme & Kontrolle",
+    difficulty: "beginner",
+    description:
+      "Grundlegende Ballkontrolle: Stoppen, Pinnen und kontrolliertes Rollen auf der 3er-Stange.",
     blocks: [
       {
         type: "work",
@@ -228,6 +252,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-defensive-shuffle",
     name: "Defensive Shuffle",
     focusSkill: "Defensivarbeit / Abwehr",
+    difficulty: "intermediate",
+    description:
+      "Defensives Verschieben mit 2er-Reihe und Torwart: Koordination beider Hände und Lücken schließen.",
     blocks: [
       {
         type: "work",
@@ -257,6 +284,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-torwart-reaktion",
     name: "Torwart Reaktion",
     focusSkill: "Torwart / Reaktionsschnelligkeit",
+    difficulty: "intermediate",
+    description:
+      "Torwart-Reaktionsschnelligkeit: Auf verschiedene Schussrichtungen reagieren und Pull/Push-Shots abwehren.",
     blocks: [
       {
         type: "work",
@@ -291,6 +321,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-kombination",
     name: "Kombinations-Training",
     focusSkill: "Kombinationsspiel / Spielaufbau",
+    difficulty: "advanced",
+    description:
+      "Komplettes Kombinationsspiel: Pass-Schuss-Sequenzen mit verschiedenen Techniken und Variationen.",
     blocks: [
       {
         type: "work",
@@ -330,6 +363,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-wettkampf-simulation",
     name: "Wettkampf-Simulation",
     focusSkill: "Wettkampfhaerte / Drucksituationen",
+    difficulty: "advanced",
+    description:
+      "Wettkampfsimulation unter Druck: Matchplay-Szenarien mit Zählsystem und mentaler Belastung.",
     blocks: [
       {
         type: "work",
@@ -364,6 +400,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-aufwaermen",
     name: "Aufwaerm-Routine",
     focusSkill: "Aufwaermen / Einspielen",
+    difficulty: "beginner",
+    description:
+      "Standardmäßige Aufwärmroutine: Gelenke lockern, Ball fühlen und langsam auf Präzision schießen.",
     blocks: [
       {
         type: "work",
@@ -393,6 +432,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     id: "drill-cool-down",
     name: "Cool-Down & Technik",
     focusSkill: "Auslaufen / Technikfestigung",
+    difficulty: "beginner",
+    description:
+      "Kontrolliertes Auslaufen: Langsame Pässe und bewusst saubere Torschüsse zum Technikfestigen.",
     blocks: [
       {
         type: "work",
@@ -408,6 +450,233 @@ export const DEFAULT_DRILLS: Drill[] = [
         type: "work",
         durationSeconds: 45,
         note: "Abschluss: 5 langsame, saubere Torschuesse. Jeder Schuss bewusst und kontrolliert. Technik sauber ausklingen lassen.",
+      },
+    ],
+  },
+
+  // 15. Sanfter Touch (beginner, 5 blocks)
+  {
+    id: "drill-sanfter-touch",
+    name: "Sanfter Touch",
+    focusSkill: "Ballgefühl / Soft Touch",
+    difficulty: "beginner",
+    description:
+      "Feinfühliges Ballhandling üben: Sanftes Stoppen, weiches Passen und kontrollierte Pin-Übergänge.",
+    blocks: [
+      {
+        type: "work",
+        durationSeconds: 45,
+        note: "Ball auf der 3er-Reihe sanft von Figur zu Figur rollen. Minimaler Druck, maximale Kontrolle.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 10,
+        note: "Pause. Griffdruck bewusst lockern.",
+      },
+      {
+        type: "work",
+        durationSeconds: 60,
+        note: "Weiche Pässe von der 5er zur 3er spielen. Ball soll bei Annahme sofort ruhig liegen.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 15,
+        note: "Pause. Fokus auf Fingerspitzengefühl.",
+      },
+      {
+        type: "work",
+        durationSeconds: 45,
+        note: "Pin-Übergänge: Front-Pin zu Back-Pin und zurück. Fließende, ruhige Bewegungen.",
+      },
+    ],
+  },
+
+  // 16. Finten-Training (intermediate, 5 blocks)
+  {
+    id: "drill-finten",
+    name: "Finten-Training",
+    focusSkill: "Täuschung / Finten",
+    difficulty: "intermediate",
+    description:
+      "Fake-Bewegungen an der 3er-Reihe trainieren: Schussantäuschungen, Richtungswechsel und Timing.",
+    blocks: [
+      {
+        type: "work",
+        durationSeconds: 60,
+        note: "Schussantäuschung üben: Pull-Bewegung andeuten, stoppen, dann Push-Shot schießen. Wechsel wiederholen.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 15,
+        note: "Pause. Bewegungsablauf mental durchgehen.",
+      },
+      {
+        type: "work",
+        durationSeconds: 90,
+        note: "Finten-Serien: 3 Fake-Bewegungen hintereinander, dann Schuss. Variiere Richtung und Timing.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 20,
+        note: "Erholung. Welche Finte war am überzeugendsten?",
+      },
+      {
+        type: "work",
+        durationSeconds: 60,
+        note: "Unter Zeitdruck: Maximal 5 Sekunden pro Angriff. Schnelle Finte + sofortiger Schuss.",
+      },
+    ],
+  },
+
+  // 17. Schlenzer-Übung (intermediate, 5 blocks)
+  {
+    id: "drill-schlenzer",
+    name: "Schlenzer-Übung",
+    focusSkill: "Schlenzer / Winkelschuss",
+    difficulty: "intermediate",
+    description:
+      "Angeschnittene Schüsse aus verschiedenen Positionen: Spin-Technik und Winkelvariation üben.",
+    blocks: [
+      {
+        type: "work",
+        durationSeconds: 60,
+        note: "Schlenzer-Grundbewegung üben: Ball seitlich anschneiden statt gerade schießen. Spin beobachten.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 15,
+        note: "Pause. Handgelenkposition korrigieren.",
+      },
+      {
+        type: "work",
+        durationSeconds: 90,
+        note: "Schlenzer aus verschiedenen Positionen auf der 3er-Reihe. Ziel: Beide Torecken treffen.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 15,
+        note: "Kurze Erholung.",
+      },
+      {
+        type: "work",
+        durationSeconds: 60,
+        note: "Schlenzer mit Vorbereitung: Erst lateral bewegen, dann angeschnittenen Schuss aus der Bewegung.",
+      },
+    ],
+  },
+
+  // 18. Zone-Defense Drill (intermediate, 5 blocks)
+  {
+    id: "drill-zone-defense",
+    name: "Zone-Defense Drill",
+    focusSkill: "Zonenverteidigung",
+    difficulty: "intermediate",
+    description:
+      "Defensive Zonenabdeckung trainieren: Feste Bereiche mit Torwart und 2er-Reihe systematisch abdecken.",
+    blocks: [
+      {
+        type: "work",
+        durationSeconds: 60,
+        note: "Torwart und 2er-Reihe in Zonen aufteilen: Torwart links, 2er rechts. Positionen halten.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 15,
+        note: "Pause. Zonen mental visualisieren.",
+      },
+      {
+        type: "work",
+        durationSeconds: 90,
+        note: "Simulierte Schüsse abwehren: Nur in der eigenen Zone reagieren, nicht überreagieren.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 20,
+        note: "Erholung. Zonen tauschen: Torwart rechts, 2er links.",
+      },
+      {
+        type: "work",
+        durationSeconds: 60,
+        note: "Zonenwechsel unter Druck: Schnelle Schüsse auf verschiedene Bereiche. System beibehalten.",
+      },
+    ],
+  },
+
+  // 19. Täuschungs-Kombi (advanced, 6 blocks)
+  {
+    id: "drill-taeuschungs-kombi",
+    name: "Täuschungs-Kombi",
+    focusSkill: "Kombination aus Finten und Schüssen",
+    difficulty: "advanced",
+    description:
+      "Fortgeschrittene Täuschungssequenzen: Finten, Richtungswechsel und Schüsse in komplexen Kombinationen.",
+    blocks: [
+      {
+        type: "work",
+        durationSeconds: 60,
+        note: "Dreier-Sequenz üben: Fake-Pull → Fake-Push → echter Schuss. Flüssiger Ablauf.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 15,
+        note: "Pause. Sequenz mental wiederholen.",
+      },
+      {
+        type: "work",
+        durationSeconds: 90,
+        note: "Freie Täuschungs-Kombination: Mindestens 2 Finten vor jedem Schuss. Variiere die Muster.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 20,
+        note: "Erholung. Welche Kombinationen überraschen am meisten?",
+      },
+      {
+        type: "work",
+        durationSeconds: 120,
+        note: "Wettkampf-Tempo: Komplette Angriffssequenz mit Finten in unter 8 Sekunden. Schnelligkeit plus Präzision.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 30,
+        note: "Längere Pause. Gesamten Ablauf reflektieren.",
+      },
+    ],
+  },
+
+  // 20. Mental-Fokus Routine (beginner, 5 blocks)
+  {
+    id: "drill-mental-fokus",
+    name: "Mental-Fokus Routine",
+    focusSkill: "Mentale Stärke / Fokus",
+    difficulty: "beginner",
+    description:
+      "Atemübungen und konzentrierte Schussserien: Mentale Klarheit vor und während des Spiels trainieren.",
+    blocks: [
+      {
+        type: "work",
+        durationSeconds: 30,
+        note: "Tief durchatmen: 4 Sekunden einatmen, 4 Sekunden halten, 4 Sekunden ausatmen. Wiederholen.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 10,
+        note: "Augen schließen. Einen erfolgreichen Schuss visualisieren.",
+      },
+      {
+        type: "work",
+        durationSeconds: 60,
+        note: "5 bewusste Schüsse: Vor jedem Schuss kurz innehalten, Ziel visualisieren, dann ausführen.",
+      },
+      {
+        type: "rest",
+        durationSeconds: 15,
+        note: "Pause. Wie hat sich die Konzentration angefühlt?",
+      },
+      {
+        type: "work",
+        durationSeconds: 45,
+        note: "Ablenkungstest: Schüsse ausführen während du laut von 100 rückwärts zählst. Fokus halten.",
       },
     ],
   },

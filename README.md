@@ -5,14 +5,16 @@ Das digitale Trainings-Oekosystem fuer Tischfussball. By **SpielerGeist**.
 ## Features
 
 ### Learn Mode
-- 32 Coaching Cards mit Schritt-fuer-Schritt-Anleitungen
-- Kategorien: Torschuss, Passspiel, Ballkontrolle, Defensive, Taktik
+- 48 Coaching Cards mit Schritt-fuer-Schritt-Anleitungen
+- 7 Kategorien: Torschuss, Passspiel, Ballkontrolle, Defensive, Taktik, Offensive, Mental
 - Schwierigkeitsstufen: Einsteiger, Fortgeschritten, Profi
+- Lernpfade zwischen Cards (Voraussetzungen & naechste Schritte)
 - Volltextsuche und Filter
 - Favoriten (localStorage)
 
 ### Train Mode
-- 14 vordefinierte Drills mit Work/Rest-Bloecken
+- 20 vordefinierte Drills mit Work/Rest-Bloecken
+- Schwierigkeitsfilter und farbkodierte Badges
 - Driftfreier Timer (Date.now basiert)
 - Tastaturkuerzel: Space (Start/Pause), N (Next), P (Prev), R (Reset)
 - Auto-Advance zwischen Bloecken
@@ -21,6 +23,7 @@ Das digitale Trainings-Oekosystem fuer Tischfussball. By **SpielerGeist**.
 
 ### Plan Mode
 - Matchplan-Editor mit Gegneranalyse und Gameplan
+- Strategie-Templates: 4 Offensive + 4 Defensive Vorlagen mit Tipps
 - Timeout-Strategien verwalten
 - JSON Export/Import
 - localStorage Persistenz
@@ -66,9 +69,6 @@ Bei jedem Push auf `main` wird die App automatisch via GitHub Actions deployt:
 2. Push auf `main` triggert `.github/workflows/deploy.yml`
 3. Workflow: Install > Test > Build > Deploy
 
-Die App ist dann erreichbar unter:
-`https://<username>.github.io/kickercoach-app/`
-
 ### Vercel / Netlify (alternativ)
 
 - Build Command: `npm run build`
@@ -84,7 +84,7 @@ src/
   components/        # Shared UI Components
   features/          # Feature-Module (learn, train, plan)
   hooks/             # Custom React Hooks
-  data/              # Default-Daten (Cards, Drills)
+  data/              # Default-Daten (Cards, Drills, Strategie-Templates)
 tests/               # Unit Tests
 .github/workflows/   # CI/CD
 ```
@@ -104,11 +104,12 @@ tests/               # Unit Tests
 ## Design-Entscheidungen
 
 - **HashRouter** statt BrowserRouter fuer GitHub Pages Kompatibilitaet
-- **Lazy Loading** der Datenmodule (coachCards, drills) fuer schnelleres Initial Load
+- **Lazy Loading** der Datenmodule (coachCards, drills, strategyTemplates) fuer schnelleres Initial Load
 - **localStorage** fuer alle persistenten Daten (Favoriten, Sessions, Matchplaene, Settings)
 - **Keine externen UI-Bibliotheken** - alles mit TailwindCSS
 - **Dark Theme** als Default mit sport-orientierten Akzentfarben
 - **Domain Logic** ist framework-unabhaengig und rein funktional
+- **Lernpfade** verknuepfen Cards bidirektional (prerequisites / nextCards)
 
 ## Lizenz
 

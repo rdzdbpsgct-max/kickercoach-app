@@ -19,6 +19,8 @@ const CATEGORY_COLORS: Record<string, string> = {
   Ballkontrolle: "bg-accent-dim text-accent",
   Defensive: "bg-kicker-green/15 text-kicker-green",
   Taktik: "bg-kicker-orange/15 text-kicker-orange",
+  Offensive: "bg-kicker-blue/15 text-kicker-blue",
+  Mental: "bg-accent-dim text-accent-hover",
 };
 
 interface CardGridProps {

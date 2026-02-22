@@ -62,6 +62,8 @@ export default function LearnMode() {
         isFavorite={isFavorite(selectedCard.id)}
         onToggleFavorite={() => toggleFavorite(selectedCard.id)}
         onBack={() => setSelectedCard(null)}
+        allCards={cards}
+        onNavigateToCard={setSelectedCard}
       />
     );
   }

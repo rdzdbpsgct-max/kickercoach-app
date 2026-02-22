@@ -5,7 +5,9 @@ export type Category =
   | "Passspiel"
   | "Ballkontrolle"
   | "Defensive"
-  | "Taktik";
+  | "Taktik"
+  | "Offensive"
+  | "Mental";
 
 export interface CoachCard {
   id: string;
@@ -17,4 +19,6 @@ export interface CoachCard {
   steps: string[];
   commonMistakes: string[];
   coachCues: string[];
+  prerequisites?: string[];
+  nextCards?: string[];
 }

@@ -7,6 +7,8 @@ const CATEGORIES: (Category | "Alle")[] = [
   "Ballkontrolle",
   "Defensive",
   "Taktik",
+  "Offensive",
+  "Mental",
 ];
 
 const DIFFICULTIES: (Difficulty | "Alle")[] = [

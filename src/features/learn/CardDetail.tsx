@@ -17,6 +17,8 @@ interface CardDetailProps {
   isFavorite: boolean;
   onToggleFavorite: () => void;
   onBack: () => void;
+  allCards?: CoachCard[];
+  onNavigateToCard?: (card: CoachCard) => void;
 }
 
 export default function CardDetail({
@@ -24,7 +26,15 @@ export default function CardDetail({
   isFavorite,
   onToggleFavorite,
   onBack,
+  allCards = [],
+  onNavigateToCard,
 }: CardDetailProps) {
+  const prerequisiteCards = allCards.filter(
+    (c) => card.prerequisites?.includes(c.id),
+  );
+  const nextStepCards = allCards.filter(
+    (c) => card.nextCards?.includes(c.id),
+  );
   return (
     <div className="flex flex-1 flex-col gap-5 overflow-auto pb-6">
       {/* Header */}
@@ -124,6 +134,53 @@ export default function CardDetail({
           ))}
         </ul>
       </div>
+
+      {/* Lernpfad */}
+      {(prerequisiteCards.length > 0 || nextStepCards.length > 0) && (
+        <div className="rounded-xl border border-accent/20 bg-accent-dim p-5">
+          <h2 className="mb-3 text-base font-bold text-accent-hover">
+            Lernpfad
+          </h2>
+
+          {prerequisiteCards.length > 0 && (
+            <div className="mb-3">
+              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-dim">
+                Voraussetzungen
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {prerequisiteCards.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => onNavigateToCard?.(c)}
+                    className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-text-muted hover:border-accent hover:text-text transition-all"
+                  >
+                    &larr; {c.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {nextStepCards.length > 0 && (
+            <div>
+              <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-dim">
+                Naechste Schritte
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {nextStepCards.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => onNavigateToCard?.(c)}
+                    className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-text-muted hover:border-accent hover:text-text transition-all"
+                  >
+                    {c.title} &rarr;
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
