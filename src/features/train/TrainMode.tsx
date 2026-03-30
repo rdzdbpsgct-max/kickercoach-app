@@ -1,15 +1,17 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Drill } from "../../domain/models/Drill";
-import type { Session } from "../../domain/models/Session";
 import { advanceBlock, previousBlock } from "../../domain/logic/drill";
 import { useTimer } from "../../hooks/useTimer";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { useAppStore } from "../../store";
 import { STORAGE_KEYS } from "../../domain/constants";
+import { Button } from "../../components/ui";
 import Timer from "./Timer";
 import BlockProgress from "./BlockProgress";
 import DrillSelector from "./DrillSelector";
 import SessionBuilder from "./SessionBuilder";
 import Journal from "./Journal";
+import type { Session } from "../../store";
 
 type View = "drills" | "timer" | "session-builder" | "journal";
 
@@ -22,10 +24,10 @@ export default function TrainMode() {
     STORAGE_KEYS.autoAdvance,
     true,
   );
-  const [sessions, setSessions] = useLocalStorage<Session[]>(
-    STORAGE_KEYS.sessions,
-    [],
-  );
+  const sessions = useAppStore((s) => s.sessions);
+  const addSession = useAppStore((s) => s.addSession);
+  const updateSession = useAppStore((s) => s.updateSession);
+  const deleteSession = useAppStore((s) => s.deleteSession);
   const [editSession, setEditSession] = useState<Session | null>(null);
 
   // Load drills
@@ -78,21 +80,17 @@ export default function TrainMode() {
   }, [timer]);
 
   const handleSaveSession = (session: Session) => {
-    setSessions((prev) => {
-      const existing = prev.findIndex((s) => s.id === session.id);
-      if (existing >= 0) {
-        const updated = [...prev];
-        updated[existing] = session;
-        return updated;
-      }
-      return [...prev, session];
-    });
+    if (editSession) {
+      updateSession(session.id, session);
+    } else {
+      addSession(session);
+    }
     setEditSession(null);
     setView("journal");
   };
 
   const handleDeleteSession = (id: string) => {
-    setSessions((prev) => prev.filter((s) => s.id !== id));
+    deleteSession(id);
   };
 
   // Keyboard shortcuts
@@ -225,30 +223,30 @@ export default function TrainMode() {
               />
 
               <div className="flex items-center gap-3">
-                <button
+                <Button
+                  variant="secondary"
                   onClick={handlePrev}
                   disabled={blockIndex === 0}
-                  className="rounded-xl border border-border px-4 py-2 text-sm font-medium text-text-muted transition-all hover:border-accent/50 hover:text-text disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Zur&uuml;ck
-                </button>
-                <button
+                </Button>
+                <Button
+                  size="lg"
                   onClick={timer.toggle}
-                  className="rounded-xl border-2 border-accent bg-accent-dim px-8 py-3 text-base font-bold text-accent-hover transition-all hover:bg-accent hover:text-white"
                 >
                   {timer.isFinished
                     ? "Reset"
                     : timer.isRunning
                       ? "Pause"
                       : "Start"}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="secondary"
                   onClick={handleNext}
                   disabled={blockIndex === selectedDrill.blocks.length - 1}
-                  className="rounded-xl border border-border px-4 py-2 text-sm font-medium text-text-muted transition-all hover:border-accent/50 hover:text-text disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Weiter
-                </button>
+                </Button>
               </div>
 
               <button
@@ -282,21 +280,17 @@ export default function TrainMode() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Training</h1>
         <div className="flex gap-2">
-          <button
-            onClick={() => setView("journal")}
-            className="rounded-xl border border-border px-4 py-2 text-sm text-text-muted hover:border-accent/50 transition-all"
-          >
+          <Button variant="secondary" onClick={() => setView("journal")}>
             Tagebuch
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => {
               setEditSession(null);
               setView("session-builder");
             }}
-            className="rounded-xl border-2 border-accent bg-accent-dim px-4 py-2 text-sm font-semibold text-accent-hover hover:bg-accent hover:text-white transition-all"
           >
             + Session
-          </button>
+          </Button>
         </div>
       </div>
       <DrillSelector

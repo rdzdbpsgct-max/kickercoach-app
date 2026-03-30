@@ -1,8 +1,9 @@
 import { useState } from "react";
 import type { Drill } from "../../domain/models/Drill";
-import type { Session } from "../../domain/models/Session";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
 import { calculateSessionDuration } from "../../domain/logic/session";
+import { Button, FormField, Input, Textarea } from "../../components/ui";
+import type { Session } from "../../store";
 
 interface SessionBuilderProps {
   drills: Drill[];
@@ -41,6 +42,8 @@ export default function SessionBuilder({
       drillIds: selectedDrillIds,
       notes: notes.trim(),
       totalDuration,
+      playerIds: editSession?.playerIds ?? [],
+      focusAreas: editSession?.focusAreas ?? [],
     };
     onSave(session);
   };
@@ -50,35 +53,26 @@ export default function SessionBuilder({
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">Session erstellen</h2>
         <div className="flex gap-2">
-          <button
-            onClick={onCancel}
-            className="rounded-xl border border-border px-4 py-2 text-sm text-text-muted hover:border-accent/50 transition-all"
-          >
+          <Button variant="secondary" onClick={onCancel}>
             Abbrechen
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSave}
             disabled={!name.trim() || selectedDrillIds.length === 0}
-            className="rounded-xl border-2 border-accent bg-accent-dim px-4 py-2 text-sm font-semibold text-accent-hover hover:bg-accent hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
           >
             Speichern
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Name */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium text-text-dim">
-          Session-Name
-        </label>
-        <input
-          type="text"
+      <FormField label="Session-Name">
+        <Input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="z.B. Morgen-Training, Schuss-Drill..."
-          className="rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none"
         />
-      </div>
+      </FormField>
 
       {/* Drill selection */}
       <div className="flex flex-col gap-1.5">
@@ -120,16 +114,14 @@ export default function SessionBuilder({
       </div>
 
       {/* Notes */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium text-text-dim">Notizen</label>
-        <textarea
+      <FormField label="Notizen">
+        <Textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Optionale Notizen zur Session..."
           rows={3}
-          className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none resize-none"
         />
-      </div>
+      </FormField>
     </div>
   );
 }
