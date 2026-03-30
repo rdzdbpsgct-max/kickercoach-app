@@ -6,3 +6,7 @@ export { Input } from "./Input";
 export { Textarea } from "./Textarea";
 export { Select } from "./Select";
 export { FormField } from "./FormField";
+export { Modal } from "./Modal";
+export { ConfirmDialog } from "./ConfirmDialog";
+export { EmptyState } from "./EmptyState";
+export { Tabs } from "./Tabs";
