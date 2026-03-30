@@ -8,6 +8,7 @@ const TrainMode = lazy(() => import("./features/train/TrainMode"));
 const PlanMode = lazy(() => import("./features/plan/PlanMode"));
 const BoardMode = lazy(() => import("./features/board/BoardMode"));
 const PlayersMode = lazy(() => import("./features/players"));
+const AnalyticsMode = lazy(() => import("./features/analytics"));
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -69,6 +70,7 @@ export default function App() {
             <Route path="/plan" element={<PlanMode />} />
             <Route path="/board" element={<BoardMode />} />
             <Route path="/players" element={<PlayersMode />} />
+            <Route path="/analytics" element={<AnalyticsMode />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>

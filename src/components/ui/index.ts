@@ -10,3 +10,4 @@ export { Modal } from "./Modal";
 export { ConfirmDialog } from "./ConfirmDialog";
 export { EmptyState } from "./EmptyState";
 export { Tabs } from "./Tabs";
+export { SearchBar } from "./SearchBar";

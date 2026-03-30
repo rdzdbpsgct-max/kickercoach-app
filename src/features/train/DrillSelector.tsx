@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { Drill } from "../../domain/models/Drill";
 import type { Difficulty } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
 import { DIFFICULTY_LABELS } from "../../domain/constants";
-import { Badge, Card, Button } from "../../components/ui";
+import { Badge, Card, Button, SearchBar } from "../../components/ui";
 
 const DIFFICULTY_BADGE_COLORS = {
   beginner: "green",
@@ -36,12 +36,27 @@ export default function DrillSelector({
   onDeleteDrill,
 }: DrillSelectorProps) {
   const [filter, setFilter] = useState<Difficulty | "Alle">("Alle");
+  const [search, setSearch] = useState("");
 
-  const filtered =
-    filter === "Alle" ? drills : drills.filter((d) => d.difficulty === filter);
+  const filtered = useMemo(() => {
+    let result = filter === "Alle" ? drills : drills.filter((d) => d.difficulty === filter);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (d) =>
+          d.name.toLowerCase().includes(q) ||
+          d.focusSkill.toLowerCase().includes(q) ||
+          d.description?.toLowerCase().includes(q),
+      );
+    }
+    return result;
+  }, [drills, filter, search]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
+      {/* Search */}
+      <SearchBar value={search} onChange={setSearch} placeholder="Drill suchen..." />
+
       {/* Difficulty filter */}
       <div className="flex flex-wrap items-center gap-1.5">
         {FILTER_OPTIONS.map((opt) => (

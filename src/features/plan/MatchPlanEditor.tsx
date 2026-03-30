@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import type { MatchPlan, StrategyTemplate } from "../../domain/models/MatchPlan";
-import { Button, FormField, Input, Textarea, Select } from "../../components/ui";
+import type { MatchPlan, MatchSet, StrategyTemplate } from "../../domain/models/MatchPlan";
+import { useAppStore } from "../../store";
+import { Button, Badge, Card, FormField, Input, Textarea, Select } from "../../components/ui";
 
 interface MatchPlanEditorProps {
   plan: MatchPlan;
@@ -17,6 +18,7 @@ export default function MatchPlanEditor({
 }: MatchPlanEditorProps) {
   const [newStrategy, setNewStrategy] = useState("");
   const [templates, setTemplates] = useState<StrategyTemplate[]>([]);
+  const players = useAppStore((s) => s.players);
 
   useEffect(() => {
     import("../../data/strategyTemplates").then((mod) => {
@@ -34,8 +36,47 @@ export default function MatchPlanEditor({
     (t) => t.id === plan.defensiveStrategy,
   );
 
-  const update = (field: keyof MatchPlan, value: string | string[]) => {
+  const update = (field: keyof MatchPlan, value: unknown) => {
     onChange({ ...plan, [field]: value });
+  };
+
+  const computeResult = (sets: MatchSet[]): "win" | "loss" | "draw" | undefined => {
+    if (sets.length === 0) return undefined;
+    let home = 0;
+    let away = 0;
+    for (const s of sets) {
+      if (s.scoreHome > s.scoreAway) home++;
+      else if (s.scoreAway > s.scoreHome) away++;
+    }
+    if (home > away) return "win";
+    if (away > home) return "loss";
+    return "draw";
+  };
+
+  const addSet = () => {
+    const sets = plan.sets ?? [];
+    const newSet: MatchSet = { setNumber: sets.length + 1, scoreHome: 0, scoreAway: 0 };
+    const updated = [...sets, newSet];
+    onChange({ ...plan, sets: updated, result: computeResult(updated) });
+  };
+
+  const updateSet = (index: number, field: "scoreHome" | "scoreAway", value: number) => {
+    const sets = [...(plan.sets ?? [])];
+    sets[index] = { ...sets[index], [field]: value };
+    onChange({ ...plan, sets, result: computeResult(sets) });
+  };
+
+  const removeSet = (index: number) => {
+    const sets = (plan.sets ?? []).filter((_, i) => i !== index).map((s, i) => ({ ...s, setNumber: i + 1 }));
+    onChange({ ...plan, sets, result: computeResult(sets) });
+  };
+
+  const togglePlayer = (id: string) => {
+    const current = plan.playerIds ?? [];
+    const updated = current.includes(id)
+      ? current.filter((p) => p !== id)
+      : [...current, id];
+    update("playerIds", updated);
   };
 
   const addStrategy = () => {
@@ -196,6 +237,80 @@ export default function MatchPlanEditor({
               +
             </Button>
           </div>
+        </div>
+      </FormField>
+
+      {/* Player Selection */}
+      {players.length > 0 && (
+        <FormField label="Spieler">
+          <div className="flex flex-wrap gap-2">
+            {players.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => togglePlayer(p.id)}
+                className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all ${
+                  (plan.playerIds ?? []).includes(p.id)
+                    ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                    : "border border-border text-text-muted hover:border-accent/50"
+                }`}
+              >
+                <div
+                  className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
+                  style={{ backgroundColor: p.avatarColor ?? "#6366f1" }}
+                >
+                  {p.name.charAt(0).toUpperCase()}
+                </div>
+                {p.name}
+              </button>
+            ))}
+          </div>
+        </FormField>
+      )}
+
+      {/* Set Recording */}
+      <FormField label="Ergebnis erfassen">
+        <div className="flex flex-col gap-2">
+          {(plan.sets ?? []).map((set, i) => (
+            <Card key={i} className="flex items-center gap-3">
+              <span className="text-xs font-medium text-text-dim w-12">
+                Satz {set.setNumber}
+              </span>
+              <Input
+                type="number"
+                min={0}
+                value={set.scoreHome}
+                onChange={(e) => updateSet(i, "scoreHome", Math.max(0, parseInt(e.target.value) || 0))}
+                className="w-16 text-center"
+              />
+              <span className="text-text-dim">:</span>
+              <Input
+                type="number"
+                min={0}
+                value={set.scoreAway}
+                onChange={(e) => updateSet(i, "scoreAway", Math.max(0, parseInt(e.target.value) || 0))}
+                className="w-16 text-center"
+              />
+              <button
+                onClick={() => removeSet(i)}
+                className="ml-auto text-text-dim hover:text-kicker-red transition-colors text-xs"
+              >
+                &#10005;
+              </button>
+            </Card>
+          ))}
+          <Button variant="secondary" size="sm" onClick={addSet}>
+            + Satz hinzufuegen
+          </Button>
+          {plan.result && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-text-dim">Ergebnis:</span>
+              <Badge
+                color={plan.result === "win" ? "green" : plan.result === "loss" ? "red" : "orange"}
+              >
+                {plan.result === "win" ? "Sieg" : plan.result === "loss" ? "Niederlage" : "Unentschieden"}
+              </Badge>
+            </div>
+          )}
         </div>
       </FormField>
 

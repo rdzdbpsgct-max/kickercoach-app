@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import type { MatchPlan } from "../../domain/models/MatchPlan";
-import { Card, Button, EmptyState, ConfirmDialog } from "../../components/ui";
+import { Card, Button, EmptyState, ConfirmDialog, SearchBar } from "../../components/ui";
 
 interface MatchPlanListProps {
   plans: MatchPlan[];
@@ -18,6 +18,17 @@ export default function MatchPlanList({
 }: MatchPlanListProps) {
   const navigate = useNavigate();
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return plans;
+    const q = search.toLowerCase();
+    return plans.filter(
+      (p) =>
+        p.opponent?.toLowerCase().includes(q) ||
+        p.date?.toLowerCase().includes(q),
+    );
+  }, [plans, search]);
 
   if (plans.length === 0) {
     return (
@@ -31,7 +42,8 @@ export default function MatchPlanList({
 
   return (
     <div className="flex flex-col gap-2 overflow-auto">
-      {plans.map((plan) => (
+      <SearchBar value={search} onChange={setSearch} placeholder="Gegner suchen..." />
+      {filtered.map((plan) => (
         <Card key={plan.id} interactive>
           <div className="flex items-center justify-between">
             <button

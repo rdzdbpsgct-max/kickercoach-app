@@ -6,6 +6,12 @@ export interface StrategyTemplate {
   tips: string[];
 }
 
+export interface MatchSet {
+  setNumber: number;
+  scoreHome: number;
+  scoreAway: number;
+}
+
 export interface MatchPlan {
   id: string;
   opponent: string;
@@ -16,4 +22,7 @@ export interface MatchPlan {
   notes: string;
   offensiveStrategy?: string;
   defensiveStrategy?: string;
+  playerIds?: string[];
+  sets?: MatchSet[];
+  result?: "win" | "loss" | "draw";
 }

@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { formatTime } from "../../domain/logic/time";
 import { calculateSessionStats } from "../../domain/logic/session";
-import { Card, Badge, EmptyState, ConfirmDialog } from "../../components/ui";
+import { Card, Badge, EmptyState, ConfirmDialog, SearchBar } from "../../components/ui";
 import { useAppStore } from "../../store";
 import type { Session } from "../../store";
 
@@ -27,17 +27,73 @@ export default function Journal({
   onSelect,
   onDelete,
 }: JournalProps) {
-  const stats = calculateSessionStats(sessions);
   const players = useAppStore((s) => s.players);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [filterPlayerId, setFilterPlayerId] = useState<string | "">("");
 
   const getPlayerName = (id: string) =>
     players.find((p) => p.id === id)?.name ?? "?";
 
+  const filteredSessions = useMemo(() => {
+    let result = sessions;
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (s) =>
+          s.name.toLowerCase().includes(q) ||
+          s.notes.toLowerCase().includes(q),
+      );
+    }
+    if (filterPlayerId) {
+      result = result.filter((s) => s.playerIds.includes(filterPlayerId));
+    }
+    return result;
+  }, [sessions, search, filterPlayerId]);
+
+  const stats = calculateSessionStats(filteredSessions);
+
   return (
     <div className="flex flex-col gap-4 overflow-hidden">
-      {/* Stats */}
+      {/* Search & Filter */}
       {sessions.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <SearchBar value={search} onChange={setSearch} placeholder="Session suchen..." />
+          {players.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                onClick={() => setFilterPlayerId("")}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                  !filterPlayerId
+                    ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                    : "border border-border text-text-muted hover:border-accent/50"
+                }`}
+              >
+                Alle
+              </button>
+              {players.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setFilterPlayerId(p.id)}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                    filterPlayerId === p.id
+                      ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                      : "border border-border text-text-muted hover:border-accent/50"
+                  }`}
+                >
+                  {p.name}
+                </button>
+              ))}
+              <span className="ml-auto text-xs text-text-dim">
+                {filteredSessions.length} Sessions
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Stats */}
+      {filteredSessions.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <Card className="text-center">
             <div className="text-lg font-bold text-accent">
@@ -67,15 +123,15 @@ export default function Journal({
       )}
 
       {/* List */}
-      {sessions.length === 0 ? (
+      {filteredSessions.length === 0 ? (
         <EmptyState
           icon="&#128221;"
-          title="Noch keine Sessions"
-          description="Noch keine Sessions aufgezeichnet."
+          title={sessions.length === 0 ? "Noch keine Sessions" : "Keine Treffer"}
+          description={sessions.length === 0 ? "Noch keine Sessions aufgezeichnet." : "Versuche einen anderen Filter oder Suchbegriff."}
         />
       ) : (
         <div className="flex flex-col gap-2 overflow-auto">
-          {[...sessions].reverse().map((session) => (
+          {[...filteredSessions].reverse().map((session) => (
             <Card key={session.id} interactive>
               <div className="flex items-center justify-between">
                 <button

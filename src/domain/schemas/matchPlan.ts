@@ -8,6 +8,14 @@ export const StrategyTemplateSchema = z.object({
   tips: z.array(z.string()),
 });
 
+export const MatchSetSchema = z.object({
+  setNumber: z.number().int().min(1),
+  scoreHome: z.number().int().min(0),
+  scoreAway: z.number().int().min(0),
+});
+
+export const MatchResultSchema = z.enum(["win", "loss", "draw"]);
+
 export const MatchPlanSchema = z.object({
   id: z.string(),
   opponent: z.string(),
@@ -18,4 +26,7 @@ export const MatchPlanSchema = z.object({
   notes: z.string(),
   offensiveStrategy: z.string().optional(),
   defensiveStrategy: z.string().optional(),
+  playerIds: z.array(z.string()).optional(),
+  sets: z.array(MatchSetSchema).optional(),
+  result: MatchResultSchema.optional(),
 });

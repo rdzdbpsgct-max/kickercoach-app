@@ -1,6 +1,6 @@
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
 import { DIFFICULTY_LABELS } from "../../domain/constants";
-import { Input, Button } from "../../components/ui";
+import { SearchBar, Button } from "../../components/ui";
 
 const CATEGORIES: (Category | "Alle")[] = [
   "Alle",
@@ -52,13 +52,13 @@ export default function SearchFilter({
     <div className="flex flex-col gap-3">
       {/* Search */}
       <div className="flex gap-2">
-        <Input
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Technik suchen..."
-          aria-label="Technik suchen"
-          className="flex-1"
-        />
+        <div className="flex-1">
+          <SearchBar
+            value={searchQuery}
+            onChange={onSearchChange}
+            placeholder="Technik suchen..."
+          />
+        </div>
         <Button
           variant={showFavoritesOnly ? "primary" : "secondary"}
           onClick={onToggleFavorites}

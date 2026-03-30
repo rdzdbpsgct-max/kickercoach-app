@@ -1,4 +1,5 @@
-import { Badge, Card, Button, EmptyState } from "../../components/ui";
+import { useState, useMemo } from "react";
+import { Badge, Card, Button, EmptyState, SearchBar } from "../../components/ui";
 import { DIFFICULTY_LABELS } from "../../domain/constants";
 import type { Player } from "../../domain/models/Player";
 
@@ -15,6 +16,18 @@ interface PlayerListProps {
 }
 
 export function PlayerList({ players, onSelect, onAdd }: PlayerListProps) {
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return players;
+    const q = search.toLowerCase();
+    return players.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.nickname?.toLowerCase().includes(q),
+    );
+  }, [players, search]);
+
   if (players.length === 0) {
     return (
       <EmptyState
@@ -30,14 +43,17 @@ export function PlayerList({ players, onSelect, onAdd }: PlayerListProps) {
     <div className="flex flex-col gap-4 overflow-auto pb-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-text">
-          Spieler ({players.length})
+          Spieler ({filtered.length})
         </h2>
         <Button size="sm" onClick={onAdd}>
           + Spieler anlegen
         </Button>
       </div>
+      {players.length > 3 && (
+        <SearchBar value={search} onChange={setSearch} placeholder="Spieler suchen..." />
+      )}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {players.map((player) => (
+        {filtered.map((player) => (
           <Card
             key={player.id}
             interactive
