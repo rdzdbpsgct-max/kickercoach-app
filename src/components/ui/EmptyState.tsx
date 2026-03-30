@@ -17,7 +17,7 @@ export function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+    <div className="flex flex-col items-center justify-center gap-3 py-12 text-center animate-fade-in">
       <span className="text-4xl">{icon}</span>
       <h3 className="text-base font-bold text-text">{title}</h3>
       {description && (

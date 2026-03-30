@@ -211,21 +211,33 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Welcome text (shown when no data) */}
+      {/* Onboarding (shown when no data) */}
       {!hasData && (
-        <div className="text-center">
-          <p className="text-sm leading-relaxed text-text-muted md:text-base">
-            Deine digitale Coaching-App f&uuml;r Tischfussball.{" "}
-            <span className="text-text">
-              Technik lernen, gezielt trainieren, taktisch planen und Spielz&uuml;ge
-              visualisieren.
-            </span>
-          </p>
+        <div className="animate-fade-in">
+          <Card className="text-center py-8">
+            <h2 className="text-lg font-bold text-text mb-2">
+              Willkommen bei KickerCoach!
+            </h2>
+            <p className="text-sm text-text-muted mb-6 max-w-md mx-auto">
+              Deine digitale Coaching-App f&uuml;r Tischfussball. Starte jetzt mit deinem ersten Spieler oder einer Trainingseinheit.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link to="/players">
+                <Button>Ersten Spieler anlegen</Button>
+              </Link>
+              <Link to="/train">
+                <Button variant="secondary">Erstes Training starten</Button>
+              </Link>
+              <Link to="/learn">
+                <Button variant="secondary">Techniken entdecken</Button>
+              </Link>
+            </div>
+          </Card>
         </div>
       )}
 
       {/* Feature-Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 animate-slide-up">
         <FeatureCard
           icon={"\uD83D\uDCDA"}
           title="Lernen"

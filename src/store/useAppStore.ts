@@ -59,6 +59,15 @@ export interface Goal {
   createdAt: string;
 }
 
+// ── Template Types ─────────────────────────────────────────────────
+
+export interface SessionTemplate {
+  id: string;
+  name: string;
+  drillIds: string[];
+  focusAreas: Category[];
+}
+
 // ── Store Interface ────────────────────────────────────────────────
 
 interface AppState {
@@ -74,6 +83,8 @@ interface AppState {
   coachingNotes: CoachingNote[];
   trainingPlans: TrainingPlan[];
   teams: Team[];
+  drillTemplates: Drill[];
+  sessionTemplates: SessionTemplate[];
 
   // Player actions
   addPlayer: (player: Player) => void;
@@ -126,6 +137,12 @@ interface AppState {
   updateTeam: (id: string, updates: Partial<Team>) => void;
   deleteTeam: (id: string) => void;
 
+  // Template actions
+  saveDrillAsTemplate: (drill: Drill) => void;
+  deleteDrillTemplate: (id: string) => void;
+  saveSessionAsTemplate: (template: SessionTemplate) => void;
+  deleteSessionTemplate: (id: string) => void;
+
   // Selectors
   getPlayerSessions: (playerId: string) => Session[];
   getPlayerGoals: (playerId: string) => Goal[];
@@ -152,6 +169,8 @@ export const useAppStore = create<AppState>()(
       coachingNotes: [],
       trainingPlans: [],
       teams: [],
+      drillTemplates: [],
+      sessionTemplates: [],
 
       // Player actions
       addPlayer: (player) =>
@@ -269,6 +288,27 @@ export const useAppStore = create<AppState>()(
           trainingPlans: s.trainingPlans.filter((p) => p.id !== id),
         })),
 
+      // Template actions
+      saveDrillAsTemplate: (drill) =>
+        set((s) => ({
+          drillTemplates: [
+            ...s.drillTemplates,
+            { ...drill, id: `tmpl-${crypto.randomUUID()}`, isCustom: true },
+          ],
+        })),
+      deleteDrillTemplate: (id) =>
+        set((s) => ({
+          drillTemplates: s.drillTemplates.filter((d) => d.id !== id),
+        })),
+      saveSessionAsTemplate: (template) =>
+        set((s) => ({
+          sessionTemplates: [...s.sessionTemplates, template],
+        })),
+      deleteSessionTemplate: (id) =>
+        set((s) => ({
+          sessionTemplates: s.sessionTemplates.filter((t) => t.id !== id),
+        })),
+
       // Selectors
       getPlayerSessions: (playerId) =>
         get().sessions.filter((s) => s.playerIds.includes(playerId)),
@@ -301,6 +341,8 @@ export const useAppStore = create<AppState>()(
             evaluations: Array.isArray(state.evaluations) ? state.evaluations : [],
             coachingNotes: Array.isArray(state.coachingNotes) ? state.coachingNotes : [],
             trainingPlans: Array.isArray(state.trainingPlans) ? state.trainingPlans : [],
+            drillTemplates: Array.isArray(state.drillTemplates) ? state.drillTemplates : [],
+            sessionTemplates: Array.isArray(state.sessionTemplates) ? state.sessionTemplates : [],
           };
         }
 

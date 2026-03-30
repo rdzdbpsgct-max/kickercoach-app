@@ -3,7 +3,7 @@ import type { Drill } from "../../domain/models/Drill";
 import type { Category } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
 import { calculateSessionDuration } from "../../domain/logic/session";
-import { Button, FormField, Input, Textarea } from "../../components/ui";
+import { Button, FormField, Input, Select, Textarea } from "../../components/ui";
 import { useAppStore } from "../../store";
 import type { Session } from "../../store";
 
@@ -33,6 +33,9 @@ export default function SessionBuilder({
   editSession,
 }: SessionBuilderProps) {
   const players = useAppStore((s) => s.players);
+  const sessionTemplates = useAppStore((s) => s.sessionTemplates);
+  const saveSessionAsTemplate = useAppStore((s) => s.saveSessionAsTemplate);
+  const [templateSaved, setTemplateSaved] = useState(false);
 
   const [name, setName] = useState(editSession?.name ?? "");
   const [selectedDrillIds, setSelectedDrillIds] = useState<string[]>(
@@ -92,6 +95,23 @@ export default function SessionBuilder({
           <Button variant="secondary" onClick={onCancel}>
             Abbrechen
           </Button>
+          {name.trim() && selectedDrillIds.length > 0 && (
+            <Button
+              variant="secondary"
+              disabled={templateSaved}
+              onClick={() => {
+                saveSessionAsTemplate({
+                  id: crypto.randomUUID(),
+                  name: name.trim(),
+                  drillIds: selectedDrillIds,
+                  focusAreas,
+                });
+                setTemplateSaved(true);
+              }}
+            >
+              {templateSaved ? "Vorlage gespeichert" : "Als Vorlage"}
+            </Button>
+          )}
           <Button
             onClick={handleSave}
             disabled={!name.trim() || selectedDrillIds.length === 0}
@@ -100,6 +120,30 @@ export default function SessionBuilder({
           </Button>
         </div>
       </div>
+
+      {/* Load from template */}
+      {sessionTemplates.length > 0 && !editSession && (
+        <FormField label="Aus Vorlage laden">
+          <Select
+            value=""
+            onChange={(e) => {
+              const tmpl = sessionTemplates.find((t) => t.id === e.target.value);
+              if (tmpl) {
+                setName(tmpl.name);
+                setSelectedDrillIds(tmpl.drillIds);
+                setFocusAreas(tmpl.focusAreas);
+              }
+            }}
+          >
+            <option value="">Vorlage waehlen...</option>
+            {sessionTemplates.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name} ({t.drillIds.length} Drills)
+              </option>
+            ))}
+          </Select>
+        </FormField>
+      )}
 
       {/* Name */}
       <FormField label="Session-Name">

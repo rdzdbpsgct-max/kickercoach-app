@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Drill, TrainingBlock } from "../../domain/models/Drill";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
 import { Button, FormField, Input, Textarea, Select } from "../../components/ui";
+import { useAppStore } from "../../store";
 
 const EMPTY_BLOCK: TrainingBlock = { type: "work", durationSeconds: 30, note: "" };
 
@@ -12,6 +13,8 @@ interface DrillEditorProps {
 }
 
 export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProps) {
+  const saveDrillAsTemplate = useAppStore((s) => s.saveDrillAsTemplate);
+  const [templateSaved, setTemplateSaved] = useState(false);
   const [name, setName] = useState(drill?.name ?? "");
   const [focusSkill, setFocusSkill] = useState(drill?.focusSkill ?? "");
   const [description, setDescription] = useState(drill?.description ?? "");
@@ -65,6 +68,25 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
           <Button type="button" variant="secondary" onClick={onCancel}>
             Abbrechen
           </Button>
+          {drill && (
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={templateSaved}
+              onClick={() => {
+                saveDrillAsTemplate({
+                  ...drill,
+                  name: name.trim() || drill.name,
+                  blocks,
+                  difficulty,
+                  category: category || undefined,
+                });
+                setTemplateSaved(true);
+              }}
+            >
+              {templateSaved ? "Vorlage gespeichert" : "Als Vorlage"}
+            </Button>
+          )}
           <Button type="submit">Speichern</Button>
         </div>
       </div>
