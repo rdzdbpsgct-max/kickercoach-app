@@ -5,7 +5,10 @@ import { SessionSchema } from "../domain/schemas/session";
 import { MatchPlanSchema } from "../domain/schemas/matchPlan";
 import { TacticalSceneSchema } from "../domain/schemas/tacticalBoard";
 import type { Difficulty, Category } from "../domain/models/CoachCard";
+import type { CoachingNote } from "../domain/models/CoachingNote";
 import type { Drill } from "../domain/models/Drill";
+import type { Team } from "../domain/models/Team";
+import type { TrainingPlan } from "../domain/models/TrainingPlan";
 import type { Evaluation } from "../domain/models/Evaluation";
 import type { MatchPlan } from "../domain/models/MatchPlan";
 import type { TacticalScene } from "../domain/models/TacticalBoard";
@@ -68,6 +71,9 @@ interface AppState {
   goals: Goal[];
   customDrills: Drill[];
   evaluations: Evaluation[];
+  coachingNotes: CoachingNote[];
+  trainingPlans: TrainingPlan[];
+  teams: Team[];
 
   // Player actions
   addPlayer: (player: Player) => void;
@@ -106,10 +112,25 @@ interface AppState {
   addEvaluation: (evaluation: Evaluation) => void;
   deleteEvaluation: (id: string) => void;
 
+  // Coaching note actions
+  addCoachingNote: (note: CoachingNote) => void;
+  deleteCoachingNote: (id: string) => void;
+
+  // Training plan actions
+  addTrainingPlan: (plan: TrainingPlan) => void;
+  updateTrainingPlan: (id: string, updates: Partial<TrainingPlan>) => void;
+  deleteTrainingPlan: (id: string) => void;
+
+  // Team actions
+  addTeam: (team: Team) => void;
+  updateTeam: (id: string, updates: Partial<Team>) => void;
+  deleteTeam: (id: string) => void;
+
   // Selectors
   getPlayerSessions: (playerId: string) => Session[];
   getPlayerGoals: (playerId: string) => Goal[];
   getPlayerEvaluations: (playerId: string) => Evaluation[];
+  getPlayerNotes: (playerId: string) => CoachingNote[];
 }
 
 // ── Store Version & Migration ──────────────────────────────────────
@@ -128,6 +149,9 @@ export const useAppStore = create<AppState>()(
       goals: [],
       customDrills: [],
       evaluations: [],
+      coachingNotes: [],
+      trainingPlans: [],
+      teams: [],
 
       // Player actions
       addPlayer: (player) =>
@@ -213,6 +237,38 @@ export const useAppStore = create<AppState>()(
           evaluations: s.evaluations.filter((e) => e.id !== id),
         })),
 
+      // Team actions
+      addTeam: (team) =>
+        set((s) => ({ teams: [...s.teams, team] })),
+      updateTeam: (id, updates) =>
+        set((s) => ({
+          teams: s.teams.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+        })),
+      deleteTeam: (id) =>
+        set((s) => ({ teams: s.teams.filter((t) => t.id !== id) })),
+
+      // Coaching note actions
+      addCoachingNote: (note) =>
+        set((s) => ({ coachingNotes: [...s.coachingNotes, note] })),
+      deleteCoachingNote: (id) =>
+        set((s) => ({
+          coachingNotes: s.coachingNotes.filter((n) => n.id !== id),
+        })),
+
+      // Training plan actions
+      addTrainingPlan: (plan) =>
+        set((s) => ({ trainingPlans: [...s.trainingPlans, plan] })),
+      updateTrainingPlan: (id, updates) =>
+        set((s) => ({
+          trainingPlans: s.trainingPlans.map((p) =>
+            p.id === id ? { ...p, ...updates } : p,
+          ),
+        })),
+      deleteTrainingPlan: (id) =>
+        set((s) => ({
+          trainingPlans: s.trainingPlans.filter((p) => p.id !== id),
+        })),
+
       // Selectors
       getPlayerSessions: (playerId) =>
         get().sessions.filter((s) => s.playerIds.includes(playerId)),
@@ -220,6 +276,8 @@ export const useAppStore = create<AppState>()(
         get().goals.filter((g) => g.playerId === playerId),
       getPlayerEvaluations: (playerId) =>
         get().evaluations.filter((e) => e.playerId === playerId),
+      getPlayerNotes: (playerId) =>
+        get().coachingNotes.filter((n) => n.playerId === playerId),
     }),
     {
       name: "kickercoach-store",
@@ -241,6 +299,8 @@ export const useAppStore = create<AppState>()(
             goals: state.goals ?? [],
             customDrills: Array.isArray(state.customDrills) ? state.customDrills : [],
             evaluations: Array.isArray(state.evaluations) ? state.evaluations : [],
+            coachingNotes: Array.isArray(state.coachingNotes) ? state.coachingNotes : [],
+            trainingPlans: Array.isArray(state.trainingPlans) ? state.trainingPlans : [],
           };
         }
 

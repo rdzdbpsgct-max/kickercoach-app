@@ -3,11 +3,13 @@ import { Button, Badge, Card } from "../../components/ui";
 import { SkillRadar } from "./SkillRadar";
 import { GoalList } from "./GoalList";
 import { GoalForm } from "./GoalForm";
+import { QuickNote } from "./QuickNote";
+import { NotesFeed } from "./NotesFeed";
 import { DIFFICULTY_LABELS } from "../../domain/constants";
 import { useAppStore } from "../../store";
 import type { Player } from "../../domain/models/Player";
 import type { Goal } from "../../domain/models/Goal";
-import type { Category } from "../../domain/models/CoachCard";
+
 
 const POSITION_LABELS: Record<string, string> = {
   offense: "Sturm",
@@ -29,6 +31,7 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete }: PlayerDetailP
   const deleteGoal = useAppStore((s) => s.deleteGoal);
 
   const evaluations = useAppStore((s) => s.getPlayerEvaluations(player.id));
+  const playerNotes = useAppStore((s) => s.getPlayerNotes(player.id));
 
   const [showGoalForm, setShowGoalForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | undefined>();
@@ -185,9 +188,18 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete }: PlayerDetailP
         </div>
       )}
 
+      {/* Coaching Notes */}
+      <div>
+        <h2 className="mb-3 text-sm font-semibold text-text">Coaching-Notizen</h2>
+        <div className="mb-3">
+          <QuickNote playerId={player.id} />
+        </div>
+        <NotesFeed notes={playerNotes} />
+      </div>
+
       {player.notes && (
         <Card>
-          <h2 className="mb-2 text-sm font-semibold text-text">Notizen</h2>
+          <h2 className="mb-2 text-sm font-semibold text-text">Profil-Notizen</h2>
           <p className="text-sm text-text-muted whitespace-pre-wrap">{player.notes}</p>
         </Card>
       )}

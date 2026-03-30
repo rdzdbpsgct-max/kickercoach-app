@@ -12,10 +12,13 @@ import DrillSelector from "./DrillSelector";
 import DrillEditor from "./DrillEditor";
 import SessionBuilder from "./SessionBuilder";
 import SessionRating from "./SessionRating";
+import TrainingPlanList from "./TrainingPlanList";
+import TrainingPlanEditor from "./TrainingPlanEditor";
 import Journal from "./Journal";
 import type { Session } from "../../store";
+import type { TrainingPlan } from "../../domain/models/TrainingPlan";
 
-type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor" | "session-rating";
+type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor" | "session-rating" | "training-plans" | "training-plan-editor";
 
 export default function TrainMode() {
   const [defaultDrills, setDefaultDrills] = useState<Drill[]>([]);
@@ -35,9 +38,12 @@ export default function TrainMode() {
   const updateCustomDrill = useAppStore((s) => s.updateCustomDrill);
   const deleteCustomDrill = useAppStore((s) => s.deleteCustomDrill);
   const [editSession, setEditSession] = useState<Session | null>(null);
+  const addTrainingPlan = useAppStore((s) => s.addTrainingPlan);
+  const updateTrainingPlan = useAppStore((s) => s.updateTrainingPlan);
   const [editDrill, setEditDrill] = useState<Drill | undefined>();
   const [deleteDrillId, setDeleteDrillId] = useState<string | null>(null);
   const [lastSavedSession, setLastSavedSession] = useState<Session | null>(null);
+  const [editTrainingPlan, setEditTrainingPlan] = useState<TrainingPlan | undefined>();
 
   // Merge default + custom drills
   const allDrills = useMemo(
@@ -161,6 +167,55 @@ export default function TrainMode() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [view, selectedDrill, timer, handleNext, handlePrev, handleReset]);
+
+  // Training Plan Editor view
+  if (view === "training-plan-editor") {
+    return (
+      <TrainingPlanEditor
+        plan={editTrainingPlan}
+        onSave={(plan) => {
+          if (editTrainingPlan) {
+            updateTrainingPlan(plan.id, plan);
+          } else {
+            addTrainingPlan(plan);
+          }
+          setEditTrainingPlan(undefined);
+          setView("training-plans");
+        }}
+        onCancel={() => {
+          setEditTrainingPlan(undefined);
+          setView("training-plans");
+        }}
+      />
+    );
+  }
+
+  // Training Plan List view
+  if (view === "training-plans") {
+    return (
+      <div className="flex flex-1 flex-col gap-4 overflow-hidden">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-bold">Trainingspl&auml;ne</h1>
+          <button
+            onClick={() => setView("drills")}
+            className="text-xs text-text-dim hover:text-accent transition-colors"
+          >
+            &larr; Zurueck
+          </button>
+        </div>
+        <TrainingPlanList
+          onEdit={(plan) => {
+            setEditTrainingPlan(plan);
+            setView("training-plan-editor");
+          }}
+          onNew={() => {
+            setEditTrainingPlan(undefined);
+            setView("training-plan-editor");
+          }}
+        />
+      </div>
+    );
+  }
 
   // Session Rating view
   if (view === "session-rating" && lastSavedSession) {
@@ -344,6 +399,9 @@ export default function TrainMode() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Training</h1>
         <div className="flex gap-2">
+          <Button variant="secondary" onClick={() => setView("training-plans")}>
+            Pl&auml;ne
+          </Button>
           <Button variant="secondary" onClick={() => setView("journal")}>
             Tagebuch
           </Button>
