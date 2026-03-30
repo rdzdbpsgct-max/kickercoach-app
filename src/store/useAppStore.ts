@@ -202,7 +202,7 @@ export const useAppStore = create<AppState>()(
           };
         }
 
-        return state as AppState;
+        return state as unknown as AppState;
       },
     },
   ),
