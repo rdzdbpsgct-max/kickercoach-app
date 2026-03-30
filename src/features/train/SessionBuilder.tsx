@@ -1,9 +1,23 @@
 import { useState } from "react";
 import type { Drill } from "../../domain/models/Drill";
+import type { Category } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
 import { calculateSessionDuration } from "../../domain/logic/session";
 import { Button, FormField, Input, Textarea } from "../../components/ui";
+import { useAppStore } from "../../store";
 import type { Session } from "../../store";
+
+const CATEGORIES: Category[] = [
+  "Torschuss",
+  "Passspiel",
+  "Ballkontrolle",
+  "Defensive",
+  "Taktik",
+  "Offensive",
+  "Mental",
+];
+
+const STAR_LABELS = ["", "Schlecht", "Mässig", "OK", "Gut", "Super"];
 
 interface SessionBuilderProps {
   drills: Drill[];
@@ -18,17 +32,38 @@ export default function SessionBuilder({
   onCancel,
   editSession,
 }: SessionBuilderProps) {
+  const players = useAppStore((s) => s.players);
+
   const [name, setName] = useState(editSession?.name ?? "");
   const [selectedDrillIds, setSelectedDrillIds] = useState<string[]>(
     editSession?.drillIds ?? [],
   );
   const [notes, setNotes] = useState(editSession?.notes ?? "");
+  const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>(
+    editSession?.playerIds ?? [],
+  );
+  const [focusAreas, setFocusAreas] = useState<Category[]>(
+    editSession?.focusAreas ?? [],
+  );
+  const [rating, setRating] = useState<number | undefined>(editSession?.rating);
 
   const totalDuration = calculateSessionDuration(selectedDrillIds, drills);
 
   const toggleDrill = (id: string) => {
     setSelectedDrillIds((prev) =>
       prev.includes(id) ? prev.filter((d) => d !== id) : [...prev, id],
+    );
+  };
+
+  const togglePlayer = (id: string) => {
+    setSelectedPlayerIds((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
+    );
+  };
+
+  const toggleFocusArea = (cat: Category) => {
+    setFocusAreas((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat],
     );
   };
 
@@ -42,8 +77,9 @@ export default function SessionBuilder({
       drillIds: selectedDrillIds,
       notes: notes.trim(),
       totalDuration,
-      playerIds: editSession?.playerIds ?? [],
-      focusAreas: editSession?.focusAreas ?? [],
+      playerIds: selectedPlayerIds,
+      focusAreas,
+      rating,
     };
     onSave(session);
   };
@@ -73,6 +109,39 @@ export default function SessionBuilder({
           placeholder="z.B. Morgen-Training, Schuss-Drill..."
         />
       </FormField>
+
+      {/* Player selection */}
+      {players.length > 0 && (
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-medium text-text-dim">
+            Spieler ({selectedPlayerIds.length} ausgew&auml;hlt)
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {players.map((player) => {
+              const isSelected = selectedPlayerIds.includes(player.id);
+              return (
+                <button
+                  key={player.id}
+                  onClick={() => togglePlayer(player.id)}
+                  className={`flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
+                    isSelected
+                      ? "border-accent bg-accent-dim text-accent-hover"
+                      : "border-border text-text-muted hover:border-accent/50"
+                  }`}
+                >
+                  <span
+                    className="inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                    style={{ backgroundColor: player.avatarColor ?? "#6366f1" }}
+                  >
+                    {player.name.charAt(0).toUpperCase()}
+                  </span>
+                  {player.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Drill selection */}
       <div className="flex flex-col gap-1.5">
@@ -110,6 +179,54 @@ export default function SessionBuilder({
               </button>
             );
           })}
+        </div>
+      </div>
+
+      {/* Focus areas */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-medium text-text-dim">
+          Schwerpunkte
+        </label>
+        <div className="flex flex-wrap gap-1.5">
+          {CATEGORIES.map((cat) => {
+            const isSelected = focusAreas.includes(cat);
+            return (
+              <button
+                key={cat}
+                onClick={() => toggleFocusArea(cat)}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                  isSelected
+                    ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                    : "border border-border text-text-muted hover:border-accent/50"
+                }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Rating */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-medium text-text-dim">
+          Bewertung {rating ? `\u2014 ${STAR_LABELS[rating]}` : ""}
+        </label>
+        <div className="flex gap-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <button
+              key={star}
+              onClick={() => setRating(rating === star ? undefined : star)}
+              className={`text-2xl transition-transform hover:scale-110 ${
+                rating && star <= rating
+                  ? "text-kicker-orange"
+                  : "text-text-dim"
+              }`}
+              aria-label={`${star} Sterne`}
+            >
+              {rating && star <= rating ? "\u2605" : "\u2606"}
+            </button>
+          ))}
         </div>
       </div>
 

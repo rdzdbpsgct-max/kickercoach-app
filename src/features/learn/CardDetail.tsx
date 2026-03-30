@@ -1,9 +1,12 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import type { CoachCard } from "../../domain/models/CoachCard";
+import type { Drill } from "../../domain/models/Drill";
 import {
   DIFFICULTY_LABELS,
   DIFFICULTY_TEXT_COLORS,
 } from "../../domain/constants";
-import { Button } from "../../components/ui";
+import { Button, Badge } from "../../components/ui";
 
 interface CardDetailProps {
   card: CoachCard;
@@ -22,6 +25,22 @@ export default function CardDetail({
   allCards = [],
   onNavigateToCard,
 }: CardDetailProps) {
+  const navigate = useNavigate();
+  const [matchingDrills, setMatchingDrills] = useState<Drill[]>([]);
+
+  useEffect(() => {
+    import("../../data/drills").then((mod) => {
+      const drills = mod.DEFAULT_DRILLS.filter(
+        (d) =>
+          d.focusSkill.toLowerCase().includes(card.category.toLowerCase()) ||
+          card.tags.some((tag) =>
+            d.focusSkill.toLowerCase().includes(tag.toLowerCase()),
+          ),
+      );
+      setMatchingDrills(drills.slice(0, 3));
+    });
+  }, [card.category, card.tags]);
+
   const prerequisiteCards = allCards.filter(
     (c) => card.prerequisites?.includes(c.id),
   );
@@ -130,6 +149,32 @@ export default function CardDetail({
           ))}
         </ul>
       </div>
+
+      {/* Matching Drills */}
+      {matchingDrills.length > 0 && (
+        <div className="rounded-xl border border-kicker-orange/20 bg-kicker-orange/5 p-5">
+          <h2 className="mb-3 text-base font-bold text-kicker-orange">
+            Passende Drills
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {matchingDrills.map((drill) => (
+              <Button
+                key={drill.id}
+                variant="secondary"
+                size="sm"
+                onClick={() => navigate("/train")}
+              >
+                <span>&#9201;&#65039;</span> {drill.name}
+                {drill.difficulty && (
+                  <Badge color={drill.difficulty === "beginner" ? "green" : drill.difficulty === "intermediate" ? "orange" : "red"}>
+                    {DIFFICULTY_LABELS[drill.difficulty]}
+                  </Badge>
+                )}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Lernpfad */}
       {(prerequisiteCards.length > 0 || nextStepCards.length > 0) && (

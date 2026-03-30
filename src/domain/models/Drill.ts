@@ -4,10 +4,12 @@ export interface TrainingBlock {
   note: string;
 }
 
-import type { Difficulty } from "./CoachCard";
+import type { Difficulty, Category } from "./CoachCard";
 
 /** @deprecated Use Difficulty from CoachCard instead */
 export type DrillDifficulty = Difficulty;
+
+export type RodPosition = "keeper" | "defense" | "midfield" | "offense";
 
 export interface Drill {
   id: string;
@@ -16,4 +18,11 @@ export interface Drill {
   blocks: TrainingBlock[];
   difficulty?: Difficulty;
   description?: string;
+  category?: Category;
+  position?: RodPosition;
+  playerCount?: 1 | 2;
+  isCustom?: boolean;
+  prerequisites?: string[];
+  variations?: string[];
+  measurableGoal?: string;
 }

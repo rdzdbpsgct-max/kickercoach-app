@@ -1,22 +1,23 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import type { Drill } from "../../domain/models/Drill";
 import { advanceBlock, previousBlock } from "../../domain/logic/drill";
 import { useTimer } from "../../hooks/useTimer";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useAppStore } from "../../store";
 import { STORAGE_KEYS } from "../../domain/constants";
-import { Button } from "../../components/ui";
+import { Button, ConfirmDialog } from "../../components/ui";
 import Timer from "./Timer";
 import BlockProgress from "./BlockProgress";
 import DrillSelector from "./DrillSelector";
+import DrillEditor from "./DrillEditor";
 import SessionBuilder from "./SessionBuilder";
 import Journal from "./Journal";
 import type { Session } from "../../store";
 
-type View = "drills" | "timer" | "session-builder" | "journal";
+type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor";
 
 export default function TrainMode() {
-  const [drills, setDrills] = useState<Drill[]>([]);
+  const [defaultDrills, setDefaultDrills] = useState<Drill[]>([]);
   const [view, setView] = useState<View>("drills");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
   const [blockIndex, setBlockIndex] = useState(0);
@@ -28,12 +29,24 @@ export default function TrainMode() {
   const addSession = useAppStore((s) => s.addSession);
   const updateSession = useAppStore((s) => s.updateSession);
   const deleteSession = useAppStore((s) => s.deleteSession);
+  const customDrills = useAppStore((s) => s.customDrills);
+  const addCustomDrill = useAppStore((s) => s.addCustomDrill);
+  const updateCustomDrill = useAppStore((s) => s.updateCustomDrill);
+  const deleteCustomDrill = useAppStore((s) => s.deleteCustomDrill);
   const [editSession, setEditSession] = useState<Session | null>(null);
+  const [editDrill, setEditDrill] = useState<Drill | undefined>();
+  const [deleteDrillId, setDeleteDrillId] = useState<string | null>(null);
+
+  // Merge default + custom drills
+  const allDrills = useMemo(
+    () => [...defaultDrills, ...customDrills],
+    [defaultDrills, customDrills],
+  );
 
   // Load drills
   useEffect(() => {
     import("../../data/drills").then((mod) => {
-      setDrills(mod.DEFAULT_DRILLS);
+      setDefaultDrills(mod.DEFAULT_DRILLS);
     });
   }, []);
 
@@ -93,6 +106,16 @@ export default function TrainMode() {
     deleteSession(id);
   };
 
+  const handleSaveDrill = (drill: Drill) => {
+    if (editDrill) {
+      updateCustomDrill(drill.id, drill);
+    } else {
+      addCustomDrill(drill);
+    }
+    setEditDrill(undefined);
+    setView("drills");
+  };
+
   // Keyboard shortcuts
   useEffect(() => {
     if (view !== "timer" || !selectedDrill) return;
@@ -130,11 +153,25 @@ export default function TrainMode() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [view, selectedDrill, timer, handleNext, handlePrev, handleReset]);
 
+  // Drill Editor view
+  if (view === "drill-editor") {
+    return (
+      <DrillEditor
+        drill={editDrill}
+        onSave={handleSaveDrill}
+        onCancel={() => {
+          setEditDrill(undefined);
+          setView("drills");
+        }}
+      />
+    );
+  }
+
   // Session Builder view
   if (view === "session-builder") {
     return (
       <SessionBuilder
-        drills={drills}
+        drills={allDrills}
         editSession={editSession}
         onSave={handleSaveSession}
         onCancel={() => {
@@ -294,9 +331,30 @@ export default function TrainMode() {
         </div>
       </div>
       <DrillSelector
-        drills={drills}
+        drills={allDrills}
         selectedId={null}
         onSelect={handleSelectDrill}
+        onNewDrill={() => {
+          setEditDrill(undefined);
+          setView("drill-editor");
+        }}
+        onEditDrill={(drill) => {
+          setEditDrill(drill);
+          setView("drill-editor");
+        }}
+        onDeleteDrill={(id) => setDeleteDrillId(id)}
+      />
+      <ConfirmDialog
+        open={deleteDrillId !== null}
+        onClose={() => setDeleteDrillId(null)}
+        onConfirm={() => {
+          if (deleteDrillId) {
+            deleteCustomDrill(deleteDrillId);
+            setDeleteDrillId(null);
+          }
+        }}
+        title="Drill l&ouml;schen"
+        message="M&ouml;chtest du diesen eigenen Drill wirklich l&ouml;schen?"
       />
     </div>
   );

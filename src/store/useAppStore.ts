@@ -5,6 +5,7 @@ import { SessionSchema } from "../domain/schemas/session";
 import { MatchPlanSchema } from "../domain/schemas/matchPlan";
 import { TacticalSceneSchema } from "../domain/schemas/tacticalBoard";
 import type { Difficulty, Category } from "../domain/models/CoachCard";
+import type { Drill } from "../domain/models/Drill";
 import type { MatchPlan } from "../domain/models/MatchPlan";
 import type { TacticalScene } from "../domain/models/TacticalBoard";
 
@@ -64,6 +65,7 @@ interface AppState {
   boardScenes: TacticalScene[];
   favorites: string[];
   goals: Goal[];
+  customDrills: Drill[];
 
   // Player actions
   addPlayer: (player: Player) => void;
@@ -83,6 +85,11 @@ interface AppState {
 
   // BoardScene actions
   setBoardScenes: (scenes: TacticalScene[]) => void;
+
+  // Custom drill actions
+  addCustomDrill: (drill: Drill) => void;
+  updateCustomDrill: (id: string, updates: Partial<Drill>) => void;
+  deleteCustomDrill: (id: string) => void;
 
   // Favorite actions
   toggleFavorite: (id: string) => void;
@@ -112,6 +119,7 @@ export const useAppStore = create<AppState>()(
       boardScenes: [],
       favorites: [],
       goals: [],
+      customDrills: [],
 
       // Player actions
       addPlayer: (player) =>
@@ -154,6 +162,20 @@ export const useAppStore = create<AppState>()(
 
       // BoardScene actions
       setBoardScenes: (scenes) => set({ boardScenes: scenes }),
+
+      // Custom drill actions
+      addCustomDrill: (drill) =>
+        set((s) => ({ customDrills: [...s.customDrills, drill] })),
+      updateCustomDrill: (id, updates) =>
+        set((s) => ({
+          customDrills: s.customDrills.map((d) =>
+            d.id === id ? { ...d, ...updates } : d,
+          ),
+        })),
+      deleteCustomDrill: (id) =>
+        set((s) => ({
+          customDrills: s.customDrills.filter((d) => d.id !== id),
+        })),
 
       // Favorite actions
       toggleFavorite: (id) =>
@@ -199,6 +221,7 @@ export const useAppStore = create<AppState>()(
             players: state.players ?? [],
             favorites: Array.isArray(state.favorites) ? state.favorites : [],
             goals: state.goals ?? [],
+            customDrills: Array.isArray(state.customDrills) ? state.customDrills : [],
           };
         }
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { MatchPlan } from "../../domain/models/MatchPlan";
 import { Card, Button, EmptyState, ConfirmDialog } from "../../components/ui";
 
@@ -15,6 +16,7 @@ export default function MatchPlanList({
   onDelete,
   onExport,
 }: MatchPlanListProps) {
+  const navigate = useNavigate();
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   if (plans.length === 0) {
@@ -45,6 +47,14 @@ export default function MatchPlanList({
               </div>
             </button>
             <div className="flex gap-1.5">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/board")}
+                title="Taktikboard oeffnen"
+              >
+                Taktik
+              </Button>
               <Button
                 variant="ghost"
                 size="sm"
