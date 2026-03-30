@@ -6,6 +6,7 @@ import { MatchPlanSchema } from "../domain/schemas/matchPlan";
 import { TacticalSceneSchema } from "../domain/schemas/tacticalBoard";
 import type { Difficulty, Category } from "../domain/models/CoachCard";
 import type { Drill } from "../domain/models/Drill";
+import type { Evaluation } from "../domain/models/Evaluation";
 import type { MatchPlan } from "../domain/models/MatchPlan";
 import type { TacticalScene } from "../domain/models/TacticalBoard";
 
@@ -66,6 +67,7 @@ interface AppState {
   favorites: string[];
   goals: Goal[];
   customDrills: Drill[];
+  evaluations: Evaluation[];
 
   // Player actions
   addPlayer: (player: Player) => void;
@@ -100,9 +102,14 @@ interface AppState {
   updateGoal: (id: string, updates: Partial<Goal>) => void;
   deleteGoal: (id: string) => void;
 
+  // Evaluation actions
+  addEvaluation: (evaluation: Evaluation) => void;
+  deleteEvaluation: (id: string) => void;
+
   // Selectors
   getPlayerSessions: (playerId: string) => Session[];
   getPlayerGoals: (playerId: string) => Goal[];
+  getPlayerEvaluations: (playerId: string) => Evaluation[];
 }
 
 // ── Store Version & Migration ──────────────────────────────────────
@@ -120,6 +127,7 @@ export const useAppStore = create<AppState>()(
       favorites: [],
       goals: [],
       customDrills: [],
+      evaluations: [],
 
       // Player actions
       addPlayer: (player) =>
@@ -197,11 +205,21 @@ export const useAppStore = create<AppState>()(
       deleteGoal: (id) =>
         set((s) => ({ goals: s.goals.filter((g) => g.id !== id) })),
 
+      // Evaluation actions
+      addEvaluation: (evaluation) =>
+        set((s) => ({ evaluations: [...s.evaluations, evaluation] })),
+      deleteEvaluation: (id) =>
+        set((s) => ({
+          evaluations: s.evaluations.filter((e) => e.id !== id),
+        })),
+
       // Selectors
       getPlayerSessions: (playerId) =>
         get().sessions.filter((s) => s.playerIds.includes(playerId)),
       getPlayerGoals: (playerId) =>
         get().goals.filter((g) => g.playerId === playerId),
+      getPlayerEvaluations: (playerId) =>
+        get().evaluations.filter((e) => e.playerId === playerId),
     }),
     {
       name: "kickercoach-store",
@@ -222,6 +240,7 @@ export const useAppStore = create<AppState>()(
             favorites: Array.isArray(state.favorites) ? state.favorites : [],
             goals: state.goals ?? [],
             customDrills: Array.isArray(state.customDrills) ? state.customDrills : [],
+            evaluations: Array.isArray(state.evaluations) ? state.evaluations : [],
           };
         }
 

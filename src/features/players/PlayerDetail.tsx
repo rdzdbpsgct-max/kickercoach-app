@@ -1,7 +1,13 @@
+import { useState, useMemo } from "react";
 import { Button, Badge, Card } from "../../components/ui";
 import { SkillRadar } from "./SkillRadar";
+import { GoalList } from "./GoalList";
+import { GoalForm } from "./GoalForm";
 import { DIFFICULTY_LABELS } from "../../domain/constants";
+import { useAppStore } from "../../store";
 import type { Player } from "../../domain/models/Player";
+import type { Goal } from "../../domain/models/Goal";
+import type { Category } from "../../domain/models/CoachCard";
 
 const POSITION_LABELS: Record<string, string> = {
   offense: "Sturm",
@@ -17,6 +23,50 @@ interface PlayerDetailProps {
 }
 
 export function PlayerDetail({ player, onEdit, onBack, onDelete }: PlayerDetailProps) {
+  const goals = useAppStore((s) => s.getPlayerGoals(player.id));
+  const addGoal = useAppStore((s) => s.addGoal);
+  const updateGoal = useAppStore((s) => s.updateGoal);
+  const deleteGoal = useAppStore((s) => s.deleteGoal);
+
+  const evaluations = useAppStore((s) => s.getPlayerEvaluations(player.id));
+
+  const [showGoalForm, setShowGoalForm] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<Goal | undefined>();
+
+  // Compute skill trends from evaluations
+  const skillTrends = useMemo(() => {
+    if (evaluations.length < 2) return null;
+    const sorted = [...evaluations].sort((a, b) => b.date.localeCompare(a.date));
+    const latest = sorted[0];
+    const previous = sorted[1];
+    const trends: Record<string, string> = {};
+    for (const sr of latest.skillRatings) {
+      const prev = previous.skillRatings.find((p) => p.category === sr.category);
+      if (prev) {
+        if (sr.rating > prev.rating) trends[sr.category] = "\u2191";
+        else if (sr.rating < prev.rating) trends[sr.category] = "\u2193";
+        else trends[sr.category] = "\u2192";
+      }
+    }
+    return trends;
+  }, [evaluations]);
+
+  const handleSaveGoal = (goal: Goal) => {
+    if (editingGoal) {
+      updateGoal(goal.id, goal);
+    } else {
+      addGoal(goal);
+    }
+    setShowGoalForm(false);
+    setEditingGoal(undefined);
+  };
+
+  const handleToggleStatus = (goal: Goal) => {
+    updateGoal(goal.id, {
+      status: goal.status === "active" ? "achieved" : "active",
+    });
+  };
+
   return (
     <div className="flex flex-col gap-5 overflow-auto pb-4">
       <div className="flex items-center gap-3">
@@ -52,6 +102,88 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete }: PlayerDetailP
         <h2 className="mb-3 text-sm font-semibold text-text">Skill-Profil</h2>
         <SkillRadar ratings={player.skillRatings} />
       </Card>
+
+      {/* Goals section */}
+      <div>
+        <h2 className="mb-3 text-sm font-semibold text-text">Trainingsziele</h2>
+        {showGoalForm ? (
+          <Card>
+            <GoalForm
+              playerId={player.id}
+              goal={editingGoal}
+              onSave={handleSaveGoal}
+              onCancel={() => {
+                setShowGoalForm(false);
+                setEditingGoal(undefined);
+              }}
+            />
+          </Card>
+        ) : (
+          <GoalList
+            goals={goals}
+            onAdd={() => {
+              setEditingGoal(undefined);
+              setShowGoalForm(true);
+            }}
+            onEdit={(goal) => {
+              setEditingGoal(goal);
+              setShowGoalForm(true);
+            }}
+            onDelete={deleteGoal}
+            onToggleStatus={handleToggleStatus}
+          />
+        )}
+      </div>
+
+      {/* Evaluation history */}
+      {evaluations.length > 0 && (
+        <div>
+          <h2 className="mb-3 text-sm font-semibold text-text">
+            Bewertungen ({evaluations.length})
+          </h2>
+          {skillTrends && (
+            <Card className="mb-3">
+              <h3 className="mb-2 text-xs font-semibold text-text-dim">Skill-Trend</h3>
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(skillTrends).map(([cat, trend]) => (
+                  <span key={cat} className="flex items-center gap-1 text-xs">
+                    <Badge color="accent">{cat}</Badge>
+                    <span className={
+                      trend === "\u2191" ? "text-kicker-green font-bold" :
+                      trend === "\u2193" ? "text-kicker-red font-bold" :
+                      "text-text-dim"
+                    }>
+                      {trend}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </Card>
+          )}
+          <div className="flex flex-col gap-2">
+            {[...evaluations]
+              .sort((a, b) => b.date.localeCompare(a.date))
+              .slice(0, 5)
+              .map((ev) => (
+                <Card key={ev.id}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-text">{ev.date}</span>
+                    <div className="flex gap-1">
+                      {ev.skillRatings.map((sr) => (
+                        <span key={sr.category} className="text-[10px] text-text-dim">
+                          {sr.category.slice(0, 3)}:{sr.rating}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  {ev.notes && (
+                    <p className="mt-1 text-xs text-text-dim">{ev.notes}</p>
+                  )}
+                </Card>
+              ))}
+          </div>
+        </div>
+      )}
 
       {player.notes && (
         <Card>

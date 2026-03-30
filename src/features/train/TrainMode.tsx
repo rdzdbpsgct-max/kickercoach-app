@@ -11,10 +11,11 @@ import BlockProgress from "./BlockProgress";
 import DrillSelector from "./DrillSelector";
 import DrillEditor from "./DrillEditor";
 import SessionBuilder from "./SessionBuilder";
+import SessionRating from "./SessionRating";
 import Journal from "./Journal";
 import type { Session } from "../../store";
 
-type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor";
+type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor" | "session-rating";
 
 export default function TrainMode() {
   const [defaultDrills, setDefaultDrills] = useState<Drill[]>([]);
@@ -36,6 +37,7 @@ export default function TrainMode() {
   const [editSession, setEditSession] = useState<Session | null>(null);
   const [editDrill, setEditDrill] = useState<Drill | undefined>();
   const [deleteDrillId, setDeleteDrillId] = useState<string | null>(null);
+  const [lastSavedSession, setLastSavedSession] = useState<Session | null>(null);
 
   // Merge default + custom drills
   const allDrills = useMemo(
@@ -95,11 +97,18 @@ export default function TrainMode() {
   const handleSaveSession = (session: Session) => {
     if (editSession) {
       updateSession(session.id, session);
+      setEditSession(null);
+      setView("journal");
     } else {
       addSession(session);
+      setEditSession(null);
+      if (session.playerIds.length > 0) {
+        setLastSavedSession(session);
+        setView("session-rating");
+      } else {
+        setView("journal");
+      }
     }
-    setEditSession(null);
-    setView("journal");
   };
 
   const handleDeleteSession = (id: string) => {
@@ -152,6 +161,24 @@ export default function TrainMode() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [view, selectedDrill, timer, handleNext, handlePrev, handleReset]);
+
+  // Session Rating view
+  if (view === "session-rating" && lastSavedSession) {
+    return (
+      <SessionRating
+        sessionId={lastSavedSession.id}
+        playerIds={lastSavedSession.playerIds}
+        onComplete={() => {
+          setLastSavedSession(null);
+          setView("journal");
+        }}
+        onSkip={() => {
+          setLastSavedSession(null);
+          setView("journal");
+        }}
+      />
+    );
+  }
 
   // Drill Editor view
   if (view === "drill-editor") {

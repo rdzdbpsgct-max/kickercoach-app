@@ -6,6 +6,8 @@ export {
 } from "./drill";
 export { SessionSchema, MoodSchema } from "./session";
 export { MatchPlanSchema, StrategyTemplateSchema } from "./matchPlan";
+export { EvaluationSchema, SkillRatingEntrySchema } from "./evaluation";
+export { GoalSchema, GoalStatusSchema } from "./goal";
 export {
   PlayerSchema,
   PositionSchema,
