@@ -3,6 +3,7 @@ import {
   DIFFICULTY_LABELS,
   DIFFICULTY_TEXT_COLORS,
 } from "../../domain/constants";
+import { Button } from "../../components/ui";
 
 interface CardDetailProps {
   card: CoachCard;
@@ -144,13 +145,14 @@ export default function CardDetail({
               </h3>
               <div className="flex flex-wrap gap-2">
                 {prerequisiteCards.map((c) => (
-                  <button
+                  <Button
                     key={c.id}
+                    variant="secondary"
+                    size="sm"
                     onClick={() => onNavigateToCard?.(c)}
-                    className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-text-muted hover:border-accent hover:text-text transition-all"
                   >
                     &larr; {c.title}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -163,13 +165,14 @@ export default function CardDetail({
               </h3>
               <div className="flex flex-wrap gap-2">
                 {nextStepCards.map((c) => (
-                  <button
+                  <Button
                     key={c.id}
+                    variant="secondary"
+                    size="sm"
                     onClick={() => onNavigateToCard?.(c)}
-                    className="rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-text-muted hover:border-accent hover:text-text transition-all"
                   >
                     {c.title} &rarr;
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>

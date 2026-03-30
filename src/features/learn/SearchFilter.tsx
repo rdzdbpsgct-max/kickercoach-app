@@ -1,5 +1,6 @@
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
 import { DIFFICULTY_LABELS } from "../../domain/constants";
+import { Input, Button } from "../../components/ui";
 
 const CATEGORIES: (Category | "Alle")[] = [
   "Alle",
@@ -51,25 +52,21 @@ export default function SearchFilter({
     <div className="flex flex-col gap-3">
       {/* Search */}
       <div className="flex gap-2">
-        <input
-          type="text"
+        <Input
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Technik suchen..."
           aria-label="Technik suchen"
-          className="flex-1 rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none"
+          className="flex-1"
         />
-        <button
+        <Button
+          variant={showFavoritesOnly ? "primary" : "secondary"}
           onClick={onToggleFavorites}
           aria-pressed={showFavoritesOnly}
-          className={`rounded-xl border px-4 py-2 text-sm font-medium transition-all ${
-            showFavoritesOnly
-              ? "border-kicker-orange bg-kicker-orange/15 text-kicker-orange"
-              : "border-border text-text-dim hover:border-accent/50"
-          }`}
+          className={showFavoritesOnly ? "border-kicker-orange bg-kicker-orange/15 text-kicker-orange" : ""}
         >
           {showFavoritesOnly ? "\u2605 Favoriten" : "\u2606 Favoriten"}
-        </button>
+        </Button>
       </div>
 
       {/* Category filter */}

@@ -4,7 +4,7 @@ import type {
   Difficulty,
   Category,
 } from "../../domain/models/CoachCard";
-import { useFavorites } from "../../hooks/useFavorites";
+import { useAppStore } from "../../store";
 import SearchFilter from "./SearchFilter";
 import CardGrid from "./CardGrid";
 import CardDetail from "./CardDetail";
@@ -16,7 +16,9 @@ export default function LearnMode() {
   const [category, setCategory] = useState<Category | "Alle">("Alle");
   const [difficulty, setDifficulty] = useState<Difficulty | "Alle">("Alle");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const { favorites, isFavorite, toggleFavorite } = useFavorites();
+  const favorites = useAppStore((s) => s.favorites);
+  const toggleFavorite = useAppStore((s) => s.toggleFavorite);
+  const isFavorite = useAppStore((s) => s.isFavorite);
 
   // Load cards
   useEffect(() => {

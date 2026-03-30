@@ -1,10 +1,25 @@
 import type { CoachCard } from "../../domain/models/CoachCard";
 import {
   DIFFICULTY_LABELS,
-  DIFFICULTY_COLORS,
-  CATEGORY_COLORS,
   MAX_VISIBLE_TAGS,
 } from "../../domain/constants";
+import { Card, Badge } from "../../components/ui";
+
+const DIFFICULTY_BADGE_COLORS = {
+  beginner: "green",
+  intermediate: "orange",
+  advanced: "red",
+} as const;
+
+const CATEGORY_BADGE_COLORS: Record<string, "blue" | "red" | "green" | "orange" | "accent"> = {
+  Torschuss: "red",
+  Passspiel: "blue",
+  Ballkontrolle: "accent",
+  Defensive: "green",
+  Taktik: "orange",
+  Offensive: "blue",
+  Mental: "accent",
+};
 
 interface CardGridProps {
   cards: CoachCard[];
@@ -20,10 +35,11 @@ export default function CardGrid({
   return (
     <div className="grid min-h-0 flex-1 grid-cols-[repeat(auto-fill,minmax(260px,1fr))] content-start gap-3 overflow-auto pb-4">
       {cards.map((card) => (
-        <button
+        <Card
           key={card.id}
+          interactive
           onClick={() => onSelect(card)}
-          className="cursor-pointer rounded-xl border border-border bg-card p-4 text-left transition-all hover:border-accent hover:bg-card-hover focus-visible:outline-2 focus-visible:outline-accent"
+          className="text-left"
         >
           <div className="mb-2 flex items-start justify-between">
             <div className="flex-1">
@@ -39,16 +55,12 @@ export default function CardGrid({
           </div>
 
           <div className="mb-2 flex flex-wrap gap-1.5">
-            <span
-              className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${CATEGORY_COLORS[card.category] ?? "bg-surface text-text-dim"}`}
-            >
+            <Badge color={CATEGORY_BADGE_COLORS[card.category] ?? "accent"}>
               {card.category}
-            </span>
-            <span
-              className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${DIFFICULTY_COLORS[card.difficulty]}`}
-            >
+            </Badge>
+            <Badge color={DIFFICULTY_BADGE_COLORS[card.difficulty]}>
               {DIFFICULTY_LABELS[card.difficulty]}
-            </span>
+            </Badge>
           </div>
 
           <p className="line-clamp-2 text-xs leading-relaxed text-text-muted">
@@ -70,7 +82,7 @@ export default function CardGrid({
               </span>
             )}
           </div>
-        </button>
+        </Card>
       ))}
     </div>
   );
