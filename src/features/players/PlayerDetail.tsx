@@ -5,6 +5,8 @@ import { GoalList } from "./GoalList";
 import { GoalForm } from "./GoalForm";
 import { QuickNote } from "./QuickNote";
 import { NotesFeed } from "./NotesFeed";
+import { ProgressView } from "./ProgressView";
+import { printCurrentPage } from "../../utils/print";
 import { DIFFICULTY_LABELS } from "../../domain/constants";
 import { useAppStore } from "../../store";
 import type { Player } from "../../domain/models/Player";
@@ -138,55 +140,32 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete }: PlayerDetailP
         )}
       </div>
 
-      {/* Evaluation history */}
-      {evaluations.length > 0 && (
-        <div>
-          <h2 className="mb-3 text-sm font-semibold text-text">
-            Bewertungen ({evaluations.length})
-          </h2>
-          {skillTrends && (
-            <Card className="mb-3">
-              <h3 className="mb-2 text-xs font-semibold text-text-dim">Skill-Trend</h3>
-              <div className="flex flex-wrap gap-2">
-                {Object.entries(skillTrends).map(([cat, trend]) => (
-                  <span key={cat} className="flex items-center gap-1 text-xs">
-                    <Badge color="accent">{cat}</Badge>
-                    <span className={
-                      trend === "\u2191" ? "text-kicker-green font-bold" :
-                      trend === "\u2193" ? "text-kicker-red font-bold" :
-                      "text-text-dim"
-                    }>
-                      {trend}
-                    </span>
+      {/* Progress & Evaluation history */}
+      <div>
+        <h2 className="mb-3 text-sm font-semibold text-text">
+          Fortschritt {evaluations.length > 0 && `(${evaluations.length} Bewertungen)`}
+        </h2>
+        {skillTrends && (
+          <Card className="mb-3">
+            <h3 className="mb-2 text-xs font-semibold text-text-dim">Skill-Trend</h3>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(skillTrends).map(([cat, trend]) => (
+                <span key={cat} className="flex items-center gap-1 text-xs">
+                  <Badge color="accent">{cat}</Badge>
+                  <span className={
+                    trend === "\u2191" ? "text-kicker-green font-bold" :
+                    trend === "\u2193" ? "text-kicker-red font-bold" :
+                    "text-text-dim"
+                  }>
+                    {trend}
                   </span>
-                ))}
-              </div>
-            </Card>
-          )}
-          <div className="flex flex-col gap-2">
-            {[...evaluations]
-              .sort((a, b) => b.date.localeCompare(a.date))
-              .slice(0, 5)
-              .map((ev) => (
-                <Card key={ev.id}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-text">{ev.date}</span>
-                    <div className="flex gap-1">
-                      {ev.skillRatings.map((sr) => (
-                        <span key={sr.category} className="text-[10px] text-text-dim">
-                          {sr.category.slice(0, 3)}:{sr.rating}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  {ev.notes && (
-                    <p className="mt-1 text-xs text-text-dim">{ev.notes}</p>
-                  )}
-                </Card>
+                </span>
               ))}
-          </div>
-        </div>
-      )}
+            </div>
+          </Card>
+        )}
+        <ProgressView evaluations={evaluations} />
+      </div>
 
       {/* Coaching Notes */}
       <div>
@@ -204,8 +183,9 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete }: PlayerDetailP
         </Card>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 no-print">
         <Button onClick={onEdit}>Bearbeiten</Button>
+        <Button variant="secondary" onClick={printCurrentPage}>Profil drucken</Button>
         <Button variant="danger" onClick={onDelete}>L&ouml;schen</Button>
       </div>
     </div>

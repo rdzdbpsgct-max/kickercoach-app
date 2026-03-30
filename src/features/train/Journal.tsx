@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 import { formatTime } from "../../domain/logic/time";
 import { calculateSessionStats } from "../../domain/logic/session";
-import { Card, Badge, EmptyState, ConfirmDialog, SearchBar } from "../../components/ui";
+import { Card, Badge, Button, EmptyState, ConfirmDialog, SearchBar } from "../../components/ui";
+import { printCurrentPage } from "../../utils/print";
 import { useAppStore } from "../../store";
 import type { Session } from "../../store";
 
@@ -55,6 +56,14 @@ export default function Journal({
 
   return (
     <div className="flex flex-col gap-4 overflow-hidden">
+      {/* Actions */}
+      {sessions.length > 0 && (
+        <div className="flex justify-end no-print">
+          <Button variant="secondary" size="sm" onClick={printCurrentPage}>
+            Drucken
+          </Button>
+        </div>
+      )}
       {/* Search & Filter */}
       {sessions.length > 0 && (
         <div className="flex flex-col gap-2">

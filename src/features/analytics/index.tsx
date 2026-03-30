@@ -4,6 +4,7 @@ import { Select, Card } from "../../components/ui";
 import { TrainingFrequencyChart } from "./TrainingFrequencyChart";
 import { SkillProgressChart } from "./SkillProgressChart";
 import { DrillStatsChart } from "./DrillStatsChart";
+import { PlayerComparison } from "./PlayerComparison";
 
 export default function AnalyticsMode() {
   const players = useAppStore((s) => s.players);
@@ -71,6 +72,9 @@ export default function AnalyticsMode() {
           )}
         </div>
       )}
+
+      {/* Player comparison */}
+      {players.length >= 2 && <PlayerComparison />}
 
       {/* Drill stats */}
       <DrillStatsChart />

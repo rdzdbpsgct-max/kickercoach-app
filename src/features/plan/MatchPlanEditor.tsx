@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import type { MatchPlan, MatchSet, StrategyTemplate } from "../../domain/models/MatchPlan";
 import { useAppStore } from "../../store";
 import { Button, Badge, Card, FormField, Input, Textarea, Select } from "../../components/ui";
+import { printCurrentPage } from "../../utils/print";
 
 interface MatchPlanEditorProps {
   plan: MatchPlan;
@@ -99,6 +100,9 @@ export default function MatchPlanEditor({
         <div className="flex gap-2">
           <Button variant="secondary" onClick={onCancel}>
             Abbrechen
+          </Button>
+          <Button variant="secondary" onClick={printCurrentPage}>
+            Drucken
           </Button>
           <Button onClick={onSave}>Speichern</Button>
         </div>
