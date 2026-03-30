@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
+import { Badge } from "../../components/ui";
 
 interface FeatureCardProps {
   icon: string;
   title: string;
   stat: string;
-  statColor: string;
+  badgeColor: "blue" | "orange" | "green" | "red" | "accent";
   description: string;
   to: string;
   cta: string;
@@ -14,7 +15,7 @@ function FeatureCard({
   icon,
   title,
   stat,
-  statColor,
+  badgeColor,
   description,
   to,
   cta,
@@ -26,11 +27,7 @@ function FeatureCard({
     >
       <div className="flex items-center justify-between">
         <span className="text-2xl">{icon}</span>
-        <span
-          className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${statColor}`}
-        >
-          {stat}
-        </span>
+        <Badge color={badgeColor}>{stat}</Badge>
       </div>
       <div>
         <h2 className="text-base font-bold text-text">{title}</h2>
@@ -92,7 +89,7 @@ export default function HomePage() {
           icon={"\uD83D\uDCDA"}
           title="Lernen"
           stat="48 Coaching-Karten"
-          statColor="bg-kicker-blue/15 text-kicker-blue"
+          badgeColor="blue"
           description="7 Kategorien &ndash; von Torschuss &uuml;ber Passspiel und Ballkontrolle bis hin zu Defensive, Taktik, Offensive und Mental. Schritt-f&uuml;r-Schritt-Anleitungen, Coach-Tipps und Lernpfade."
           to="/learn"
           cta="Zur Bibliothek &rarr;"
@@ -101,7 +98,7 @@ export default function HomePage() {
           icon={"\u23F1\uFE0F"}
           title="Training"
           stat="20 Drills"
-          statColor="bg-kicker-orange/15 text-kicker-orange"
+          badgeColor="orange"
           description="Timer-gest&uuml;tzte Trainingsbl&ouml;cke mit Auto-Advance, Schwierigkeitsfilter und Session-Builder. Halte deinen Fortschritt im Trainingstagebuch fest."
           to="/train"
           cta="Zum Training &rarr;"
@@ -110,7 +107,7 @@ export default function HomePage() {
           icon={"\uD83D\uDCCB"}
           title="Matchplan"
           stat="Taktik & Strategie"
-          statColor="bg-kicker-green/15 text-kicker-green"
+          badgeColor="green"
           description="Erstelle individuelle Matchpl&auml;ne mit Gegneranalyse, Gameplan, Timeout-Strategien sowie offensiven und defensiven Taktikvorlagen. Import &amp; Export als JSON."
           to="/plan"
           cta="Zum Matchplan &rarr;"
@@ -119,7 +116,7 @@ export default function HomePage() {
           icon={"\uD83C\uDFAF"}
           title="Taktikboard"
           stat="Interaktiv"
-          statColor="bg-accent/15 text-accent"
+          badgeColor="accent"
           description="Spielz&uuml;ge auf dem Canvas-Taktikboard planen. Figuren verschieben, Pfeile und Zonen zeichnen, Szenen speichern und als PNG exportieren."
           to="/board"
           cta="Zum Taktikboard &rarr;"
