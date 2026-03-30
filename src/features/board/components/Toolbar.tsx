@@ -1,6 +1,7 @@
 import type { ToolState, ToolType, ArrowType, ZoneShape } from "../../../domain/models/TacticalBoard";
 import type { BoardAction } from "../hooks/useBoardReducer";
 import { ZONE_COLORS } from "../../../data/fieldConfig";
+import { Button, IconButton } from "../../../components/ui";
 
 interface ToolbarProps {
   tool: ToolState;
@@ -79,63 +80,53 @@ export default function Toolbar({
         ))}
 
         {/* Ball toggle */}
-        <button
+        <IconButton
+          size="sm"
           onClick={() => dispatch({ type: "TOGGLE_BALL" })}
           title="Ball ein/aus"
-          className="rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 transition-all"
         >
           &#9917;
-        </button>
+        </IconButton>
 
         {/* Reset figures to default */}
-        <button
+        <IconButton
+          size="sm"
           onClick={onResetFigures}
           title="Stangen zur&uuml;cksetzen"
-          className="flex items-center gap-1 rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium text-text-muted hover:border-accent/50 transition-all"
         >
-          <span>&#8634;</span>
-          <span className="hidden md:inline">Reset</span>
-        </button>
+          &#8634;
+        </IconButton>
 
         <div className="mx-1 h-6 w-px bg-border" />
 
         {/* Undo / Redo */}
-        <button
+        <IconButton
+          size="sm"
           onClick={() => dispatch({ type: "UNDO" })}
           disabled={!canUndo}
           title="R&uuml;ckg&auml;ngig (Ctrl+Z)"
-          className="rounded-lg border border-border px-2.5 py-1.5 text-xs text-text-muted hover:border-accent/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
         >
           &#8630;
-        </button>
-        <button
+        </IconButton>
+        <IconButton
+          size="sm"
           onClick={() => dispatch({ type: "REDO" })}
           disabled={!canRedo}
           title="Wiederherstellen (Ctrl+Y)"
-          className="rounded-lg border border-border px-2.5 py-1.5 text-xs text-text-muted hover:border-accent/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
         >
           &#8631;
-        </button>
+        </IconButton>
 
         <div className="ml-auto flex gap-1.5">
-          <button
-            onClick={onShowScenes}
-            className="rounded-lg border border-border px-3 py-1.5 text-xs text-text-muted hover:border-accent/50 transition-all"
-          >
+          <Button variant="secondary" size="sm" onClick={onShowScenes}>
             Szenen
-          </button>
-          <button
-            onClick={onSave}
-            className="rounded-lg border border-border px-3 py-1.5 text-xs text-text-muted hover:border-accent/50 transition-all"
-          >
+          </Button>
+          <Button variant="secondary" size="sm" onClick={onSave}>
             Speichern
-          </button>
-          <button
-            onClick={onExport}
-            className="rounded-lg border-2 border-accent bg-accent-dim px-3 py-1.5 text-xs font-semibold text-accent-hover hover:bg-accent hover:text-white transition-all"
-          >
+          </Button>
+          <Button size="sm" onClick={onExport}>
             PNG
-          </button>
+          </Button>
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { TacticalScene } from "../../../domain/models/TacticalBoard";
 import type { BoardAction } from "../hooks/useBoardReducer";
 import { createDefaultScene } from "../logic/sceneFactory";
+import { Button, Input, EmptyState, ConfirmDialog } from "../../../components/ui";
 
 interface SceneManagerProps {
   currentScene: TacticalScene;
@@ -20,6 +21,7 @@ export default function SceneManager({
 }: SceneManagerProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const handleSaveCurrent = () => {
     const existing = savedScenes.findIndex((s) => s.id === currentScene.id);
@@ -61,7 +63,8 @@ export default function SceneManager({
           <h2 className="text-base font-bold text-text">Szenen</h2>
           <button
             onClick={onClose}
-            className="rounded-lg px-2.5 py-1 text-xs text-text-muted hover:bg-accent-dim transition-all"
+            className="text-text-dim hover:text-text transition-colors"
+            aria-label="Schliessen"
           >
             &#10005;
           </button>
@@ -70,9 +73,11 @@ export default function SceneManager({
         {/* Scene list */}
         <div className="flex-1 overflow-y-auto p-4">
           {savedScenes.length === 0 ? (
-            <p className="py-8 text-center text-sm text-text-dim">
-              Keine gespeicherten Szenen.
-            </p>
+            <EmptyState
+              icon="&#127912;"
+              title="Keine Szenen"
+              description="Noch keine Szenen gespeichert."
+            />
           ) : (
             <ul className="flex flex-col gap-2">
               {savedScenes.map((scene) => (
@@ -92,26 +97,23 @@ export default function SceneManager({
                         handleRename(scene.id);
                       }}
                     >
-                      <input
-                        type="text"
+                      <Input
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        className="flex-1 rounded-lg border border-border bg-bg px-2 py-1 text-xs text-text focus:border-accent focus:outline-none"
+                        className="flex-1 text-xs"
                         autoFocus
                       />
-                      <button
-                        type="submit"
-                        className="text-xs text-accent-hover hover:underline"
-                      >
+                      <Button variant="ghost" size="sm" type="submit">
                         OK
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         type="button"
                         onClick={() => setEditingId(null)}
-                        className="text-xs text-text-muted hover:underline"
                       >
                         Abbrechen
-                      </button>
+                      </Button>
                     </form>
                   ) : (
                     <>
@@ -123,12 +125,13 @@ export default function SceneManager({
                           {new Date(scene.updatedAt).toLocaleDateString("de-DE")}
                         </span>
                       </div>
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => handleLoad(scene)}
-                        className="rounded-lg border border-border px-2 py-1 text-[11px] text-text-muted hover:border-accent/50 transition-all"
                       >
                         Laden
-                      </button>
+                      </Button>
                       <button
                         onClick={() => {
                           setEditingId(scene.id);
@@ -139,7 +142,7 @@ export default function SceneManager({
                         &#9998;
                       </button>
                       <button
-                        onClick={() => handleDelete(scene.id)}
+                        onClick={() => setDeleteId(scene.id)}
                         className="rounded-lg border border-border px-2 py-1 text-[11px] text-kicker-red hover:border-kicker-red/50 transition-all"
                       >
                         &#128465;
@@ -154,20 +157,29 @@ export default function SceneManager({
 
         {/* Footer */}
         <div className="flex gap-2 border-t border-border p-4">
-          <button
+          <Button
+            variant="secondary"
+            size="sm"
+            className="flex-1"
             onClick={handleNewScene}
-            className="flex-1 rounded-xl border border-border px-3 py-2 text-xs font-medium text-text-muted hover:border-accent/50 transition-all"
           >
             Neue Szene
-          </button>
-          <button
-            onClick={handleSaveCurrent}
-            className="flex-1 rounded-xl border-2 border-accent bg-accent-dim px-3 py-2 text-xs font-semibold text-accent-hover hover:bg-accent hover:text-white transition-all"
-          >
+          </Button>
+          <Button size="sm" className="flex-1" onClick={handleSaveCurrent}>
             Aktuelle speichern
-          </button>
+          </Button>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onClose={() => setDeleteId(null)}
+        onConfirm={() => {
+          if (deleteId) handleDelete(deleteId);
+        }}
+        title="Szene loeschen"
+        message="Moechtest du diese Szene wirklich loeschen?"
+      />
     </div>
   );
 }

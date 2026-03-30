@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import type Konva from "konva";
 import type { TacticalScene } from "../../domain/models/TacticalBoard";
-import { STORAGE_KEYS } from "../../domain/constants";
+import { useAppStore } from "../../store";
 import { createDefaultScene, createDefaultFigures } from "./logic/sceneFactory";
 import { useBoardReducer } from "./hooks/useBoardReducer";
 import { useKeyboardShortcuts } from "./hooks/useKeyboardShortcuts";
@@ -9,32 +9,8 @@ import BoardCanvas from "./components/BoardCanvas";
 import Toolbar from "./components/Toolbar";
 import SceneManager from "./components/SceneManager";
 
-// ── localStorage helpers ────────────────────────────────────────────
-
-function loadScenes(): TacticalScene[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEYS.boardScenes);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    console.warn("Failed to load board scenes from localStorage");
-    return [];
-  }
-}
-
-function saveScenes(scenes: TacticalScene[]) {
-  try {
-    localStorage.setItem(STORAGE_KEYS.boardScenes, JSON.stringify(scenes));
-  } catch {
-    console.warn("Failed to save board scenes to localStorage");
-  }
-}
-
-function loadLastScene(): TacticalScene {
-  const scenes = loadScenes();
+function getLastScene(scenes: TacticalScene[]): TacticalScene {
   if (scenes.length > 0) {
-    // Return the most recently updated scene
     return [...scenes].sort(
       (a, b) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
@@ -43,39 +19,29 @@ function loadLastScene(): TacticalScene {
   return createDefaultScene();
 }
 
-// ── Component ───────────────────────────────────────────────────────
-
 export default function BoardMode() {
   const stageRef = useRef<Konva.Stage>(null!);
   const [showScenes, setShowScenes] = useState(false);
-  const [savedScenes, setSavedScenes] = useState<TacticalScene[]>(loadScenes);
+  const boardScenes = useAppStore((s) => s.boardScenes);
+  const setBoardScenes = useAppStore((s) => s.setBoardScenes);
 
   const { state, dispatch, canUndo, canRedo } = useBoardReducer(
-    loadLastScene(),
+    getLastScene(boardScenes),
   );
 
   // Keyboard shortcuts
   useKeyboardShortcuts(dispatch, state.selectedElementId);
 
-  // Persist saved scenes to localStorage
-  const handleSaveScenes = useCallback((scenes: TacticalScene[]) => {
-    setSavedScenes(scenes);
-    saveScenes(scenes);
-  }, []);
-
   // Save current scene (quick-save)
   const handleSave = useCallback(() => {
     const current = state.scene;
-    setSavedScenes((prev) => {
-      const existing = prev.findIndex((s) => s.id === current.id);
-      const updated =
-        existing >= 0
-          ? prev.map((s) => (s.id === current.id ? current : s))
-          : [...prev, current];
-      saveScenes(updated);
-      return updated;
-    });
-  }, [state.scene]);
+    const existing = boardScenes.findIndex((s) => s.id === current.id);
+    const updated =
+      existing >= 0
+        ? boardScenes.map((s) => (s.id === current.id ? current : s))
+        : [...boardScenes, current];
+    setBoardScenes(updated);
+  }, [state.scene, boardScenes, setBoardScenes]);
 
   // PNG export (2x resolution)
   const handleExport = useCallback(() => {
@@ -120,8 +86,8 @@ export default function BoardMode() {
       {showScenes && (
         <SceneManager
           currentScene={state.scene}
-          savedScenes={savedScenes}
-          onSaveScenes={handleSaveScenes}
+          savedScenes={boardScenes}
+          onSaveScenes={setBoardScenes}
           dispatch={dispatch}
           onClose={() => setShowScenes(false)}
         />
