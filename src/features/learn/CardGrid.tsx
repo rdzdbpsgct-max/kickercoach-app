@@ -3,7 +3,7 @@ import {
   DIFFICULTY_LABELS,
   MAX_VISIBLE_TAGS,
 } from "../../domain/constants";
-import { Card, Badge } from "../../components/ui";
+import { Card, Badge, EmptyState } from "../../components/ui";
 
 const DIFFICULTY_BADGE_COLORS = {
   beginner: "green",
@@ -32,6 +32,16 @@ export default function CardGrid({
   favorites,
   onSelect,
 }: CardGridProps) {
+  if (cards.length === 0) {
+    return (
+      <EmptyState
+        icon="&#128269;"
+        title="Keine Karten gefunden"
+        description="Versuche einen anderen Filter oder Suchbegriff."
+      />
+    );
+  }
+
   return (
     <div className="grid min-h-0 flex-1 grid-cols-[repeat(auto-fill,minmax(260px,1fr))] content-start gap-3 overflow-auto pb-4">
       {cards.map((card) => (
