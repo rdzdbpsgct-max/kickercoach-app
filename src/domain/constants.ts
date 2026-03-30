@@ -28,6 +28,16 @@ export const CATEGORY_COLORS: Record<Category, string> = {
   Mental: "bg-accent-dim text-accent-hover",
 };
 
+export const CATEGORY_BAR_COLORS: Record<Category, string> = {
+  Torschuss: "bg-kicker-red/70",
+  Passspiel: "bg-kicker-blue/70",
+  Ballkontrolle: "bg-kicker-orange/70",
+  Defensive: "bg-kicker-green/70",
+  Taktik: "bg-accent/70",
+  Offensive: "bg-kicker-red/50",
+  Mental: "bg-accent-hover/70",
+};
+
 export const STORAGE_KEYS = {
   favorites: "kickercoach-favorites",
   sessions: "kickercoach-sessions",

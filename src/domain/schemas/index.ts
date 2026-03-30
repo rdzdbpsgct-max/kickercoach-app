@@ -7,6 +7,12 @@ export {
 export { SessionSchema, MoodSchema } from "./session";
 export { MatchPlanSchema, StrategyTemplateSchema } from "./matchPlan";
 export {
+  PlayerSchema,
+  PositionSchema,
+  SkillRatingsSchema,
+  DEFAULT_SKILL_RATINGS,
+} from "./player";
+export {
   TacticalSceneSchema,
   PointSchema,
   SizeSchema,

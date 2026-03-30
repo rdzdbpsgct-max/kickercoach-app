@@ -6,6 +6,7 @@ const tabs = [
   { to: "/train", label: "Training", icon: "\u23F1\uFE0F" },
   { to: "/plan", label: "Matchplan", icon: "\uD83D\uDCCB" },
   { to: "/board", label: "Taktik", icon: "\uD83C\uDFAF" },
+  { to: "/players", label: "Spieler", icon: "\uD83D\uDC64" },
 ] as const;
 
 export default function Layout({ children }: { children: ReactNode }) {
