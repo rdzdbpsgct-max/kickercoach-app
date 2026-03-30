@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type { MatchPlan, StrategyTemplate } from "../../domain/models/MatchPlan";
+import { Button, FormField, Input, Textarea, Select } from "../../components/ui";
 
 interface MatchPlanEditorProps {
   plan: MatchPlan;
@@ -55,68 +56,47 @@ export default function MatchPlanEditor({
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">Matchplan bearbeiten</h2>
         <div className="flex gap-2">
-          <button
-            onClick={onCancel}
-            className="rounded-xl border border-border px-4 py-2 text-sm text-text-muted hover:border-accent/50 transition-all"
-          >
+          <Button variant="secondary" onClick={onCancel}>
             Abbrechen
-          </button>
-          <button
-            onClick={onSave}
-            className="rounded-xl border-2 border-accent bg-accent-dim px-4 py-2 text-sm font-semibold text-accent-hover hover:bg-accent hover:text-white transition-all"
-          >
-            Speichern
-          </button>
+          </Button>
+          <Button onClick={onSave}>Speichern</Button>
         </div>
       </div>
 
       {/* Basic info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium text-text-dim">Gegner</label>
-          <input
-            type="text"
+        <FormField label="Gegner">
+          <Input
             value={plan.opponent}
             onChange={(e) => update("opponent", e.target.value)}
             placeholder="Gegner-Team"
-            className="rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none"
           />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium text-text-dim">Datum</label>
-          <input
+        </FormField>
+        <FormField label="Datum">
+          <Input
             type="date"
             value={plan.date}
             onChange={(e) => update("date", e.target.value)}
-            className="rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text focus:border-accent focus:outline-none"
           />
-        </div>
+        </FormField>
       </div>
 
       {/* Analysis */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium text-text-dim">
-          Gegneranalyse
-        </label>
-        <textarea
+      <FormField label="Gegneranalyse">
+        <Textarea
           value={plan.analysis}
           onChange={(e) => update("analysis", e.target.value)}
           placeholder="Staerken, Schwaechen, typische Spielmuster..."
           rows={4}
-          className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none resize-none"
         />
-      </div>
+      </FormField>
 
       {/* Strategy Templates */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium text-text-dim">
-            Offensive Strategie
-          </label>
-          <select
+        <FormField label="Offensive Strategie">
+          <Select
             value={plan.offensiveStrategy ?? ""}
             onChange={(e) => update("offensiveStrategy", e.target.value)}
-            className="rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text focus:border-accent focus:outline-none"
           >
             <option value="">Keine Vorlage</option>
             {offensiveTemplates.map((t) => (
@@ -124,7 +104,7 @@ export default function MatchPlanEditor({
                 {t.name}
               </option>
             ))}
-          </select>
+          </Select>
           {selectedOffensive && (
             <div className="rounded-lg border border-kicker-blue/20 bg-kicker-blue/5 p-3">
               <p className="mb-2 text-xs leading-relaxed text-text-muted">
@@ -143,16 +123,12 @@ export default function MatchPlanEditor({
               </ul>
             </div>
           )}
-        </div>
+        </FormField>
 
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium text-text-dim">
-            Defensive Strategie
-          </label>
-          <select
+        <FormField label="Defensive Strategie">
+          <Select
             value={plan.defensiveStrategy ?? ""}
             onChange={(e) => update("defensiveStrategy", e.target.value)}
-            className="rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text focus:border-accent focus:outline-none"
           >
             <option value="">Keine Vorlage</option>
             {defensiveTemplates.map((t) => (
@@ -160,7 +136,7 @@ export default function MatchPlanEditor({
                 {t.name}
               </option>
             ))}
-          </select>
+          </Select>
           {selectedDefensive && (
             <div className="rounded-lg border border-kicker-green/20 bg-kicker-green/5 p-3">
               <p className="mb-2 text-xs leading-relaxed text-text-muted">
@@ -179,26 +155,21 @@ export default function MatchPlanEditor({
               </ul>
             </div>
           )}
-        </div>
+        </FormField>
       </div>
 
       {/* Gameplan */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium text-text-dim">Gameplan</label>
-        <textarea
+      <FormField label="Gameplan">
+        <Textarea
           value={plan.gameplan}
           onChange={(e) => update("gameplan", e.target.value)}
           placeholder="Taktische Ausrichtung, Schuss-Strategie, defensive Aufstellung..."
           rows={4}
-          className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none resize-none"
         />
-      </div>
+      </FormField>
 
       {/* Timeout Strategies */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium text-text-dim">
-          Timeout-Strategien
-        </label>
+      <FormField label="Timeout-Strategien">
         <div className="flex flex-col gap-2">
           {plan.timeoutStrategies.map((strategy, i) => (
             <div
@@ -215,35 +186,28 @@ export default function MatchPlanEditor({
             </div>
           ))}
           <div className="flex gap-2">
-            <input
-              type="text"
+            <Input
               value={newStrategy}
               onChange={(e) => setNewStrategy(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addStrategy()}
               placeholder="Neue Strategie hinzufuegen..."
-              className="flex-1 rounded-xl border border-border bg-surface px-4 py-2 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none"
             />
-            <button
-              onClick={addStrategy}
-              className="rounded-xl border border-border px-4 py-2 text-sm text-text-muted hover:border-accent/50 transition-all"
-            >
+            <Button variant="secondary" onClick={addStrategy}>
               +
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
+      </FormField>
 
       {/* Notes */}
-      <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium text-text-dim">Notizen</label>
-        <textarea
+      <FormField label="Notizen">
+        <Textarea
           value={plan.notes}
           onChange={(e) => update("notes", e.target.value)}
           placeholder="Sonstige Notizen..."
           rows={3}
-          className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none resize-none"
         />
-      </div>
+      </FormField>
     </div>
   );
 }

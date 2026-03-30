@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import type { MatchPlan } from "../../domain/models/MatchPlan";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { STORAGE_KEYS } from "../../domain/constants";
+import { useAppStore } from "../../store";
+import { Button } from "../../components/ui";
 import MatchPlanEditor from "./MatchPlanEditor";
 import MatchPlanList from "./MatchPlanList";
 
@@ -20,10 +20,10 @@ function createEmptyPlan(): MatchPlan {
 }
 
 export default function PlanMode() {
-  const [plans, setPlans] = useLocalStorage<MatchPlan[]>(
-    STORAGE_KEYS.matchplans,
-    [],
-  );
+  const matchPlans = useAppStore((s) => s.matchPlans);
+  const addMatchPlan = useAppStore((s) => s.addMatchPlan);
+  const updateMatchPlan = useAppStore((s) => s.updateMatchPlan);
+  const deleteMatchPlan = useAppStore((s) => s.deleteMatchPlan);
   const [editingPlan, setEditingPlan] = useState<MatchPlan | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -33,20 +33,17 @@ export default function PlanMode() {
 
   const handleSave = () => {
     if (!editingPlan) return;
-    setPlans((prev) => {
-      const existing = prev.findIndex((p) => p.id === editingPlan.id);
-      if (existing >= 0) {
-        const updated = [...prev];
-        updated[existing] = editingPlan;
-        return updated;
-      }
-      return [...prev, editingPlan];
-    });
+    const existing = matchPlans.find((p) => p.id === editingPlan.id);
+    if (existing) {
+      updateMatchPlan(editingPlan.id, editingPlan);
+    } else {
+      addMatchPlan(editingPlan);
+    }
     setEditingPlan(null);
   };
 
   const handleDelete = (id: string) => {
-    setPlans((prev) => prev.filter((p) => p.id !== id));
+    deleteMatchPlan(id);
   };
 
   const handleExport = (plan: MatchPlan) => {
@@ -79,7 +76,7 @@ export default function PlanMode() {
         }
         const plan = data as MatchPlan;
         plan.id = crypto.randomUUID();
-        setPlans((prev) => [...prev, plan]);
+        addMatchPlan(plan);
       } catch {
         alert("Die Datei konnte nicht gelesen werden. Bitte eine gueltige JSON-Datei waehlen.");
       }
@@ -112,23 +109,18 @@ export default function PlanMode() {
             onChange={handleImport}
             className="hidden"
           />
-          <button
+          <Button
+            variant="secondary"
             onClick={() => fileInputRef.current?.click()}
-            className="rounded-xl border border-border px-4 py-2 text-sm text-text-muted hover:border-accent/50 transition-all"
           >
             Import
-          </button>
-          <button
-            onClick={handleNew}
-            className="rounded-xl border-2 border-accent bg-accent-dim px-4 py-2 text-sm font-semibold text-accent-hover hover:bg-accent hover:text-white transition-all"
-          >
-            + Neuer Plan
-          </button>
+          </Button>
+          <Button onClick={handleNew}>+ Neuer Plan</Button>
         </div>
       </div>
 
       <MatchPlanList
-        plans={plans}
+        plans={matchPlans}
         onSelect={setEditingPlan}
         onDelete={handleDelete}
         onExport={handleExport}
