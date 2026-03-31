@@ -89,10 +89,10 @@ describe("useAppStore", () => {
       expect(useAppStore.getState().favorites).not.toContain("card-1");
     });
 
-    it("checks isFavorite", () => {
+    it("checks favorites via state", () => {
       useAppStore.getState().toggleFavorite("card-1");
-      expect(useAppStore.getState().isFavorite("card-1")).toBe(true);
-      expect(useAppStore.getState().isFavorite("card-2")).toBe(false);
+      expect(useAppStore.getState().favorites.includes("card-1")).toBe(true);
+      expect(useAppStore.getState().favorites.includes("card-2")).toBe(false);
     });
   });
 

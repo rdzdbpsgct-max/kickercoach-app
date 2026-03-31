@@ -4,69 +4,19 @@ import { migrateArray } from "./migrate";
 import { SessionSchema } from "../domain/schemas/session";
 import { MatchPlanSchema } from "../domain/schemas/matchPlan";
 import { TacticalSceneSchema } from "../domain/schemas/tacticalBoard";
-import type { Difficulty, Category } from "../domain/models/CoachCard";
 import type { CoachingNote } from "../domain/models/CoachingNote";
 import type { Drill } from "../domain/models/Drill";
 import type { Team } from "../domain/models/Team";
-import type { TrainingPlan } from "../domain/models/TrainingPlan";
+import type {
+  TrainingPlan,
+  SessionTemplate,
+} from "../domain/models/TrainingPlan";
 import type { Evaluation } from "../domain/models/Evaluation";
 import type { MatchPlan } from "../domain/models/MatchPlan";
 import type { TacticalScene } from "../domain/models/TacticalBoard";
-
-// ── Player Types (new) ─────────────────────────────────────────────
-
-export type Position = "offense" | "defense" | "both";
-
-export type SkillRatings = Record<Category, number>;
-
-export interface Player {
-  id: string;
-  name: string;
-  nickname?: string;
-  preferredPosition: Position;
-  level: Difficulty;
-  notes: string;
-  skillRatings: SkillRatings;
-  avatarColor?: string;
-  createdAt: string;
-}
-
-// ── Extended Session Type ──────────────────────────────────────────
-
-export interface Session {
-  id: string;
-  name: string;
-  date: string;
-  drillIds: string[];
-  notes: string;
-  totalDuration: number;
-  playerIds: string[];
-  focusAreas: Category[];
-  rating?: number;
-  mood?: "great" | "good" | "ok" | "tired" | "frustrated";
-}
-
-// ── Goal Type (new) ────────────────────────────────────────────────
-
-export interface Goal {
-  id: string;
-  playerId: string;
-  title: string;
-  description?: string;
-  category: Category;
-  targetDate?: string;
-  status: "active" | "achieved" | "paused";
-  createdAt: string;
-}
-
-// ── Template Types ─────────────────────────────────────────────────
-
-export interface SessionTemplate {
-  id: string;
-  name: string;
-  drillIds: string[];
-  focusAreas: Category[];
-}
+import type { Player } from "../domain/models/Player";
+import type { Session } from "../domain/models/Session";
+import type { Goal } from "../domain/models/Goal";
 
 // ── Store Interface ────────────────────────────────────────────────
 
@@ -112,7 +62,6 @@ interface AppState {
 
   // Favorite actions
   toggleFavorite: (id: string) => void;
-  isFavorite: (id: string) => boolean;
 
   // Goal actions
   addGoal: (goal: Goal) => void;
@@ -152,7 +101,7 @@ interface AppState {
 
 // ── Store Version & Migration ──────────────────────────────────────
 
-const STORE_VERSION = 1;
+const STORE_VERSION = 2;
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -182,7 +131,17 @@ export const useAppStore = create<AppState>()(
           ),
         })),
       deletePlayer: (id) =>
-        set((s) => ({ players: s.players.filter((p) => p.id !== id) })),
+        set((s) => ({
+          players: s.players.filter((p) => p.id !== id),
+          goals: s.goals.filter((g) => g.playerId !== id),
+          evaluations: s.evaluations.filter((e) => e.playerId !== id),
+          coachingNotes: s.coachingNotes.filter((n) => n.playerId !== id),
+          teams: s.teams.filter((t) => !t.playerIds.includes(id)),
+          sessions: s.sessions.map((ses) => ({
+            ...ses,
+            playerIds: ses.playerIds.filter((pid) => pid !== id),
+          })),
+        })),
 
       // Session actions
       addSession: (session) =>
@@ -194,7 +153,11 @@ export const useAppStore = create<AppState>()(
           ),
         })),
       deleteSession: (id) =>
-        set((s) => ({ sessions: s.sessions.filter((ses) => ses.id !== id) })),
+        set((s) => ({
+          sessions: s.sessions.filter((ses) => ses.id !== id),
+          evaluations: s.evaluations.filter((e) => e.sessionId !== id),
+          coachingNotes: s.coachingNotes.filter((n) => n.sessionId !== id),
+        })),
 
       // MatchPlan actions
       addMatchPlan: (plan) =>
@@ -226,6 +189,11 @@ export const useAppStore = create<AppState>()(
       deleteCustomDrill: (id) =>
         set((s) => ({
           customDrills: s.customDrills.filter((d) => d.id !== id),
+          drillTemplates: s.drillTemplates.filter((d) => d.id !== id),
+          sessions: s.sessions.map((ses) => ({
+            ...ses,
+            drillIds: ses.drillIds.filter((did) => did !== id),
+          })),
         })),
 
       // Favorite actions
@@ -235,7 +203,6 @@ export const useAppStore = create<AppState>()(
             ? s.favorites.filter((f) => f !== id)
             : [...s.favorites, id],
         })),
-      isFavorite: (id) => get().favorites.includes(id),
 
       // Goal actions
       addGoal: (goal) => set((s) => ({ goals: [...s.goals, goal] })),
@@ -326,8 +293,7 @@ export const useAppStore = create<AppState>()(
         const state = persistedState as Record<string, unknown>;
 
         if (version === 0 || version === undefined) {
-          return {
-            ...state,
+          Object.assign(state, {
             sessions: migrateArray(state.sessions, SessionSchema),
             matchPlans: migrateArray(state.matchPlans, MatchPlanSchema),
             boardScenes: migrateArray(
@@ -343,7 +309,22 @@ export const useAppStore = create<AppState>()(
             trainingPlans: Array.isArray(state.trainingPlans) ? state.trainingPlans : [],
             drillTemplates: Array.isArray(state.drillTemplates) ? state.drillTemplates : [],
             sessionTemplates: Array.isArray(state.sessionTemplates) ? state.sessionTemplates : [],
-          };
+          });
+        }
+
+        // v1 → v2: Ensure Session fields have defaults, teams array exists
+        if ((version ?? 0) < 2) {
+          if (Array.isArray(state.sessions)) {
+            state.sessions = (state.sessions as Record<string, unknown>[]).map(
+              (s) => ({
+                ...s,
+                playerIds: s.playerIds ?? [],
+                focusAreas: s.focusAreas ?? [],
+                createdAt: s.createdAt ?? s.date ?? new Date().toISOString(),
+              }),
+            );
+          }
+          state.teams = state.teams ?? [];
         }
 
         return state as unknown as AppState;

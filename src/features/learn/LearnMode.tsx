@@ -18,7 +18,6 @@ export default function LearnMode() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const favorites = useAppStore((s) => s.favorites);
   const toggleFavorite = useAppStore((s) => s.toggleFavorite);
-  const isFavorite = useAppStore((s) => s.isFavorite);
 
   // Load cards
   useEffect(() => {
@@ -61,7 +60,7 @@ export default function LearnMode() {
     return (
       <CardDetail
         card={selectedCard}
-        isFavorite={isFavorite(selectedCard.id)}
+        isFavorite={favorites.includes(selectedCard.id)}
         onToggleFavorite={() => toggleFavorite(selectedCard.id)}
         onBack={() => setSelectedCard(null)}
         allCards={cards}

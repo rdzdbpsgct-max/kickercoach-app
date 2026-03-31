@@ -14,6 +14,8 @@ const sessions: Session[] = [
     drillIds: ["d1"],
     notes: "",
     totalDuration: 1200,
+    playerIds: [],
+    focusAreas: [],
   },
   {
     id: "s2",
@@ -22,6 +24,8 @@ const sessions: Session[] = [
     drillIds: ["d1", "d2"],
     notes: "",
     totalDuration: 1800,
+    playerIds: [],
+    focusAreas: [],
   },
   {
     id: "s3",
@@ -30,6 +34,8 @@ const sessions: Session[] = [
     drillIds: ["d2"],
     notes: "",
     totalDuration: 600,
+    playerIds: [],
+    focusAreas: [],
   },
 ];
 

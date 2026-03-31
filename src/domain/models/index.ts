@@ -1,11 +1,26 @@
+// ── Content & Enums ──────────────────────────────────────────────
 export type { CoachCard, Difficulty, Category } from "./CoachCard";
+
+// ── Core Domain ──────────────────────────────────────────────────
+export type { Player, Position, SkillRatings } from "./Player";
+export type { Session, Mood } from "./Session";
 export type { Drill, TrainingBlock, DrillDifficulty } from "./Drill";
-export type { Session } from "./Session";
-export type { MatchPlan, StrategyTemplate } from "./MatchPlan";
+export type { Goal } from "./Goal";
+export type { Evaluation, SkillRating } from "./Evaluation";
+export type { CoachingNote } from "./CoachingNote";
+export type {
+  SessionTemplate,
+  TrainingWeek,
+  TrainingPlan,
+} from "./TrainingPlan";
+export type { Team } from "./Team";
+export type { MatchPlan, StrategyTemplate, MatchSet } from "./MatchPlan";
+
+// ── Tactical Board ───────────────────────────────────────────────
 export type {
   Point,
   Size,
-  Team,
+  Team as TacticalTeam,
   RodConfig,
   FigureMarker,
   ArrowType,

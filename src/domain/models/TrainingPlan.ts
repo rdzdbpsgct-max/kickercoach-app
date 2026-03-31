@@ -1,10 +1,11 @@
 import type { Category } from "./CoachCard";
 
 export interface SessionTemplate {
+  id?: string;
   name: string;
   drillIds: string[];
   focusAreas: Category[];
-  estimatedDuration: number;
+  estimatedDuration?: number;
 }
 
 export interface TrainingWeek {

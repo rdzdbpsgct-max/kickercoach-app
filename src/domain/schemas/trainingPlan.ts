@@ -2,10 +2,11 @@ import { z } from "zod";
 import { CategorySchema } from "./coachCard";
 
 export const SessionTemplateSchema = z.object({
+  id: z.string().optional(),
   name: z.string(),
   drillIds: z.array(z.string()),
   focusAreas: z.array(CategorySchema),
-  estimatedDuration: z.number(),
+  estimatedDuration: z.number().optional(),
 });
 
 export const TrainingWeekSchema = z.object({
