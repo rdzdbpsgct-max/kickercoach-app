@@ -17,6 +17,7 @@ import type { TacticalScene } from "../domain/models/TacticalBoard";
 import type { Player } from "../domain/models/Player";
 import type { Session } from "../domain/models/Session";
 import type { Goal } from "../domain/models/Goal";
+import type { Technique } from "../domain/models/Technique";
 
 // ── Store Interface ────────────────────────────────────────────────
 
@@ -28,6 +29,7 @@ interface AppState {
   boardScenes: TacticalScene[];
   favorites: string[];
   goals: Goal[];
+  techniques: Technique[];
   customDrills: Drill[];
   evaluations: Evaluation[];
   coachingNotes: CoachingNote[];
@@ -62,6 +64,9 @@ interface AppState {
 
   // Favorite actions
   toggleFavorite: (id: string) => void;
+
+  // Technique actions
+  setTechniques: (techniques: Technique[]) => void;
 
   // Goal actions
   addGoal: (goal: Goal) => void;
@@ -113,6 +118,7 @@ export const useAppStore = create<AppState>()(
       boardScenes: [],
       favorites: [],
       goals: [],
+      techniques: [],
       customDrills: [],
       evaluations: [],
       coachingNotes: [],
@@ -203,6 +209,9 @@ export const useAppStore = create<AppState>()(
             ? s.favorites.filter((f) => f !== id)
             : [...s.favorites, id],
         })),
+
+      // Technique actions
+      setTechniques: (techniques) => set({ techniques }),
 
       // Goal actions
       addGoal: (goal) => set((s) => ({ goals: [...s.goals, goal] })),
@@ -325,6 +334,7 @@ export const useAppStore = create<AppState>()(
             );
           }
           state.teams = state.teams ?? [];
+          state.techniques = state.techniques ?? [];
         }
 
         return state as unknown as AppState;

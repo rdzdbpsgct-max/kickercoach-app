@@ -6,13 +6,32 @@ const STATUS_LABELS: Record<string, string> = {
   active: "Aktiv",
   achieved: "Erreicht",
   paused: "Pausiert",
+  abandoned: "Aufgegeben",
 };
 
 const STATUS_COLORS: Record<string, "green" | "blue" | "orange"> = {
   active: "green",
   achieved: "blue",
   paused: "orange",
+  abandoned: "orange",
 };
+
+function ProgressBar({ current, target }: { current: number; target: number }) {
+  const pct = Math.min(100, Math.round((current / target) * 100));
+  return (
+    <div className="mt-1.5 flex items-center gap-2">
+      <div className="h-1.5 flex-1 rounded-full bg-surface-hover">
+        <div
+          className="h-1.5 rounded-full bg-accent transition-all"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <span className="text-[10px] font-medium text-text-dim">
+        {current}/{target} ({pct}%)
+      </span>
+    </div>
+  );
+}
 
 interface GoalListProps {
   goals: Goal[];
@@ -60,6 +79,12 @@ export function GoalList({ goals, onAdd, onEdit, onDelete, onToggleStatus }: Goa
                 </Badge>
                 <Badge color="accent">{goal.category}</Badge>
               </div>
+              {goal.targetValue != null && goal.targetValue > 0 && (
+                <ProgressBar
+                  current={goal.currentValue ?? 0}
+                  target={goal.targetValue}
+                />
+              )}
               {goal.description && (
                 <p className="mt-1 text-xs text-text-dim">{goal.description}</p>
               )}

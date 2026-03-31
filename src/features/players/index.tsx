@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../../store";
 import { ConfirmDialog, Tabs } from "../../components/ui";
 import { PlayerList } from "./PlayerList";
@@ -18,6 +19,7 @@ const TABS: { value: Tab; label: string; icon: string }[] = [
 ];
 
 export default function PlayersMode() {
+  const navigate = useNavigate();
   const players = useAppStore((s) => s.players);
   const addPlayer = useAppStore((s) => s.addPlayer);
   const updatePlayer = useAppStore((s) => s.updatePlayer);
@@ -87,6 +89,14 @@ export default function PlayersMode() {
     [editingTeam, addTeam, updateTeam],
   );
 
+  const handleStartTraining = useCallback(
+    (playerId: string) => {
+      // Navigate to train mode with player pre-selected via query param
+      navigate("/train", { state: { initialPlayerId: playerId } });
+    },
+    [navigate],
+  );
+
   const handleTabChange = useCallback((t: Tab) => {
     setTab(t);
     setView("list");
@@ -131,6 +141,7 @@ export default function PlayersMode() {
           onEdit={handleEdit}
           onBack={() => setView("list")}
           onDelete={handleDelete}
+          onStartTraining={handleStartTraining}
         />
         <ConfirmDialog
           open={deleteTarget !== null}

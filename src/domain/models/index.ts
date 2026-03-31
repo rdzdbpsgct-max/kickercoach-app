@@ -3,9 +3,15 @@ export type { CoachCard, Difficulty, Category } from "./CoachCard";
 
 // ── Core Domain ──────────────────────────────────────────────────
 export type { Player, Position, SkillRatings } from "./Player";
-export type { Session, Mood } from "./Session";
+export type {
+  Session,
+  Mood,
+  DrillResult,
+  SessionRetrospective,
+} from "./Session";
 export type { Drill, TrainingBlock, DrillDifficulty } from "./Drill";
-export type { Goal } from "./Goal";
+export type { Goal, GoalStatus } from "./Goal";
+export type { Technique } from "./Technique";
 export type { Evaluation, SkillRating } from "./Evaluation";
 export type { CoachingNote } from "./CoachingNote";
 export type {

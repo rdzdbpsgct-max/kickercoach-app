@@ -24,9 +24,10 @@ interface PlayerDetailProps {
   onEdit: () => void;
   onBack: () => void;
   onDelete: () => void;
+  onStartTraining?: (playerId: string) => void;
 }
 
-export function PlayerDetail({ player, onEdit, onBack, onDelete }: PlayerDetailProps) {
+export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining }: PlayerDetailProps) {
   const goals = useAppStore((s) => s.getPlayerGoals(player.id));
   const addGoal = useAppStore((s) => s.addGoal);
   const updateGoal = useAppStore((s) => s.updateGoal);
@@ -107,6 +108,15 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete }: PlayerDetailP
         <h2 className="mb-3 text-sm font-semibold text-text">Skill-Profil</h2>
         <SkillRadar ratings={player.skillRatings} />
       </Card>
+
+      {/* Quick Actions */}
+      {onStartTraining && (
+        <div className="flex gap-2 no-print">
+          <Button onClick={() => onStartTraining(player.id)}>
+            Training starten
+          </Button>
+        </div>
+      )}
 
       {/* Goals section */}
       <div>

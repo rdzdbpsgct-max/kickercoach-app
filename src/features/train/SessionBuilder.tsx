@@ -24,6 +24,7 @@ interface SessionBuilderProps {
   onSave: (session: Session) => void;
   onCancel: () => void;
   editSession?: Session | null;
+  initialPlayerIds?: string[];
 }
 
 export default function SessionBuilder({
@@ -31,6 +32,7 @@ export default function SessionBuilder({
   onSave,
   onCancel,
   editSession,
+  initialPlayerIds,
 }: SessionBuilderProps) {
   const players = useAppStore((s) => s.players);
   const sessionTemplates = useAppStore((s) => s.sessionTemplates);
@@ -43,7 +45,7 @@ export default function SessionBuilder({
   );
   const [notes, setNotes] = useState(editSession?.notes ?? "");
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>(
-    editSession?.playerIds ?? [],
+    editSession?.playerIds ?? initialPlayerIds ?? [],
   );
   const [focusAreas, setFocusAreas] = useState<Category[]>(
     editSession?.focusAreas ?? [],

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import type { Drill } from "../../domain/models/Drill";
 import { advanceBlock, previousBlock } from "../../domain/logic/drill";
 import { useTimer } from "../../hooks/useTimer";
@@ -21,8 +22,11 @@ import type { TrainingPlan } from "../../domain/models/TrainingPlan";
 type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor" | "session-rating" | "training-plans" | "training-plan-editor";
 
 export default function TrainMode() {
+  const location = useLocation();
+  const initialPlayerId = (location.state as { initialPlayerId?: string } | null)?.initialPlayerId;
+
   const [defaultDrills, setDefaultDrills] = useState<Drill[]>([]);
-  const [view, setView] = useState<View>("drills");
+  const [view, setView] = useState<View>(initialPlayerId ? "session-builder" : "drills");
   const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
   const [blockIndex, setBlockIndex] = useState(0);
   const [autoAdvance, setAutoAdvance] = useLocalStorage(
@@ -255,6 +259,7 @@ export default function TrainMode() {
       <SessionBuilder
         drills={allDrills}
         editSession={editSession}
+        initialPlayerIds={initialPlayerId ? [initialPlayerId] : undefined}
         onSave={handleSaveSession}
         onCancel={() => {
           setEditSession(null);

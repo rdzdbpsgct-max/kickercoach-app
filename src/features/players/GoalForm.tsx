@@ -15,6 +15,12 @@ export function GoalForm({ playerId, goal, onSave, onCancel }: GoalFormProps) {
   const [description, setDescription] = useState(goal?.description ?? "");
   const [category, setCategory] = useState<Category>(goal?.category ?? "Torschuss");
   const [targetDate, setTargetDate] = useState(goal?.targetDate ?? "");
+  const [targetValue, setTargetValue] = useState<string>(
+    goal?.targetValue != null ? String(goal.targetValue) : "",
+  );
+  const [currentValue, setCurrentValue] = useState<string>(
+    goal?.currentValue != null ? String(goal.currentValue) : "",
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -26,12 +32,17 @@ export function GoalForm({ playerId, goal, onSave, onCancel }: GoalFormProps) {
       return;
     }
 
+    const tv = targetValue ? Number(targetValue) : undefined;
+    const cv = currentValue ? Number(currentValue) : undefined;
+
     onSave({
       id: goal?.id ?? crypto.randomUUID(),
       playerId,
       title: title.trim(),
       description: description.trim() || undefined,
       category,
+      targetValue: tv,
+      currentValue: cv,
       targetDate: targetDate || undefined,
       status: goal?.status ?? "active",
       createdAt: goal?.createdAt ?? new Date().toISOString().slice(0, 10),
@@ -66,6 +77,27 @@ export function GoalForm({ playerId, goal, onSave, onCancel }: GoalFormProps) {
             type="date"
             value={targetDate}
             onChange={(e) => setTargetDate(e.target.value)}
+          />
+        </FormField>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <FormField label="Zielwert (optional)">
+          <Input
+            type="number"
+            value={targetValue}
+            onChange={(e) => setTargetValue(e.target.value)}
+            placeholder="z.B. 80 (fuer 80%)"
+            min="0"
+          />
+        </FormField>
+        <FormField label="Aktueller Wert (optional)">
+          <Input
+            type="number"
+            value={currentValue}
+            onChange={(e) => setCurrentValue(e.target.value)}
+            placeholder="z.B. 45"
+            min="0"
           />
         </FormField>
       </div>

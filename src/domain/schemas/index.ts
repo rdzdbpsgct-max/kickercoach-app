@@ -4,7 +4,13 @@ export {
   TrainingBlockSchema,
   RodPositionSchema,
 } from "./drill";
-export { SessionSchema, MoodSchema } from "./session";
+export {
+  SessionSchema,
+  MoodSchema,
+  DrillResultSchema,
+  SessionRetrospectiveSchema,
+} from "./session";
+export { TechniqueSchema } from "./technique";
 export { MatchPlanSchema, StrategyTemplateSchema } from "./matchPlan";
 export { CoachingNoteSchema, NoteCategory } from "./coachingNote";
 export { EvaluationSchema, SkillRatingEntrySchema } from "./evaluation";

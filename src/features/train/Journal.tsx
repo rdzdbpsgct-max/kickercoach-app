@@ -179,6 +179,19 @@ export default function Journal({
                       ))}
                     </div>
                   )}
+                  {session.drillResults && session.drillResults.length > 0 && (
+                    <div className="mt-1 flex items-center gap-1 text-[10px] text-text-dim">
+                      <span>Ergebnisse:</span>
+                      <span className="font-medium text-kicker-green">
+                        {session.drillResults.filter((r) => r.completed).length}/{session.drillResults.length} abgeschlossen
+                      </span>
+                    </div>
+                  )}
+                  {session.retrospective && (
+                    <div className="mt-1 text-[10px] text-accent">
+                      Retrospektive vorhanden
+                    </div>
+                  )}
                   {session.notes && (
                     <div className="mt-1 line-clamp-1 text-xs text-text-dim">
                       {session.notes}
