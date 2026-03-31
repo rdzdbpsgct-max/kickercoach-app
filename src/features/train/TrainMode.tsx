@@ -18,6 +18,7 @@ import TrainingPlanEditor from "./TrainingPlanEditor";
 import Journal from "./Journal";
 import type { Session } from "../../store";
 import type { TrainingPlan } from "../../domain/models/TrainingPlan";
+import { getRecommendedDrillIds } from "../../domain/logic/recommendations";
 
 type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor" | "session-rating" | "training-plans" | "training-plan-editor";
 
@@ -48,12 +49,28 @@ export default function TrainMode() {
   const [deleteDrillId, setDeleteDrillId] = useState<string | null>(null);
   const [lastSavedSession, setLastSavedSession] = useState<Session | null>(null);
   const [editTrainingPlan, setEditTrainingPlan] = useState<TrainingPlan | undefined>();
+  const [completedReps, setCompletedReps] = useState(0);
+  const players = useAppStore((s) => s.players);
 
   // Merge default + custom drills
   const allDrills = useMemo(
     () => [...defaultDrills, ...customDrills],
     [defaultDrills, customDrills],
   );
+
+  // Drill recommendations based on initial player
+  const recommendedDrillIds = useMemo(() => {
+    if (!initialPlayerId) return undefined;
+    const player = players.find((p) => p.id === initialPlayerId);
+    if (!player) return undefined;
+    return getRecommendedDrillIds(player, allDrills, 5);
+  }, [initialPlayerId, players, allDrills]);
+
+  const recommendLabel = useMemo(() => {
+    if (!initialPlayerId) return undefined;
+    const player = players.find((p) => p.id === initialPlayerId);
+    return player ? `Empfohlen fuer ${player.name}` : undefined;
+  }, [initialPlayerId, players]);
 
   // Load drills
   useEffect(() => {
@@ -80,6 +97,7 @@ export default function TrainMode() {
   const handleSelectDrill = (drill: Drill) => {
     setSelectedDrill(drill);
     setBlockIndex(0);
+    setCompletedReps(0);
     setView("timer");
   };
 
@@ -88,6 +106,7 @@ export default function TrainMode() {
     const next = advanceBlock(selectedDrill, blockIndex);
     if (next) {
       setBlockIndex(next.blockIndex);
+      setCompletedReps(0);
     }
   }, [selectedDrill, blockIndex]);
 
@@ -96,13 +115,40 @@ export default function TrainMode() {
     const prev = previousBlock(selectedDrill, blockIndex);
     if (prev) {
       setBlockIndex(prev.blockIndex);
+      setCompletedReps(0);
     }
   }, [selectedDrill, blockIndex]);
 
   const handleReset = useCallback(() => {
     timer.reset();
     setBlockIndex(0);
+    setCompletedReps(0);
   }, [timer]);
+
+  const handleRepIncrement = useCallback(() => {
+    if (!currentBlock || currentBlock.type !== "repetitions") return;
+    const reps = currentBlock.repetitions ?? 0;
+    setCompletedReps((prev) => {
+      const next = prev + 1;
+      if (next >= reps && autoAdvance) {
+        // Auto-advance after completing all reps
+        setTimeout(() => {
+          if (selectedDrill) {
+            const nextBlock = advanceBlock(selectedDrill, blockIndex);
+            if (nextBlock) {
+              setBlockIndex(nextBlock.blockIndex);
+              setCompletedReps(0);
+            }
+          }
+        }, 500);
+      }
+      return next;
+    });
+  }, [currentBlock, autoAdvance, selectedDrill, blockIndex]);
+
+  const handleRepDecrement = useCallback(() => {
+    setCompletedReps((prev) => Math.max(0, prev - 1));
+  }, []);
 
   const handleSaveSession = (session: Session) => {
     if (editSession) {
@@ -342,8 +388,10 @@ export default function TrainMode() {
               <Timer
                 remainingSeconds={timer.remainingSeconds}
                 isRunning={timer.isRunning}
-                isFinished={timer.isFinished}
+                isFinished={currentBlock.type === "repetitions" ? (completedReps >= (currentBlock.repetitions ?? 0)) : timer.isFinished}
                 blockType={currentBlock.type}
+                repetitions={currentBlock.repetitions}
+                completedReps={completedReps}
               />
 
               <div className="flex items-center gap-3">
@@ -352,18 +400,38 @@ export default function TrainMode() {
                   onClick={handlePrev}
                   disabled={blockIndex === 0}
                 >
-                  Zur&uuml;ck
+                  Zurueck
                 </Button>
-                <Button
-                  size="lg"
-                  onClick={timer.toggle}
-                >
-                  {timer.isFinished
-                    ? "Reset"
-                    : timer.isRunning
-                      ? "Pause"
-                      : "Start"}
-                </Button>
+                {currentBlock.type === "repetitions" ? (
+                  /* Repetition controls */
+                  <>
+                    <Button
+                      variant="secondary"
+                      onClick={handleRepDecrement}
+                      disabled={completedReps === 0}
+                    >
+                      -1
+                    </Button>
+                    <Button
+                      size="lg"
+                      onClick={handleRepIncrement}
+                      disabled={completedReps >= (currentBlock.repetitions ?? 0)}
+                    >
+                      +1
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    size="lg"
+                    onClick={timer.toggle}
+                  >
+                    {timer.isFinished
+                      ? "Reset"
+                      : timer.isRunning
+                        ? "Pause"
+                        : "Start"}
+                  </Button>
+                )}
                 <Button
                   variant="secondary"
                   onClick={handleNext}
@@ -433,6 +501,8 @@ export default function TrainMode() {
           setView("drill-editor");
         }}
         onDeleteDrill={(id) => setDeleteDrillId(id)}
+        recommendedDrillIds={recommendedDrillIds}
+        recommendLabel={recommendLabel}
       />
       <ConfirmDialog
         open={deleteDrillId !== null}

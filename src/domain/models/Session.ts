@@ -25,6 +25,7 @@ export interface Session {
   notes: string;
   totalDuration: number;
   playerIds: string[];
+  teamId?: string;
   focusAreas: Category[];
   rating?: number;
   mood?: Mood;

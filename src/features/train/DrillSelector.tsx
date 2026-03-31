@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react";
-import type { Drill } from "../../domain/models/Drill";
+import type { Drill, DrillPhase, RodPosition } from "../../domain/models/Drill";
 import type { Difficulty } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
-import { DIFFICULTY_LABELS } from "../../domain/constants";
+import { DIFFICULTY_LABELS, PHASE_LABELS } from "../../domain/constants";
 import { Badge, Card, Button, SearchBar } from "../../components/ui";
 
 const DIFFICULTY_BADGE_COLORS = {
@@ -11,12 +11,34 @@ const DIFFICULTY_BADGE_COLORS = {
   advanced: "red",
 } as const;
 
-const FILTER_OPTIONS: (Difficulty | "Alle")[] = [
+const PHASE_BADGE_COLORS: Record<DrillPhase, "blue" | "orange" | "green" | "accent"> = {
+  warmup: "orange",
+  technique: "blue",
+  game: "green",
+  cooldown: "accent",
+};
+
+const DIFFICULTY_OPTIONS: (Difficulty | "Alle")[] = [
   "Alle",
   "beginner",
   "intermediate",
   "advanced",
 ];
+
+const PHASE_OPTIONS: (DrillPhase | "Alle")[] = [
+  "Alle",
+  "warmup",
+  "technique",
+  "game",
+  "cooldown",
+];
+
+const POSITION_LABELS: Record<RodPosition, string> = {
+  keeper: "Torwart",
+  defense: "Abwehr",
+  midfield: "Mittelfeld",
+  offense: "Sturm",
+};
 
 interface DrillSelectorProps {
   drills: Drill[];
@@ -25,6 +47,8 @@ interface DrillSelectorProps {
   onNewDrill?: () => void;
   onEditDrill?: (drill: Drill) => void;
   onDeleteDrill?: (id: string) => void;
+  recommendedDrillIds?: string[];
+  recommendLabel?: string;
 }
 
 export default function DrillSelector({
@@ -34,122 +58,204 @@ export default function DrillSelector({
   onNewDrill,
   onEditDrill,
   onDeleteDrill,
+  recommendedDrillIds,
+  recommendLabel,
 }: DrillSelectorProps) {
-  const [filter, setFilter] = useState<Difficulty | "Alle">("Alle");
+  const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | "Alle">("Alle");
+  const [phaseFilter, setPhaseFilter] = useState<DrillPhase | "Alle">("Alle");
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
-    let result = filter === "Alle" ? drills : drills.filter((d) => d.difficulty === filter);
+    let result = drills;
+    if (difficultyFilter !== "Alle") {
+      result = result.filter((d) => d.difficulty === difficultyFilter);
+    }
+    if (phaseFilter !== "Alle") {
+      result = result.filter((d) => d.phase === phaseFilter);
+    }
     if (search.trim()) {
       const q = search.toLowerCase();
       result = result.filter(
         (d) =>
           d.name.toLowerCase().includes(q) ||
           d.focusSkill.toLowerCase().includes(q) ||
-          d.description?.toLowerCase().includes(q),
+          d.description?.toLowerCase().includes(q) ||
+          d.category?.toLowerCase().includes(q),
       );
     }
     return result;
-  }, [drills, filter, search]);
+  }, [drills, difficultyFilter, phaseFilter, search]);
+
+  // Split into recommended + rest
+  const recommended = useMemo(() => {
+    if (!recommendedDrillIds?.length) return [];
+    return filtered.filter((d) => recommendedDrillIds.includes(d.id));
+  }, [filtered, recommendedDrillIds]);
+
+  const rest = useMemo(() => {
+    if (!recommendedDrillIds?.length) return filtered;
+    return filtered.filter((d) => !recommendedDrillIds.includes(d.id));
+  }, [filtered, recommendedDrillIds]);
+
+  const renderDrill = (drill: Drill) => (
+    <Card
+      key={drill.id}
+      interactive
+      onClick={() => onSelect(drill)}
+      className={
+        selectedId === drill.id
+          ? "border-accent bg-accent-dim"
+          : ""
+      }
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-sm font-semibold">{drill.name}</span>
+            {drill.difficulty && (
+              <Badge color={DIFFICULTY_BADGE_COLORS[drill.difficulty]}>
+                {DIFFICULTY_LABELS[drill.difficulty]}
+              </Badge>
+            )}
+            {drill.phase && (
+              <Badge color={PHASE_BADGE_COLORS[drill.phase]}>
+                {PHASE_LABELS[drill.phase]}
+              </Badge>
+            )}
+            {drill.isCustom && (
+              <Badge color="accent">Eigener Drill</Badge>
+            )}
+          </div>
+          <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-text-dim">
+            <span>{drill.focusSkill}</span>
+            <span>&middot;</span>
+            <span>{drill.blocks.length} Blocks</span>
+            {drill.position && (
+              <>
+                <span>&middot;</span>
+                <span>{POSITION_LABELS[drill.position]}</span>
+              </>
+            )}
+            {drill.playerCount && drill.playerCount > 1 && (
+              <>
+                <span>&middot;</span>
+                <span>{drill.playerCount} Spieler</span>
+              </>
+            )}
+          </div>
+          {drill.description && (
+            <div className="mt-1 line-clamp-1 text-xs text-text-dim">
+              {drill.description}
+            </div>
+          )}
+          {drill.measurableGoal && (
+            <div className="mt-0.5 text-[11px] text-accent">
+              Ziel: {drill.measurableGoal}
+            </div>
+          )}
+        </div>
+        <div className="ml-3 flex shrink-0 items-center gap-2">
+          <span className="text-xs font-medium text-text-dim">
+            {formatTime(drillTotalDuration(drill))}
+          </span>
+          {drill.isCustom && onEditDrill && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEditDrill(drill);
+              }}
+              className="rounded-lg border border-border px-2 py-1 text-[11px] text-text-muted hover:border-accent/50 transition-all"
+              title="Bearbeiten"
+            >
+              &#9998;
+            </button>
+          )}
+          {drill.isCustom && onDeleteDrill && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteDrill(drill.id);
+              }}
+              className="rounded-lg border border-border px-2 py-1 text-[11px] text-kicker-red hover:border-kicker-red/50 transition-all"
+              title="Loeschen"
+            >
+              &#10005;
+            </button>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
       {/* Search */}
       <SearchBar value={search} onChange={setSearch} placeholder="Drill suchen..." />
 
-      {/* Difficulty filter */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        {FILTER_OPTIONS.map((opt) => (
-          <button
-            key={opt}
-            onClick={() => setFilter(opt)}
-            aria-pressed={filter === opt}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
-              filter === opt
-                ? "border-2 border-accent bg-accent-dim text-accent-hover"
-                : "border border-border text-text-muted hover:border-accent/50"
-            }`}
-          >
-            {opt === "Alle" ? "Alle Stufen" : DIFFICULTY_LABELS[opt]}
-          </button>
-        ))}
-        <span className="ml-auto self-center text-xs text-text-dim">
-          {filtered.length} Drills
-        </span>
-        {onNewDrill && (
-          <Button size="sm" onClick={onNewDrill}>
-            + Neuer Drill
-          </Button>
-        )}
+      {/* Filters */}
+      <div className="flex flex-col gap-2">
+        {/* Difficulty filter */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {DIFFICULTY_OPTIONS.map((opt) => (
+            <button
+              key={opt}
+              onClick={() => setDifficultyFilter(opt)}
+              aria-pressed={difficultyFilter === opt}
+              className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
+                difficultyFilter === opt
+                  ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                  : "border border-border text-text-muted hover:border-accent/50"
+              }`}
+            >
+              {opt === "Alle" ? "Alle Stufen" : DIFFICULTY_LABELS[opt]}
+            </button>
+          ))}
+        </div>
+
+        {/* Phase filter */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {PHASE_OPTIONS.map((opt) => (
+            <button
+              key={opt}
+              onClick={() => setPhaseFilter(opt)}
+              aria-pressed={phaseFilter === opt}
+              className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
+                phaseFilter === opt
+                  ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                  : "border border-border text-text-muted hover:border-accent/50"
+              }`}
+            >
+              {opt === "Alle" ? "Alle Phasen" : PHASE_LABELS[opt]}
+            </button>
+          ))}
+          <span className="ml-auto self-center text-xs text-text-dim">
+            {filtered.length} Drills
+          </span>
+          {onNewDrill && (
+            <Button size="sm" onClick={onNewDrill}>
+              + Neuer Drill
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Drill list */}
       <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-auto">
-        {filtered.map((drill) => (
-          <Card
-            key={drill.id}
-            interactive
-            onClick={() => onSelect(drill)}
-            className={
-              selectedId === drill.id
-                ? "border-accent bg-accent-dim"
-                : ""
-            }
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-semibold">{drill.name}</span>
-                  {drill.difficulty && (
-                    <Badge color={DIFFICULTY_BADGE_COLORS[drill.difficulty]}>
-                      {DIFFICULTY_LABELS[drill.difficulty]}
-                    </Badge>
-                  )}
-                  {drill.isCustom && (
-                    <Badge color="accent">Eigener Drill</Badge>
-                  )}
-                </div>
-                <div className="mt-0.5 text-xs text-text-dim">
-                  {drill.focusSkill} &middot; {drill.blocks.length} Blocks
-                </div>
-                {drill.description && (
-                  <div className="mt-1 line-clamp-1 text-xs text-text-dim">
-                    {drill.description}
-                  </div>
-                )}
-              </div>
-              <div className="ml-3 flex shrink-0 items-center gap-2">
-                <span className="text-xs font-medium text-text-dim">
-                  {formatTime(drillTotalDuration(drill))}
-                </span>
-                {drill.isCustom && onEditDrill && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEditDrill(drill);
-                    }}
-                    className="rounded-lg border border-border px-2 py-1 text-[11px] text-text-muted hover:border-accent/50 transition-all"
-                    title="Bearbeiten"
-                  >
-                    &#9998;
-                  </button>
-                )}
-                {drill.isCustom && onDeleteDrill && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteDrill(drill.id);
-                    }}
-                    className="rounded-lg border border-border px-2 py-1 text-[11px] text-kicker-red hover:border-kicker-red/50 transition-all"
-                    title="L&ouml;schen"
-                  >
-                    &#10005;
-                  </button>
-                )}
-              </div>
+        {/* Recommended section */}
+        {recommended.length > 0 && (
+          <>
+            <div className="text-xs font-semibold text-accent">
+              {recommendLabel ?? "Empfohlen"} ({recommended.length})
             </div>
-          </Card>
-        ))}
+            {recommended.map(renderDrill)}
+            {rest.length > 0 && (
+              <div className="mt-2 text-xs font-semibold text-text-dim">
+                Weitere Drills ({rest.length})
+              </div>
+            )}
+          </>
+        )}
+        {rest.map(renderDrill)}
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import type { Drill } from "../../domain/models/Drill";
+import type { Drill, DrillPhase } from "../../domain/models/Drill";
 import type { Category } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
 import { calculateSessionDuration } from "../../domain/logic/session";
+import { PHASE_LABELS } from "../../domain/constants";
 import { Button, FormField, Input, Select, Textarea } from "../../components/ui";
 import { useAppStore } from "../../store";
 import type { Session } from "../../store";
@@ -35,6 +36,7 @@ export default function SessionBuilder({
   initialPlayerIds,
 }: SessionBuilderProps) {
   const players = useAppStore((s) => s.players);
+  const teams = useAppStore((s) => s.teams);
   const sessionTemplates = useAppStore((s) => s.sessionTemplates);
   const saveSessionAsTemplate = useAppStore((s) => s.saveSessionAsTemplate);
   const [templateSaved, setTemplateSaved] = useState(false);
@@ -51,6 +53,7 @@ export default function SessionBuilder({
     editSession?.focusAreas ?? [],
   );
   const [rating, setRating] = useState<number | undefined>(editSession?.rating);
+  const [selectedTeamId, setSelectedTeamId] = useState<string | undefined>(editSession?.teamId);
 
   const totalDuration = calculateSessionDuration(selectedDrillIds, drills);
 
@@ -83,6 +86,7 @@ export default function SessionBuilder({
       notes: notes.trim(),
       totalDuration,
       playerIds: selectedPlayerIds,
+      teamId: selectedTeamId,
       focusAreas,
       rating,
     };
@@ -189,7 +193,33 @@ export default function SessionBuilder({
         </div>
       )}
 
-      {/* Drill selection */}
+      {/* Team selection */}
+      {teams.length > 0 && (
+        <FormField label="Team (optional)">
+          <Select
+            value={selectedTeamId ?? ""}
+            onChange={(e) => {
+              const teamId = e.target.value || undefined;
+              setSelectedTeamId(teamId);
+              if (teamId) {
+                const team = teams.find((t) => t.id === teamId);
+                if (team) {
+                  setSelectedPlayerIds(team.playerIds as string[]);
+                }
+              }
+            }}
+          >
+            <option value="">Kein Team</option>
+            {teams.map((team) => (
+              <option key={team.id} value={team.id}>
+                {team.name}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+      )}
+
+      {/* Drill selection — grouped by phase */}
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
           <label className="text-xs font-medium text-text-dim">
@@ -200,29 +230,42 @@ export default function SessionBuilder({
             {formatTime(totalDuration)}
           </span>
         </div>
-        <div className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3">
-          {drills.map((drill) => {
-            const isSelected = selectedDrillIds.includes(drill.id);
+        <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3">
+          {(["warmup", "technique", "game", "cooldown", undefined] as (DrillPhase | undefined)[]).map((phase) => {
+            const phaseDrills = drills.filter((d) => d.phase === phase);
+            if (phaseDrills.length === 0) return null;
             return (
-              <button
-                key={drill.id}
-                onClick={() => toggleDrill(drill.id)}
-                className={`flex items-center justify-between rounded-lg border px-3 py-2 text-left text-sm transition-all ${
-                  isSelected
-                    ? "border-accent bg-accent-dim text-text"
-                    : "border-border text-text-muted hover:border-accent/50"
-                }`}
-              >
-                <div>
-                  <span className="font-medium">{drill.name}</span>
-                  <span className="ml-2 text-xs text-text-dim">
-                    {drill.focusSkill}
-                  </span>
+              <div key={phase ?? "other"}>
+                <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-text-dim">
+                  {phase ? PHASE_LABELS[phase] : "Sonstige"}
                 </div>
-                <span className="text-xs text-text-dim">
-                  {formatTime(drillTotalDuration(drill))}
-                </span>
-              </button>
+                <div className="flex flex-col gap-1.5">
+                  {phaseDrills.map((drill) => {
+                    const isSelected = selectedDrillIds.includes(drill.id);
+                    return (
+                      <button
+                        key={drill.id}
+                        onClick={() => toggleDrill(drill.id)}
+                        className={`flex items-center justify-between rounded-lg border px-3 py-2 text-left text-sm transition-all ${
+                          isSelected
+                            ? "border-accent bg-accent-dim text-text"
+                            : "border-border text-text-muted hover:border-accent/50"
+                        }`}
+                      >
+                        <div>
+                          <span className="font-medium">{drill.name}</span>
+                          <span className="ml-2 text-xs text-text-dim">
+                            {drill.focusSkill}
+                          </span>
+                        </div>
+                        <span className="text-xs text-text-dim">
+                          {formatTime(drillTotalDuration(drill))}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             );
           })}
         </div>

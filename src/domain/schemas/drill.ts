@@ -1,15 +1,20 @@
 import { z } from "zod";
 import { DifficultySchema, CategorySchema } from "./coachCard";
 
+export const BlockTypeSchema = z.enum(["work", "rest", "repetitions"]);
+
 export const TrainingBlockSchema = z.object({
-  type: z.enum(["work", "rest"]),
+  type: BlockTypeSchema,
   durationSeconds: z.number().min(0),
+  repetitions: z.number().min(1).optional(),
   note: z.string(),
 });
 
 export const RodPositionSchema = z
   .enum(["keeper", "defense", "midfield", "offense"])
   .optional();
+
+export const DrillPhaseSchema = z.enum(["warmup", "technique", "game", "cooldown"]);
 
 export const DrillSchema = z.object({
   id: z.string(),
@@ -25,4 +30,6 @@ export const DrillSchema = z.object({
   prerequisites: z.array(z.string()).optional(),
   variations: z.array(z.string()).optional(),
   measurableGoal: z.string().optional(),
+  phase: DrillPhaseSchema.optional(),
+  techniqueIds: z.array(z.string()).optional(),
 });

@@ -1,4 +1,5 @@
 import type { Difficulty, Category } from "./models/CoachCard";
+import type { DrillPhase } from "./models/Drill";
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
   beginner: "Einsteiger",
@@ -45,5 +46,19 @@ export const STORAGE_KEYS = {
   autoAdvance: "kickercoach-autoadvance",
   boardScenes: "kickercoach-board-scenes",
 } as const;
+
+export const PHASE_LABELS: Record<DrillPhase, string> = {
+  warmup: "Aufwaermen",
+  technique: "Technik",
+  game: "Spielform",
+  cooldown: "Cool-Down",
+};
+
+export const PHASE_COLORS: Record<DrillPhase, string> = {
+  warmup: "bg-kicker-orange/15 text-kicker-orange",
+  technique: "bg-kicker-blue/15 text-kicker-blue",
+  game: "bg-kicker-green/15 text-kicker-green",
+  cooldown: "bg-accent-dim text-accent",
+};
 
 export const MAX_VISIBLE_TAGS = 3;

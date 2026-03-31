@@ -3,5 +3,9 @@ export interface Team {
   name: string;
   playerIds: [string, string];
   notes?: string;
+  roles?: string;
+  strengths?: string;
+  weaknesses?: string;
+  isActive?: boolean;
   createdAt: string;
 }

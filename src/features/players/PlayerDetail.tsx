@@ -6,6 +6,7 @@ import { GoalForm } from "./GoalForm";
 import { QuickNote } from "./QuickNote";
 import { NotesFeed } from "./NotesFeed";
 import { ProgressView } from "./ProgressView";
+import { PlayerTechniques } from "./PlayerTechniques";
 import { printCurrentPage } from "../../utils/print";
 import { DIFFICULTY_LABELS } from "../../domain/constants";
 import { useAppStore } from "../../store";
@@ -148,6 +149,12 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
             onToggleStatus={handleToggleStatus}
           />
         )}
+      </div>
+
+      {/* Techniques */}
+      <div>
+        <h2 className="mb-3 text-sm font-semibold text-text">Techniken</h2>
+        <PlayerTechniques playerId={player.id} />
       </div>
 
       {/* Progress & Evaluation history */}

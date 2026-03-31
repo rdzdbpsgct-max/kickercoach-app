@@ -7,8 +7,12 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Pull-Shot Basics",
     focusSkill: "Pull-Shot / Ziehen",
     difficulty: "beginner",
+    category: "Torschuss",
+    phase: "technique",
+    position: "offense",
     description:
-      "Grundlagen des Pull-Shots: Seitliche Ballmitnahme und Schuss in einer flüssigen Bewegung üben.",
+      "Grundlagen des Pull-Shots: Seitliche Ballmitnahme und Schuss in einer fliessigen Bewegung ueben.",
+    measurableGoal: "8 von 10 Pull-Shots im Tor",
     blocks: [
       {
         type: "work",
@@ -34,8 +38,12 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Push-Shot Basics",
     focusSkill: "Push-Shot / Schieben",
     difficulty: "beginner",
+    category: "Torschuss",
+    phase: "technique",
+    position: "offense",
     description:
-      "Push-Shot Grundlagen trainieren: Ball wegschieben und im selben Fluss aufs Tor schießen.",
+      "Push-Shot Grundlagen trainieren: Ball wegschieben und im selben Fluss aufs Tor schiessen.",
+    measurableGoal: "8 von 10 Push-Shots im Tor",
     blocks: [
       {
         type: "work",
@@ -61,8 +69,12 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Pin-Shot Training",
     focusSkill: "Pin-Shot / Abroller",
     difficulty: "intermediate",
+    category: "Torschuss",
+    phase: "technique",
+    position: "offense",
     description:
-      "Pin-Shot Technik vertiefen: Ball pinnen, lateral versetzen und per Handgelenkrotation abschließen.",
+      "Pin-Shot Technik vertiefen: Ball pinnen, lateral versetzen und per Handgelenkrotation abschliessen.",
+    measurableGoal: "7 von 10 Pin-Shots praezise platziert",
     blocks: [
       {
         type: "work",
@@ -93,8 +105,12 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Jet / Snake Intensive",
     focusSkill: "Jet-Shot (Snake)",
     difficulty: "advanced",
+    category: "Torschuss",
+    phase: "technique",
+    position: "offense",
     description:
-      "Intensive Jet/Snake Übung: Fortgeschrittene Rollbewegung mit Fakes und Tempovariationen unter Druck.",
+      "Intensive Jet/Snake Uebung: Fortgeschrittene Rollbewegung mit Fakes und Tempovariationen unter Druck.",
+    measurableGoal: "6 von 10 Jet-Shots bei voller Geschwindigkeit im Tor",
     blocks: [
       {
         type: "work",
@@ -130,8 +146,12 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "5er-Reihe Tic-Tac",
     focusSkill: "Mittelfeld-Passspiel",
     difficulty: "intermediate",
+    category: "Passspiel",
+    phase: "technique",
+    position: "midfield",
     description:
-      "Tic-Tac-Passspiel auf der 5er-Reihe: Rhythmus aufbauen, Lücken erkennen und mit Abschluss kombinieren.",
+      "Tic-Tac-Passspiel auf der 5er-Reihe: Rhythmus aufbauen, Luecken erkennen und mit Abschluss kombinieren.",
+    measurableGoal: "10 saubere Tic-Tac-Sequenzen ohne Ballverlust",
     blocks: [
       {
         type: "work",
@@ -162,8 +182,12 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Brush-Pass Technik",
     focusSkill: "Brush-Pass / Schraeganspiel",
     difficulty: "advanced",
+    category: "Passspiel",
+    phase: "technique",
+    position: "midfield",
     description:
       "Brush-Pass Technik perfektionieren: Diagonale Anspiele von der 5er auf die 3er-Reihe mit sauberer Annahme.",
+    measurableGoal: "8 von 10 Brush-Paesse sauber angenommen",
     blocks: [
       {
         type: "work",
@@ -194,8 +218,11 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Bandenpass Drill",
     focusSkill: "Bandenpass / Wandspiel",
     difficulty: "beginner",
+    category: "Passspiel",
+    phase: "technique",
+    position: "midfield",
     description:
-      "Bandenpässe von der 5er auf die 3er-Reihe: Winkel und Härte dosieren, saubere Annahme trainieren.",
+      "Bandenpaesse von der 5er auf die 3er-Reihe: Winkel und Haerte dosieren, saubere Annahme trainieren.",
     blocks: [
       {
         type: "work",
@@ -221,6 +248,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Ballkontrolle Basics",
     focusSkill: "Ballannahme & Kontrolle",
     difficulty: "beginner",
+    category: "Ballkontrolle",
+    phase: "technique",
+    position: "offense",
     description:
       "Grundlegende Ballkontrolle: Stoppen, Pinnen und kontrolliertes Rollen auf der 3er-Stange.",
     blocks: [
@@ -253,8 +283,11 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Defensive Shuffle",
     focusSkill: "Defensivarbeit / Abwehr",
     difficulty: "intermediate",
+    category: "Defensive",
+    phase: "technique",
+    position: "defense",
     description:
-      "Defensives Verschieben mit 2er-Reihe und Torwart: Koordination beider Hände und Lücken schließen.",
+      "Defensives Verschieben mit 2er-Reihe und Torwart: Koordination beider Haende und Luecken schliessen.",
     blocks: [
       {
         type: "work",
@@ -285,6 +318,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Torwart Reaktion",
     focusSkill: "Torwart / Reaktionsschnelligkeit",
     difficulty: "intermediate",
+    category: "Defensive",
+    phase: "technique",
+    position: "keeper",
     description:
       "Torwart-Reaktionsschnelligkeit: Auf verschiedene Schussrichtungen reagieren und Pull/Push-Shots abwehren.",
     blocks: [
@@ -322,6 +358,8 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Kombinations-Training",
     focusSkill: "Kombinationsspiel / Spielaufbau",
     difficulty: "advanced",
+    category: "Offensive",
+    phase: "game",
     description:
       "Komplettes Kombinationsspiel: Pass-Schuss-Sequenzen mit verschiedenen Techniken und Variationen.",
     blocks: [
@@ -364,8 +402,10 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Wettkampf-Simulation",
     focusSkill: "Wettkampfhaerte / Drucksituationen",
     difficulty: "advanced",
+    category: "Mental",
+    phase: "game",
     description:
-      "Wettkampfsimulation unter Druck: Matchplay-Szenarien mit Zählsystem und mentaler Belastung.",
+      "Wettkampfsimulation unter Druck: Matchplay-Szenarien mit Zaehlsystem und mentaler Belastung.",
     blocks: [
       {
         type: "work",
@@ -401,8 +441,10 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Aufwaerm-Routine",
     focusSkill: "Aufwaermen / Einspielen",
     difficulty: "beginner",
+    category: "Ballkontrolle",
+    phase: "warmup",
     description:
-      "Standardmäßige Aufwärmroutine: Gelenke lockern, Ball fühlen und langsam auf Präzision schießen.",
+      "Standardmaessige Aufwaermroutine: Gelenke lockern, Ball fuehlen und langsam auf Praezision schiessen.",
     blocks: [
       {
         type: "work",
@@ -433,8 +475,10 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Cool-Down & Technik",
     focusSkill: "Auslaufen / Technikfestigung",
     difficulty: "beginner",
+    category: "Ballkontrolle",
+    phase: "cooldown",
     description:
-      "Kontrolliertes Auslaufen: Langsame Pässe und bewusst saubere Torschüsse zum Technikfestigen.",
+      "Kontrolliertes Auslaufen: Langsame Paesse und bewusst saubere Torschuesse zum Technikfestigen.",
     blocks: [
       {
         type: "work",
@@ -458,10 +502,13 @@ export const DEFAULT_DRILLS: Drill[] = [
   {
     id: "drill-sanfter-touch",
     name: "Sanfter Touch",
-    focusSkill: "Ballgefühl / Soft Touch",
+    focusSkill: "Ballgefuehl / Soft Touch",
     difficulty: "beginner",
+    category: "Ballkontrolle",
+    phase: "technique",
+    position: "offense",
     description:
-      "Feinfühliges Ballhandling üben: Sanftes Stoppen, weiches Passen und kontrollierte Pin-Übergänge.",
+      "Feinfuehliges Ballhandling ueben: Sanftes Stoppen, weiches Passen und kontrollierte Pin-Uebergaenge.",
     blocks: [
       {
         type: "work",
@@ -476,17 +523,17 @@ export const DEFAULT_DRILLS: Drill[] = [
       {
         type: "work",
         durationSeconds: 60,
-        note: "Weiche Pässe von der 5er zur 3er spielen. Ball soll bei Annahme sofort ruhig liegen.",
+        note: "Weiche Paesse von der 5er zur 3er spielen. Ball soll bei Annahme sofort ruhig liegen.",
       },
       {
         type: "rest",
         durationSeconds: 15,
-        note: "Pause. Fokus auf Fingerspitzengefühl.",
+        note: "Pause. Fokus auf Fingerspitzengefuehl.",
       },
       {
         type: "work",
         durationSeconds: 45,
-        note: "Pin-Übergänge: Front-Pin zu Back-Pin und zurück. Fließende, ruhige Bewegungen.",
+        note: "Pin-Uebergaenge: Front-Pin zu Back-Pin und zurueck. Fliessende, ruhige Bewegungen.",
       },
     ],
   },
@@ -495,15 +542,18 @@ export const DEFAULT_DRILLS: Drill[] = [
   {
     id: "drill-finten",
     name: "Finten-Training",
-    focusSkill: "Täuschung / Finten",
+    focusSkill: "Taeuschung / Finten",
     difficulty: "intermediate",
+    category: "Offensive",
+    phase: "technique",
+    position: "offense",
     description:
-      "Fake-Bewegungen an der 3er-Reihe trainieren: Schussantäuschungen, Richtungswechsel und Timing.",
+      "Fake-Bewegungen an der 3er-Reihe trainieren: Schussantaeuschungen, Richtungswechsel und Timing.",
     blocks: [
       {
         type: "work",
         durationSeconds: 60,
-        note: "Schussantäuschung üben: Pull-Bewegung andeuten, stoppen, dann Push-Shot schießen. Wechsel wiederholen.",
+        note: "Schussantaeuschung ueben: Pull-Bewegung andeuten, stoppen, dann Push-Shot schiessen. Wechsel wiederholen.",
       },
       {
         type: "rest",
@@ -518,7 +568,7 @@ export const DEFAULT_DRILLS: Drill[] = [
       {
         type: "rest",
         durationSeconds: 20,
-        note: "Erholung. Welche Finte war am überzeugendsten?",
+        note: "Erholung. Welche Finte war am ueberzeugendsten?",
       },
       {
         type: "work",
@@ -528,19 +578,22 @@ export const DEFAULT_DRILLS: Drill[] = [
     ],
   },
 
-  // 17. Schlenzer-Übung (intermediate, 5 blocks)
+  // 17. Schlenzer-Uebung (intermediate, 5 blocks)
   {
     id: "drill-schlenzer",
-    name: "Schlenzer-Übung",
+    name: "Schlenzer-Uebung",
     focusSkill: "Schlenzer / Winkelschuss",
     difficulty: "intermediate",
+    category: "Torschuss",
+    phase: "technique",
+    position: "offense",
     description:
-      "Angeschnittene Schüsse aus verschiedenen Positionen: Spin-Technik und Winkelvariation üben.",
+      "Angeschnittene Schuesse aus verschiedenen Positionen: Spin-Technik und Winkelvariation ueben.",
     blocks: [
       {
         type: "work",
         durationSeconds: 60,
-        note: "Schlenzer-Grundbewegung üben: Ball seitlich anschneiden statt gerade schießen. Spin beobachten.",
+        note: "Schlenzer-Grundbewegung ueben: Ball seitlich anschneiden statt gerade schiessen. Spin beobachten.",
       },
       {
         type: "rest",
@@ -571,6 +624,9 @@ export const DEFAULT_DRILLS: Drill[] = [
     name: "Zone-Defense Drill",
     focusSkill: "Zonenverteidigung",
     difficulty: "intermediate",
+    category: "Defensive",
+    phase: "technique",
+    position: "defense",
     description:
       "Defensive Zonenabdeckung trainieren: Feste Bereiche mit Torwart und 2er-Reihe systematisch abdecken.",
     blocks: [
@@ -587,7 +643,7 @@ export const DEFAULT_DRILLS: Drill[] = [
       {
         type: "work",
         durationSeconds: 90,
-        note: "Simulierte Schüsse abwehren: Nur in der eigenen Zone reagieren, nicht überreagieren.",
+        note: "Simulierte Schuesse abwehren: Nur in der eigenen Zone reagieren, nicht ueberreagieren.",
       },
       {
         type: "rest",
@@ -597,24 +653,27 @@ export const DEFAULT_DRILLS: Drill[] = [
       {
         type: "work",
         durationSeconds: 60,
-        note: "Zonenwechsel unter Druck: Schnelle Schüsse auf verschiedene Bereiche. System beibehalten.",
+        note: "Zonenwechsel unter Druck: Schnelle Schuesse auf verschiedene Bereiche. System beibehalten.",
       },
     ],
   },
 
-  // 19. Täuschungs-Kombi (advanced, 6 blocks)
+  // 19. Taeuschungs-Kombi (advanced, 6 blocks)
   {
     id: "drill-taeuschungs-kombi",
-    name: "Täuschungs-Kombi",
-    focusSkill: "Kombination aus Finten und Schüssen",
+    name: "Taeuschungs-Kombi",
+    focusSkill: "Kombination aus Finten und Schuessen",
     difficulty: "advanced",
+    category: "Offensive",
+    phase: "game",
+    position: "offense",
     description:
-      "Fortgeschrittene Täuschungssequenzen: Finten, Richtungswechsel und Schüsse in komplexen Kombinationen.",
+      "Fortgeschrittene Taeuschungssequenzen: Finten, Richtungswechsel und Schuesse in komplexen Kombinationen.",
     blocks: [
       {
         type: "work",
         durationSeconds: 60,
-        note: "Dreier-Sequenz üben: Fake-Pull → Fake-Push → echter Schuss. Flüssiger Ablauf.",
+        note: "Dreier-Sequenz ueben: Fake-Pull, Fake-Push, echter Schuss. Fluessiger Ablauf.",
       },
       {
         type: "rest",
@@ -624,22 +683,22 @@ export const DEFAULT_DRILLS: Drill[] = [
       {
         type: "work",
         durationSeconds: 90,
-        note: "Freie Täuschungs-Kombination: Mindestens 2 Finten vor jedem Schuss. Variiere die Muster.",
+        note: "Freie Taeuschungs-Kombination: Mindestens 2 Finten vor jedem Schuss. Variiere die Muster.",
       },
       {
         type: "rest",
         durationSeconds: 20,
-        note: "Erholung. Welche Kombinationen überraschen am meisten?",
+        note: "Erholung. Welche Kombinationen ueberraschen am meisten?",
       },
       {
         type: "work",
         durationSeconds: 120,
-        note: "Wettkampf-Tempo: Komplette Angriffssequenz mit Finten in unter 8 Sekunden. Schnelligkeit plus Präzision.",
+        note: "Wettkampf-Tempo: Komplette Angriffssequenz mit Finten in unter 8 Sekunden. Schnelligkeit plus Praezision.",
       },
       {
         type: "rest",
         durationSeconds: 30,
-        note: "Längere Pause. Gesamten Ablauf reflektieren.",
+        note: "Laengere Pause. Gesamten Ablauf reflektieren.",
       },
     ],
   },
@@ -648,10 +707,12 @@ export const DEFAULT_DRILLS: Drill[] = [
   {
     id: "drill-mental-fokus",
     name: "Mental-Fokus Routine",
-    focusSkill: "Mentale Stärke / Fokus",
+    focusSkill: "Mentale Staerke / Fokus",
     difficulty: "beginner",
+    category: "Mental",
+    phase: "warmup",
     description:
-      "Atemübungen und konzentrierte Schussserien: Mentale Klarheit vor und während des Spiels trainieren.",
+      "Atemuebungen und konzentrierte Schussserien: Mentale Klarheit vor und waehrend des Spiels trainieren.",
     blocks: [
       {
         type: "work",
@@ -661,22 +722,22 @@ export const DEFAULT_DRILLS: Drill[] = [
       {
         type: "rest",
         durationSeconds: 10,
-        note: "Augen schließen. Einen erfolgreichen Schuss visualisieren.",
+        note: "Augen schliessen. Einen erfolgreichen Schuss visualisieren.",
       },
       {
         type: "work",
         durationSeconds: 60,
-        note: "5 bewusste Schüsse: Vor jedem Schuss kurz innehalten, Ziel visualisieren, dann ausführen.",
+        note: "5 bewusste Schuesse: Vor jedem Schuss kurz innehalten, Ziel visualisieren, dann ausfuehren.",
       },
       {
         type: "rest",
         durationSeconds: 15,
-        note: "Pause. Wie hat sich die Konzentration angefühlt?",
+        note: "Pause. Wie hat sich die Konzentration angefuehlt?",
       },
       {
         type: "work",
         durationSeconds: 45,
-        note: "Ablenkungstest: Schüsse ausführen während du laut von 100 rückwärts zählst. Fokus halten.",
+        note: "Ablenkungstest: Schuesse ausfuehren waehrend du laut von 100 rueckwaerts zaehlst. Fokus halten.",
       },
     ],
   },

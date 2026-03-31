@@ -9,10 +9,22 @@ export type {
   DrillResult,
   SessionRetrospective,
 } from "./Session";
-export type { Drill, TrainingBlock, DrillDifficulty } from "./Drill";
+export type {
+  Drill,
+  TrainingBlock,
+  BlockType,
+  DrillDifficulty,
+  DrillPhase,
+  RodPosition,
+} from "./Drill";
 export type { Goal, GoalStatus } from "./Goal";
 export type { Technique } from "./Technique";
-export type { Evaluation, SkillRating } from "./Evaluation";
+export type {
+  Evaluation,
+  SkillRating,
+  TechniqueRating,
+  EvaluationType,
+} from "./Evaluation";
 export type { CoachingNote } from "./CoachingNote";
 export type {
   SessionTemplate,
@@ -20,7 +32,16 @@ export type {
   TrainingPlan,
 } from "./TrainingPlan";
 export type { Team } from "./Team";
-export type { MatchPlan, StrategyTemplate, MatchSet } from "./MatchPlan";
+export type { MatchPlan, StrategyTemplate } from "./MatchPlan";
+export type {
+  Match,
+  MatchResult,
+  MatchSet as MatchSetResult,
+} from "./Match";
+export type {
+  PlayerTechnique,
+  TechniqueStatus,
+} from "./PlayerTechnique";
 
 // ── Tactical Board ───────────────────────────────────────────────
 export type {

@@ -1,6 +1,8 @@
 import { Suspense, lazy, Component, type ReactNode } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
+import { FeatureErrorBoundary } from "./components/ErrorBoundary";
+import QuickActionFAB from "./components/QuickActionFAB";
 
 const HomePage = lazy(() => import("./features/home/HomePage"));
 const LearnMode = lazy(() => import("./features/learn/LearnMode"));
@@ -9,6 +11,7 @@ const PlanMode = lazy(() => import("./features/plan/PlanMode"));
 const BoardMode = lazy(() => import("./features/board/BoardMode"));
 const PlayersMode = lazy(() => import("./features/players"));
 const AnalyticsMode = lazy(() => import("./features/analytics"));
+const SettingsPage = lazy(() => import("./features/settings/SettingsPage"));
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -64,16 +67,18 @@ export default function App() {
       <Layout>
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/learn" element={<LearnMode />} />
-            <Route path="/train" element={<TrainMode />} />
-            <Route path="/plan" element={<PlanMode />} />
-            <Route path="/board" element={<BoardMode />} />
-            <Route path="/players" element={<PlayersMode />} />
-            <Route path="/analytics" element={<AnalyticsMode />} />
+            <Route path="/" element={<FeatureErrorBoundary featureName="Home"><HomePage /></FeatureErrorBoundary>} />
+            <Route path="/learn" element={<FeatureErrorBoundary featureName="Lernen"><LearnMode /></FeatureErrorBoundary>} />
+            <Route path="/train" element={<FeatureErrorBoundary featureName="Training"><TrainMode /></FeatureErrorBoundary>} />
+            <Route path="/plan" element={<FeatureErrorBoundary featureName="Matchplan"><PlanMode /></FeatureErrorBoundary>} />
+            <Route path="/board" element={<FeatureErrorBoundary featureName="Taktikboard"><BoardMode /></FeatureErrorBoundary>} />
+            <Route path="/players" element={<FeatureErrorBoundary featureName="Spieler"><PlayersMode /></FeatureErrorBoundary>} />
+            <Route path="/analytics" element={<FeatureErrorBoundary featureName="Analyse"><AnalyticsMode /></FeatureErrorBoundary>} />
+            <Route path="/settings" element={<FeatureErrorBoundary featureName="Einstellungen"><SettingsPage /></FeatureErrorBoundary>} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
+        <QuickActionFAB />
       </Layout>
     </ErrorBoundary>
   );

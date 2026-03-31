@@ -1,7 +1,9 @@
 import { type ReactNode } from "react";
 import { NavLink } from "react-router-dom";
+import BottomNav from "./BottomNav";
 
 const tabs = [
+  { to: "/", label: "Home", icon: "\u{1F3E0}" },
   { to: "/learn", label: "Lernen", icon: "\uD83D\uDCDA" },
   { to: "/train", label: "Training", icon: "\u23F1\uFE0F" },
   { to: "/plan", label: "Matchplan", icon: "\uD83D\uDCCB" },
@@ -13,8 +15,8 @@ const tabs = [
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-full flex-col bg-bg text-text">
-      {/* Header */}
-      <header className="flex shrink-0 items-center justify-between border-b border-border bg-surface px-5 py-3">
+      {/* Desktop Header — hidden on mobile */}
+      <header className="hidden md:flex shrink-0 items-center justify-between border-b border-border bg-surface px-5 py-3">
         <NavLink
           to="/"
           end
@@ -27,7 +29,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-kicker-blue text-lg font-bold text-white">
             K
           </div>
-          <div className="hidden md:block">
+          <div>
             <div className="text-base font-bold tracking-tight">
               KickerCoach
             </div>
@@ -42,8 +44,9 @@ export default function Layout({ children }: { children: ReactNode }) {
             <NavLink
               key={tab.to}
               to={tab.to}
+              end={tab.to === "/"}
               className={({ isActive }) =>
-                `flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs md:px-4 md:py-2 md:text-sm font-medium transition-all ${
+                `flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-all ${
                   isActive
                     ? "border-2 border-accent bg-accent-dim text-accent-hover"
                     : "border border-border text-text-muted hover:border-accent/50 hover:text-text"
@@ -57,10 +60,15 @@ export default function Layout({ children }: { children: ReactNode }) {
         </nav>
       </header>
 
-      {/* Main content */}
-      <main className="flex flex-1 flex-col overflow-hidden p-3 md:p-5">
+      {/* Main content — extra bottom padding on mobile for BottomNav */}
+      <main className="flex flex-1 flex-col overflow-hidden p-3 pb-20 md:p-5 md:pb-5">
         {children}
       </main>
+
+      {/* Mobile Bottom Navigation — hidden on desktop */}
+      <div className="md:hidden">
+        <BottomNav />
+      </div>
     </div>
   );
 }

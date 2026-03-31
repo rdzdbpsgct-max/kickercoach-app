@@ -1,6 +1,9 @@
+export type BlockType = "work" | "rest" | "repetitions";
+
 export interface TrainingBlock {
-  type: "work" | "rest";
+  type: BlockType;
   durationSeconds: number;
+  repetitions?: number;
   note: string;
 }
 
@@ -10,6 +13,7 @@ import type { Difficulty, Category } from "./CoachCard";
 export type DrillDifficulty = Difficulty;
 
 export type RodPosition = "keeper" | "defense" | "midfield" | "offense";
+export type DrillPhase = "warmup" | "technique" | "game" | "cooldown";
 
 export interface Drill {
   id: string;
@@ -25,4 +29,6 @@ export interface Drill {
   prerequisites?: string[];
   variations?: string[];
   measurableGoal?: string;
+  phase?: DrillPhase;
+  techniqueIds?: string[];
 }

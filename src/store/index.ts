@@ -9,4 +9,7 @@ export type {
 export type { Goal, GoalStatus } from "../domain/models/Goal";
 export type { Technique } from "../domain/models/Technique";
 export type { SessionTemplate } from "../domain/models/TrainingPlan";
+export type { Match, MatchResult } from "../domain/models/Match";
+export type { PlayerTechnique, TechniqueStatus } from "../domain/models/PlayerTechnique";
+export type { EvaluationType, TechniqueRating } from "../domain/models/Evaluation";
 export { migrateArray, migrateValue } from "./migrate";

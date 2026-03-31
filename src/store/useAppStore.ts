@@ -13,11 +13,13 @@ import type {
 } from "../domain/models/TrainingPlan";
 import type { Evaluation } from "../domain/models/Evaluation";
 import type { MatchPlan } from "../domain/models/MatchPlan";
+import type { Match } from "../domain/models/Match";
 import type { TacticalScene } from "../domain/models/TacticalBoard";
 import type { Player } from "../domain/models/Player";
 import type { Session } from "../domain/models/Session";
 import type { Goal } from "../domain/models/Goal";
 import type { Technique } from "../domain/models/Technique";
+import type { PlayerTechnique } from "../domain/models/PlayerTechnique";
 
 // ── Store Interface ────────────────────────────────────────────────
 
@@ -26,6 +28,7 @@ interface AppState {
   players: Player[];
   sessions: Session[];
   matchPlans: MatchPlan[];
+  matches: Match[];
   boardScenes: TacticalScene[];
   favorites: string[];
   goals: Goal[];
@@ -37,6 +40,7 @@ interface AppState {
   teams: Team[];
   drillTemplates: Drill[];
   sessionTemplates: SessionTemplate[];
+  playerTechniques: PlayerTechnique[];
 
   // Player actions
   addPlayer: (player: Player) => void;
@@ -53,6 +57,11 @@ interface AppState {
   updateMatchPlan: (id: string, updates: Partial<MatchPlan>) => void;
   deleteMatchPlan: (id: string) => void;
   setMatchPlans: (plans: MatchPlan[]) => void;
+
+  // Match actions
+  addMatch: (match: Match) => void;
+  updateMatch: (id: string, updates: Partial<Match>) => void;
+  deleteMatch: (id: string) => void;
 
   // BoardScene actions
   setBoardScenes: (scenes: TacticalScene[]) => void;
@@ -91,6 +100,11 @@ interface AppState {
   updateTeam: (id: string, updates: Partial<Team>) => void;
   deleteTeam: (id: string) => void;
 
+  // PlayerTechnique actions
+  addPlayerTechnique: (pt: PlayerTechnique) => void;
+  updatePlayerTechnique: (id: string, updates: Partial<PlayerTechnique>) => void;
+  deletePlayerTechnique: (id: string) => void;
+
   // Template actions
   saveDrillAsTemplate: (drill: Drill) => void;
   deleteDrillTemplate: (id: string) => void;
@@ -102,11 +116,13 @@ interface AppState {
   getPlayerGoals: (playerId: string) => Goal[];
   getPlayerEvaluations: (playerId: string) => Evaluation[];
   getPlayerNotes: (playerId: string) => CoachingNote[];
+  getPlayerTechniques: (playerId: string) => PlayerTechnique[];
+  getPlayerMatches: (playerId: string) => Match[];
 }
 
 // ── Store Version & Migration ──────────────────────────────────────
 
-const STORE_VERSION = 2;
+const STORE_VERSION = 3;
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -115,6 +131,7 @@ export const useAppStore = create<AppState>()(
       players: [],
       sessions: [],
       matchPlans: [],
+      matches: [],
       boardScenes: [],
       favorites: [],
       goals: [],
@@ -126,6 +143,7 @@ export const useAppStore = create<AppState>()(
       teams: [],
       drillTemplates: [],
       sessionTemplates: [],
+      playerTechniques: [],
 
       // Player actions
       addPlayer: (player) =>
@@ -142,10 +160,15 @@ export const useAppStore = create<AppState>()(
           goals: s.goals.filter((g) => g.playerId !== id),
           evaluations: s.evaluations.filter((e) => e.playerId !== id),
           coachingNotes: s.coachingNotes.filter((n) => n.playerId !== id),
+          playerTechniques: s.playerTechniques.filter((pt) => pt.playerId !== id),
           teams: s.teams.filter((t) => !t.playerIds.includes(id)),
           sessions: s.sessions.map((ses) => ({
             ...ses,
             playerIds: ses.playerIds.filter((pid) => pid !== id),
+          })),
+          matches: s.matches.map((m) => ({
+            ...m,
+            playerIds: m.playerIds.filter((pid) => pid !== id),
           })),
         })),
 
@@ -179,6 +202,21 @@ export const useAppStore = create<AppState>()(
           matchPlans: s.matchPlans.filter((mp) => mp.id !== id),
         })),
       setMatchPlans: (plans) => set({ matchPlans: plans }),
+
+      // Match actions
+      addMatch: (match) =>
+        set((s) => ({ matches: [...s.matches, match] })),
+      updateMatch: (id, updates) =>
+        set((s) => ({
+          matches: s.matches.map((m) =>
+            m.id === id ? { ...m, ...updates } : m,
+          ),
+        })),
+      deleteMatch: (id) =>
+        set((s) => ({
+          matches: s.matches.filter((m) => m.id !== id),
+          evaluations: s.evaluations.filter((e) => e.matchId !== id),
+        })),
 
       // BoardScene actions
       setBoardScenes: (scenes) => set({ boardScenes: scenes }),
@@ -242,6 +280,20 @@ export const useAppStore = create<AppState>()(
       deleteTeam: (id) =>
         set((s) => ({ teams: s.teams.filter((t) => t.id !== id) })),
 
+      // PlayerTechnique actions
+      addPlayerTechnique: (pt) =>
+        set((s) => ({ playerTechniques: [...s.playerTechniques, pt] })),
+      updatePlayerTechnique: (id, updates) =>
+        set((s) => ({
+          playerTechniques: s.playerTechniques.map((pt) =>
+            pt.id === id ? { ...pt, ...updates } : pt,
+          ),
+        })),
+      deletePlayerTechnique: (id) =>
+        set((s) => ({
+          playerTechniques: s.playerTechniques.filter((pt) => pt.id !== id),
+        })),
+
       // Coaching note actions
       addCoachingNote: (note) =>
         set((s) => ({ coachingNotes: [...s.coachingNotes, note] })),
@@ -294,6 +346,10 @@ export const useAppStore = create<AppState>()(
         get().evaluations.filter((e) => e.playerId === playerId),
       getPlayerNotes: (playerId) =>
         get().coachingNotes.filter((n) => n.playerId === playerId),
+      getPlayerTechniques: (playerId) =>
+        get().playerTechniques.filter((pt) => pt.playerId === playerId),
+      getPlayerMatches: (playerId) =>
+        get().matches.filter((m) => m.playerIds.includes(playerId)),
     }),
     {
       name: "kickercoach-store",
@@ -335,6 +391,12 @@ export const useAppStore = create<AppState>()(
           }
           state.teams = state.teams ?? [];
           state.techniques = state.techniques ?? [];
+        }
+
+        // v2 → v3: Add matches, playerTechniques arrays
+        if ((version ?? 0) < 3) {
+          state.matches = state.matches ?? [];
+          state.playerTechniques = state.playerTechniques ?? [];
         }
 
         return state as unknown as AppState;

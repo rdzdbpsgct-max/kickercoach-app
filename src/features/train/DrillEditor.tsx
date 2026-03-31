@@ -1,6 +1,7 @@
 import { useState } from "react";
-import type { Drill, TrainingBlock } from "../../domain/models/Drill";
+import type { Drill, TrainingBlock, BlockType, DrillPhase, RodPosition } from "../../domain/models/Drill";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
+import { PHASE_LABELS } from "../../domain/constants";
 import { Button, FormField, Input, Textarea, Select } from "../../components/ui";
 import { useAppStore } from "../../store";
 
@@ -20,6 +21,9 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
   const [description, setDescription] = useState(drill?.description ?? "");
   const [difficulty, setDifficulty] = useState<Difficulty>(drill?.difficulty ?? "beginner");
   const [category, setCategory] = useState<Category | "">(drill?.category ?? "");
+  const [phase, setPhase] = useState<DrillPhase | "">(drill?.phase ?? "");
+  const [position, setPosition] = useState<RodPosition | "">(drill?.position ?? "");
+  const [measurableGoal, setMeasurableGoal] = useState(drill?.measurableGoal ?? "");
   const [blocks, setBlocks] = useState<TrainingBlock[]>(
     drill?.blocks ?? [{ ...EMPTY_BLOCK }],
   );
@@ -53,6 +57,9 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
       description: description.trim() || undefined,
       difficulty,
       category: category || undefined,
+      phase: phase || undefined,
+      position: position || undefined,
+      measurableGoal: measurableGoal.trim() || undefined,
       blocks,
       isCustom: true,
     });
@@ -110,10 +117,10 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
         </FormField>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <FormField label="Schwierigkeit">
           <Select value={difficulty} onChange={(e) => setDifficulty(e.target.value as Difficulty)}>
-            <option value="beginner">Anf&auml;nger</option>
+            <option value="beginner">Anfaenger</option>
             <option value="intermediate">Fortgeschritten</option>
             <option value="advanced">Profi</option>
           </Select>
@@ -130,6 +137,23 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
             <option value="Mental">Mental</option>
           </Select>
         </FormField>
+        <FormField label="Phase">
+          <Select value={phase} onChange={(e) => setPhase(e.target.value as DrillPhase | "")}>
+            <option value="">Keine</option>
+            {(Object.entries(PHASE_LABELS) as [DrillPhase, string][]).map(([k, v]) => (
+              <option key={k} value={k}>{v}</option>
+            ))}
+          </Select>
+        </FormField>
+        <FormField label="Position">
+          <Select value={position} onChange={(e) => setPosition(e.target.value as RodPosition | "")}>
+            <option value="">Keine</option>
+            <option value="keeper">Torwart</option>
+            <option value="defense">Abwehr</option>
+            <option value="midfield">Mittelfeld</option>
+            <option value="offense">Sturm</option>
+          </Select>
+        </FormField>
       </div>
 
       <FormField label="Beschreibung">
@@ -141,11 +165,19 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
         />
       </FormField>
 
+      <FormField label="Messbares Ziel">
+        <Input
+          value={measurableGoal}
+          onChange={(e) => setMeasurableGoal(e.target.value)}
+          placeholder="z.B. 8 von 10 Schuessen im Tor"
+        />
+      </FormField>
+
       {/* Blocks */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <label className="text-xs font-medium text-text-dim">
-            Bl&ouml;cke ({blocks.length})
+            Bloecke ({blocks.length})
           </label>
           <Button type="button" variant="secondary" size="sm" onClick={addBlock}>
             + Block
@@ -161,24 +193,46 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
             </span>
             <Select
               value={block.type}
-              onChange={(e) => updateBlock(i, { type: e.target.value as "work" | "rest" })}
-              className="!w-24"
+              onChange={(e) => {
+                const newType = e.target.value as BlockType;
+                updateBlock(i, {
+                  type: newType,
+                  repetitions: newType === "repetitions" ? (block.repetitions ?? 10) : undefined,
+                });
+              }}
+              className="!w-32"
             >
               <option value="work">Training</option>
               <option value="rest">Pause</option>
+              <option value="repetitions">Wiederholungen</option>
             </Select>
-            <div className="flex items-center gap-1">
-              <Input
-                type="number"
-                min={1}
-                value={block.durationSeconds}
-                onChange={(e) =>
-                  updateBlock(i, { durationSeconds: Math.max(1, Number(e.target.value)) })
-                }
-                className="!w-20 text-center"
-              />
-              <span className="text-xs text-text-dim">Sek.</span>
-            </div>
+            {block.type === "repetitions" ? (
+              <div className="flex items-center gap-1">
+                <Input
+                  type="number"
+                  min={1}
+                  value={block.repetitions ?? 10}
+                  onChange={(e) =>
+                    updateBlock(i, { repetitions: Math.max(1, Number(e.target.value)) })
+                  }
+                  className="!w-20 text-center"
+                />
+                <span className="text-xs text-text-dim">Wdh.</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1">
+                <Input
+                  type="number"
+                  min={1}
+                  value={block.durationSeconds}
+                  onChange={(e) =>
+                    updateBlock(i, { durationSeconds: Math.max(1, Number(e.target.value)) })
+                  }
+                  className="!w-20 text-center"
+                />
+                <span className="text-xs text-text-dim">Sek.</span>
+              </div>
+            )}
             <Input
               value={block.note}
               onChange={(e) => updateBlock(i, { note: e.target.value })}
