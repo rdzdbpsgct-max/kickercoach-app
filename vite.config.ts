@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: process.env.VERCEL ? "/" : "/kickercoach-app/",
+  base: process.env.VERCEL ? "/" : "/kicker-coach/",
   test: {
     globals: true,
     environment: "jsdom",

@@ -43,7 +43,7 @@ npm install
 npm run dev
 ```
 
-Die App startet auf `http://localhost:5173/kickercoach-app/`.
+Die App startet auf `http://localhost:5173/kicker-coach/`.
 
 ## Tests
 
