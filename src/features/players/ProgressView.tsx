@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Card, Badge } from "../../components/ui";
 import type { Evaluation, EvaluationType } from "../../domain/models/Evaluation";
 import type { Category } from "../../domain/models/CoachCard";
+import type { PlayerTechnique, TechniqueStatus } from "../../domain/models/PlayerTechnique";
 
 const CATEGORIES: Category[] = [
   "Torschuss", "Passspiel", "Ballkontrolle", "Defensive", "Taktik", "Offensive", "Mental",
@@ -15,6 +16,15 @@ const SKILL_COLORS: Record<Category, string> = {
   Taktik: "#8b5cf6",
   Offensive: "#06b6d4",
   Mental: "#ec4899",
+};
+
+const STATUS_LABELS: Record<TechniqueStatus, string> = {
+  not_started: "Offen", learning: "Lernend", developing: "Entwickelnd",
+  proficient: "Sicher", mastered: "Gemeistert",
+};
+const STATUS_COLORS: Record<TechniqueStatus, string> = {
+  not_started: "bg-border", learning: "bg-kicker-orange", developing: "bg-kicker-blue",
+  proficient: "bg-kicker-green", mastered: "bg-accent",
 };
 
 const EVALUATION_TYPE_LABELS: Record<EvaluationType, string> = {
@@ -46,9 +56,10 @@ function StarDisplay({ rating, max = 5 }: { rating: number; max?: number }) {
 
 interface ProgressViewProps {
   evaluations: Evaluation[];
+  playerTechniques?: PlayerTechnique[];
 }
 
-export function ProgressView({ evaluations }: ProgressViewProps) {
+export function ProgressView({ evaluations, playerTechniques }: ProgressViewProps) {
   const sorted = useMemo(
     () => [...evaluations].sort((a, b) => a.date.localeCompare(b.date)),
     [evaluations],
@@ -88,6 +99,26 @@ export function ProgressView({ evaluations }: ProgressViewProps) {
 
   return (
     <div className="flex flex-col gap-3">
+      {/* Technique status summary */}
+      {playerTechniques && playerTechniques.length > 0 && (
+        <Card className="mb-3">
+          <h3 className="mb-2 text-sm font-semibold text-text">Technik-Status</h3>
+          <div className="flex flex-wrap gap-2">
+            {(["mastered", "proficient", "developing", "learning", "not_started"] as TechniqueStatus[]).map((status) => {
+              const count = playerTechniques.filter((pt) => pt.status === status).length;
+              if (count === 0) return null;
+              return (
+                <div key={status} className="flex items-center gap-1 text-xs">
+                  <span className={`h-2.5 w-2.5 rounded-full ${STATUS_COLORS[status]}`} />
+                  <span className="text-text-muted">{STATUS_LABELS[status]}</span>
+                  <span className="font-medium text-text">{count}</span>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+
       {/* Progress summary */}
       {summary && (
         <Card>
