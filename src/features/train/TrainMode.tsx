@@ -15,12 +15,13 @@ import SessionBuilder from "./SessionBuilder";
 import SessionRating from "./SessionRating";
 import TrainingPlanList from "./TrainingPlanList";
 import TrainingPlanEditor from "./TrainingPlanEditor";
+import { SessionRetrospectiveForm } from "./SessionRetrospective";
 import Journal from "./Journal";
 import type { Session } from "../../store";
 import type { TrainingPlan } from "../../domain/models/TrainingPlan";
 import { getRecommendedDrillIds } from "../../domain/logic/recommendations";
 
-type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor" | "session-rating" | "training-plans" | "training-plan-editor";
+type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor" | "session-rating" | "session-retrospective" | "training-plans" | "training-plan-editor";
 
 export default function TrainMode() {
   const location = useLocation();
@@ -158,11 +159,11 @@ export default function TrainMode() {
     } else {
       addSession(session);
       setEditSession(null);
+      setLastSavedSession(session);
       if (session.playerIds.length > 0) {
-        setLastSavedSession(session);
         setView("session-rating");
       } else {
-        setView("journal");
+        setView("session-retrospective");
       }
     }
   };
@@ -274,14 +275,35 @@ export default function TrainMode() {
         sessionId={lastSavedSession.id}
         playerIds={lastSavedSession.playerIds}
         onComplete={() => {
-          setLastSavedSession(null);
-          setView("journal");
+          setView("session-retrospective");
         }}
         onSkip={() => {
-          setLastSavedSession(null);
-          setView("journal");
+          setView("session-retrospective");
         }}
       />
+    );
+  }
+
+  // Session Retrospective view
+  if (view === "session-retrospective" && lastSavedSession) {
+    return (
+      <div className="flex flex-1 flex-col gap-4 overflow-auto pb-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold">Retrospektive</h2>
+        </div>
+        <SessionRetrospectiveForm
+          initial={lastSavedSession.retrospective}
+          onSave={(retro) => {
+            updateSession(lastSavedSession.id, { ...lastSavedSession, retrospective: retro });
+            setLastSavedSession(null);
+            setView("journal");
+          }}
+          onSkip={() => {
+            setLastSavedSession(null);
+            setView("journal");
+          }}
+        />
+      </div>
     );
   }
 
