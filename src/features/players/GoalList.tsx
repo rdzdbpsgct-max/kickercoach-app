@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Badge, Card, Button, EmptyState, ConfirmDialog } from "../../components/ui";
 import type { Goal } from "../../domain/models/Goal";
 
@@ -92,6 +93,15 @@ export function GoalList({ goals, onAdd, onEdit, onDelete, onToggleStatus }: Goa
                 <p className="mt-0.5 text-[10px] text-text-dim">
                   Ziel: {goal.targetDate}
                 </p>
+              )}
+              {goal.status === "active" && (
+                <Link
+                  to="/train"
+                  state={{ initialPlayerId: goal.playerId }}
+                  className="mt-1 inline-block text-[11px] text-accent hover:text-accent-hover transition-colors"
+                >
+                  Passende Drills anzeigen &rarr;
+                </Link>
               )}
             </div>
             <div className="flex gap-1">
