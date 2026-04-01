@@ -11,6 +11,7 @@ const ACTIONS = [
 export default function QuickActionFAB() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [showPlayerPicker, setShowPlayerPicker] = useState(false);
   const [showNoteForm, setShowNoteForm] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [notePlayerId, setNotePlayerId] = useState("");
@@ -40,7 +41,14 @@ export default function QuickActionFAB() {
         navigate("/train");
         break;
       case "evaluation":
-        navigate("/players");
+        if (players.length === 1) {
+          navigate(`/players/${players[0].id}`);
+        } else if (players.length > 1) {
+          setShowPlayerPicker(true);
+
+        } else {
+          navigate("/players/new");
+        }
         break;
     }
   };
@@ -117,6 +125,45 @@ export default function QuickActionFAB() {
                 Speichern
               </button>
             </div>
+          </div>
+        </>
+      )}
+
+      {/* Player Picker */}
+      {showPlayerPicker && (
+        <>
+          <div
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+            onClick={() => setShowPlayerPicker(false)}
+          />
+          <div className="fixed bottom-24 left-3 right-3 z-50 rounded-2xl border border-border bg-surface p-4 shadow-xl md:left-auto md:right-6 md:w-80">
+            <h3 className="mb-3 text-sm font-bold text-text">Spieler waehlen</h3>
+            <div className="flex flex-col gap-1 max-h-60 overflow-auto">
+              {players.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => {
+                    setShowPlayerPicker(false);
+                    navigate(`/players/${p.id}`);
+                  }}
+                  className="flex items-center gap-2 rounded-lg p-2 text-left hover:bg-card-hover transition-colors min-h-[44px]"
+                >
+                  <span
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
+                    style={{ backgroundColor: p.avatarColor ?? "#6366f1" }}
+                  >
+                    {p.name.charAt(0).toUpperCase()}
+                  </span>
+                  <span className="text-sm font-medium text-text">{p.name}</span>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowPlayerPicker(false)}
+              className="mt-2 w-full rounded-lg py-2 text-xs text-text-muted hover:text-text"
+            >
+              Abbrechen
+            </button>
           </div>
         </>
       )}
