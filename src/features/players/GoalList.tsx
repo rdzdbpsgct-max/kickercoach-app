@@ -97,21 +97,21 @@ export function GoalList({ goals, onAdd, onEdit, onDelete, onToggleStatus }: Goa
             <div className="flex gap-1">
               <button
                 onClick={() => onToggleStatus(goal)}
-                className="rounded-lg border border-border px-2 py-1 text-[11px] text-text-muted hover:border-accent/50 transition-all"
+                className="min-h-[44px] min-w-[44px] rounded-lg border border-border px-3 py-2 text-sm text-text-muted hover:border-accent/50 transition-all"
                 title={goal.status === "active" ? "Als erreicht markieren" : "Reaktivieren"}
               >
                 {goal.status === "active" ? "\u2713" : "\u21BB"}
               </button>
               <button
                 onClick={() => onEdit(goal)}
-                className="rounded-lg border border-border px-2 py-1 text-[11px] text-text-muted hover:border-accent/50 transition-all"
+                className="min-h-[44px] min-w-[44px] rounded-lg border border-border px-3 py-2 text-sm text-text-muted hover:border-accent/50 transition-all"
                 title="Bearbeiten"
               >
                 &#9998;
               </button>
               <button
                 onClick={() => setDeleteId(goal.id)}
-                className="rounded-lg border border-border px-2 py-1 text-[11px] text-kicker-red hover:border-kicker-red/50 transition-all"
+                className="min-h-[44px] min-w-[44px] rounded-lg border border-border px-3 py-2 text-sm text-kicker-red hover:border-kicker-red/50 transition-all"
                 title="L&ouml;schen"
               >
                 &#10005;

@@ -111,7 +111,7 @@ export default function SessionRating({
                     onClick={() =>
                       setRatings((prev) => ({ ...prev, [cat]: level }))
                     }
-                    className={`h-7 w-7 rounded text-xs font-semibold transition-all ${
+                    className={`h-11 w-11 rounded-lg text-sm font-semibold transition-all ${
                       level <= ratings[cat]
                         ? "bg-accent text-white"
                         : "bg-border/30 text-text-dim hover:bg-border/50"
