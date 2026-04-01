@@ -54,7 +54,7 @@ export default function BottomNav() {
 
       {/* Bottom nav bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-surface/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
+        className="bottom-nav fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-surface/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
         aria-label="Hauptnavigation"
       >
         <div className="flex items-stretch justify-around">
@@ -77,6 +77,8 @@ export default function BottomNav() {
           ))}
           <button
             onClick={() => setMoreOpen((prev) => !prev)}
+            aria-label="Weitere Bereiche"
+            aria-expanded={moreOpen}
             className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition-colors ${
               moreOpen ? "text-accent" : "text-text-dim"
             }`}

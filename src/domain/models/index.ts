@@ -25,7 +25,7 @@ export type {
   TechniqueRating,
   EvaluationType,
 } from "./Evaluation";
-export type { CoachingNote } from "./CoachingNote";
+export type { CoachingNote, NotePriority } from "./CoachingNote";
 export type {
   SessionTemplate,
   TrainingWeek,

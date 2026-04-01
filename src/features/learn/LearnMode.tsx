@@ -22,7 +22,7 @@ export default function LearnMode() {
   // Load cards
   useEffect(() => {
     import("../../data/coachCards").then((mod) => {
-      setCards(mod.COACH_CARDS);
+      mod.loadCoachCards().then(setCards);
     });
   }, []);
 

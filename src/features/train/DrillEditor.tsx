@@ -1,9 +1,21 @@
 import { useState } from "react";
+import { z } from "zod";
 import type { Drill, TrainingBlock, BlockType, DrillPhase, RodPosition } from "../../domain/models/Drill";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
 import { PHASE_LABELS } from "../../domain/constants";
 import { Button, FormField, Input, Textarea, Select } from "../../components/ui";
 import { useAppStore } from "../../store";
+
+const DrillFormSchema = z.object({
+  name: z.string().min(1, "Name ist erforderlich"),
+  focusSkill: z.string().min(1, "Fokus-Skill ist erforderlich"),
+  blocks: z.array(z.object({
+    type: z.enum(["work", "rest", "repetitions"]),
+    durationSeconds: z.number().min(0),
+    repetitions: z.number().min(1).optional(),
+    note: z.string(),
+  })).min(1, "Mindestens ein Block erforderlich"),
+});
 
 const EMPTY_BLOCK: TrainingBlock = { type: "work", durationSeconds: 30, note: "" };
 
@@ -42,13 +54,21 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors: Record<string, string> = {};
-    if (!name.trim()) newErrors.name = "Name ist erforderlich";
-    if (!focusSkill.trim()) newErrors.focusSkill = "Fokus-Skill ist erforderlich";
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    const result = DrillFormSchema.safeParse({
+      name: name.trim(),
+      focusSkill: focusSkill.trim(),
+      blocks,
+    });
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as string;
+        if (!fieldErrors[field]) fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
       return;
     }
+    setErrors({});
 
     onSave({
       id: drill?.id ?? crypto.randomUUID(),

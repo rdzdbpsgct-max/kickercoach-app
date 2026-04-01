@@ -72,7 +72,14 @@ export default function App() {
             <Route path="/train" element={<FeatureErrorBoundary featureName="Training"><TrainMode /></FeatureErrorBoundary>} />
             <Route path="/plan" element={<FeatureErrorBoundary featureName="Matchplan"><PlanMode /></FeatureErrorBoundary>} />
             <Route path="/board" element={<FeatureErrorBoundary featureName="Taktikboard"><BoardMode /></FeatureErrorBoundary>} />
-            <Route path="/players" element={<FeatureErrorBoundary featureName="Spieler"><PlayersMode /></FeatureErrorBoundary>} />
+            <Route path="/players" element={<FeatureErrorBoundary featureName="Spieler"><PlayersMode /></FeatureErrorBoundary>}>
+              <Route index element={null} />
+              <Route path="new" element={null} />
+              <Route path=":playerId" element={null} />
+              <Route path=":playerId/edit" element={null} />
+              <Route path="teams" element={null} />
+              <Route path="teams/new" element={null} />
+            </Route>
             <Route path="/analytics" element={<FeatureErrorBoundary featureName="Analyse"><AnalyticsMode /></FeatureErrorBoundary>} />
             <Route path="/settings" element={<FeatureErrorBoundary featureName="Einstellungen"><SettingsPage /></FeatureErrorBoundary>} />
             <Route path="*" element={<Navigate to="/" replace />} />

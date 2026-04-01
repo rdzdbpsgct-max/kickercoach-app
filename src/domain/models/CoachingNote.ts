@@ -1,3 +1,5 @@
+export type NotePriority = "low" | "medium" | "high";
+
 export interface CoachingNote {
   id: string;
   playerId?: string;
@@ -6,4 +8,8 @@ export interface CoachingNote {
   date: string;
   category: "tactical" | "technical" | "mental" | "communication";
   text: string;
+  priority?: NotePriority;
+  actionItems?: string[];
+  tags?: string[];
+  resolved?: boolean;
 }

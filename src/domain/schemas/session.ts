@@ -29,6 +29,7 @@ export const SessionSchema = z.object({
   totalDuration: z.number(),
   playerIds: z.array(z.string()).default([]),
   teamId: z.string().optional(),
+  planId: z.string().optional(),
   focusAreas: z.array(CategorySchema).default([]),
   rating: z.number().min(1).max(5).optional(),
   mood: MoodSchema,

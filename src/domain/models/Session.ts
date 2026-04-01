@@ -26,6 +26,7 @@ export interface Session {
   totalDuration: number;
   playerIds: string[];
   teamId?: string;
+  planId?: string;
   focusAreas: Category[];
   rating?: number;
   mood?: Mood;

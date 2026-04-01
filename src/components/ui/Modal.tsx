@@ -27,9 +27,9 @@ export function Modal({ open, onClose, title, children, actions }: ModalProps) {
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="relative w-full max-w-lg rounded-2xl border border-border bg-surface p-6 shadow-xl">
+      <div role="dialog" aria-modal="true" aria-labelledby="modal-title" className="relative w-full max-w-lg rounded-2xl border border-border bg-surface p-6 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-text">{title}</h2>
+          <h2 id="modal-title" className="text-lg font-bold text-text">{title}</h2>
           <button
             onClick={onClose}
             className="text-text-dim hover:text-text transition-colors"

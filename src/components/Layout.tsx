@@ -15,6 +15,11 @@ const tabs = [
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-full flex-col bg-bg text-text">
+      {/* Skip to content */}
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-accent focus:text-white focus:px-4 focus:py-2 focus:rounded">
+        Zum Inhalt springen
+      </a>
+
       {/* Desktop Header — hidden on mobile */}
       <header className="hidden md:flex shrink-0 items-center justify-between border-b border-border bg-surface px-5 py-3">
         <NavLink
@@ -61,7 +66,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Main content — extra bottom padding on mobile for BottomNav */}
-      <main className="flex flex-1 flex-col overflow-hidden p-3 pb-20 md:p-5 md:pb-5">
+      <main id="main-content" role="main" className="flex flex-1 flex-col overflow-hidden p-3 pb-20 md:p-5 md:pb-5">
         {children}
       </main>
 

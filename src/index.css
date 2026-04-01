@@ -58,16 +58,52 @@ body {
 }
 
 @media print {
-  header,
-  nav,
-  .no-print {
+  /* Hide navigation, FAB, and interactive elements */
+  header, nav, .bottom-nav, [data-fab], .no-print {
     display: none !important;
   }
-  body {
-    background: white;
-    color: black;
+
+  /* Reset backgrounds for paper */
+  body, main, #root {
+    background: white !important;
+    color: black !important;
   }
-  .print-only {
-    display: block !important;
+
+  /* Cards: borders instead of shadows */
+  .rounded-2xl, .rounded-xl {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    break-inside: avoid;
   }
+
+  /* Readable text */
+  .text-text, .text-text-muted, .text-text-dim {
+    color: #333 !important;
+  }
+
+  /* Accent colors for print */
+  .text-accent, .text-accent-hover {
+    color: #4338ca !important;
+  }
+
+  /* Full width */
+  .max-w-2xl, .max-w-3xl, .max-w-4xl {
+    max-width: 100% !important;
+  }
+
+  /* Card backgrounds */
+  .bg-surface, .bg-card, .bg-card-hover, .bg-bg {
+    background: white !important;
+  }
+
+  /* Border visibility */
+  .border-border {
+    border-color: #ccc !important;
+  }
+
+  /* Page breaks */
+  h1, h2 { break-after: avoid; }
+  .print-break { break-before: page; }
+
+  .print-only { display: block !important; }
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { TrainingPlan } from "../../domain/models/TrainingPlan";
 import { Card, Button, Badge, EmptyState, ConfirmDialog } from "../../components/ui";
+import { printCurrentPage } from "../../utils/print";
 import { useAppStore } from "../../store";
 
 interface TrainingPlanListProps {
@@ -32,7 +33,10 @@ export default function TrainingPlanList({ onEdit, onNew }: TrainingPlanListProp
     <div className="flex flex-col gap-3 overflow-auto pb-4">
       <div className="flex items-center justify-between">
         <span className="text-xs text-text-dim">{trainingPlans.length} Pl&auml;ne</span>
-        <Button size="sm" onClick={onNew}>+ Neuer Plan</Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant="secondary" onClick={printCurrentPage} className="no-print">Drucken</Button>
+          <Button size="sm" onClick={onNew}>+ Neuer Plan</Button>
+        </div>
       </div>
       {trainingPlans.map((plan) => (
         <Card key={plan.id} interactive onClick={() => onEdit(plan)}>

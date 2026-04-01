@@ -1,9 +1,19 @@
 import { useState } from "react";
+import { z } from "zod";
 import { Button, FormField, Input, Textarea, Select } from "../../components/ui";
 import { SkillRadar } from "./SkillRadar";
-import { DEFAULT_SKILL_RATINGS } from "../../domain/schemas/player";
+import { DEFAULT_SKILL_RATINGS, PositionSchema } from "../../domain/schemas/player";
+import { DifficultySchema } from "../../domain/schemas/coachCard";
 import type { Player, Position, SkillRatings } from "../../domain/models/Player";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
+
+const PlayerFormSchema = z.object({
+  name: z.string().min(1, "Name ist erforderlich"),
+  nickname: z.string().optional(),
+  position: PositionSchema,
+  level: DifficultySchema,
+  notes: z.string(),
+});
 
 const AVATAR_COLORS = [
   "#3b82f6", "#ef4444", "#22c55e", "#f59e0b",
@@ -32,12 +42,17 @@ export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const newErrors: Record<string, string> = {};
-    if (!name.trim()) newErrors.name = "Name ist erforderlich";
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    const result = PlayerFormSchema.safeParse({ name: name.trim(), nickname: nickname.trim() || undefined, position, level, notes });
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as string;
+        if (!fieldErrors[field]) fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
       return;
     }
+    setErrors({});
 
     onSave({
       id: player?.id ?? crypto.randomUUID(),

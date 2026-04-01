@@ -15,7 +15,7 @@ export {
 export { TechniqueSchema } from "./technique";
 export { MatchPlanSchema, StrategyTemplateSchema } from "./matchPlan";
 export { MatchSchema, MatchSetSchema, MatchResultSchema } from "./match";
-export { CoachingNoteSchema, NoteCategory } from "./coachingNote";
+export { CoachingNoteSchema, NoteCategory, NotePrioritySchema } from "./coachingNote";
 export {
   EvaluationSchema,
   SkillRatingEntrySchema,

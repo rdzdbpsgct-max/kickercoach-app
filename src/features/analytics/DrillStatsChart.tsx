@@ -10,7 +10,7 @@ export function DrillStatsChart() {
   const [defaultDrills, setDefaultDrills] = useState<Drill[]>([]);
 
   useEffect(() => {
-    import("../../data/drills").then((mod) => setDefaultDrills(mod.DEFAULT_DRILLS));
+    import("../../data/drills").then((mod) => mod.loadDrills().then(setDefaultDrills));
   }, []);
 
   const allDrills = useMemo(

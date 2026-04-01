@@ -19,5 +19,6 @@ export interface TrainingPlan {
   playerIds: string[];
   weeks: TrainingWeek[];
   goal?: string;
+  completedSessionIds?: string[];
   createdAt: string;
 }

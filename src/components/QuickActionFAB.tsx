@@ -122,13 +122,14 @@ export default function QuickActionFAB() {
       )}
 
       {/* FAB */}
-      <div ref={fabRef} className="fixed bottom-20 right-4 z-30 md:bottom-6 md:right-6">
+      <div ref={fabRef} data-fab className="fixed bottom-20 right-4 z-30 md:bottom-6 md:right-6">
         {/* Expanded actions */}
         {open && (
-          <div className="mb-3 flex flex-col items-end gap-2 animate-slide-up">
+          <div className="mb-3 flex flex-col items-end gap-2 animate-slide-up" role="menu">
             {ACTIONS.map((a) => (
               <button
                 key={a.action}
+                role="menuitem"
                 onClick={() => handleAction(a.action)}
                 className="flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text shadow-lg transition-all hover:bg-card-hover"
               >
@@ -143,7 +144,8 @@ export default function QuickActionFAB() {
         <button
           onClick={() => setOpen((prev) => !prev)}
           className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-white shadow-lg transition-all hover:bg-accent-hover hover:scale-105 active:scale-95"
-          aria-label="Quick Actions"
+          aria-label="Schnellaktionen"
+          aria-expanded={open}
         >
           {open ? "\u2716" : "+"}
         </button>

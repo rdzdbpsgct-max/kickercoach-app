@@ -20,5 +20,6 @@ export const TrainingPlanSchema = z.object({
   playerIds: z.array(z.string()),
   weeks: z.array(TrainingWeekSchema),
   goal: z.string().optional(),
+  completedSessionIds: z.array(z.string()).optional(),
   createdAt: z.string(),
 });

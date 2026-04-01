@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { DifficultySchema } from "./coachCard";
+import { RodPositionSchema } from "./drill";
 
 export const PositionSchema = z.enum(["offense", "defense", "both"]);
 
@@ -30,6 +31,8 @@ export const PlayerSchema = z.object({
   name: z.string().min(1),
   nickname: z.string().optional(),
   preferredPosition: PositionSchema,
+  preferredPositions: z.array(RodPositionSchema).optional(),
+  isActive: z.boolean().optional(),
   level: DifficultySchema,
   notes: z.string(),
   skillRatings: SkillRatingsSchema.default(DEFAULT_SKILL_RATINGS),

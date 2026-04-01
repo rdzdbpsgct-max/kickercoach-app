@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useCallback, useMemo } from "react";
+import { useNavigate, useParams, useLocation, Outlet } from "react-router-dom";
 import { useAppStore } from "../../store";
 import { ConfirmDialog, Tabs } from "../../components/ui";
 import { PlayerList } from "./PlayerList";
@@ -11,7 +11,6 @@ import type { Player } from "../../domain/models/Player";
 import type { Team } from "../../domain/models/Team";
 
 type Tab = "players" | "teams";
-type View = "list" | "detail" | "form" | "team-form";
 
 const TABS: { value: Tab; label: string; icon: string }[] = [
   { value: "players", label: "Spieler", icon: "\u{1F464}" },
@@ -20,6 +19,8 @@ const TABS: { value: Tab; label: string; icon: string }[] = [
 
 export default function PlayersMode() {
   const navigate = useNavigate();
+  const params = useParams();
+  const location = useLocation();
   const players = useAppStore((s) => s.players);
   const addPlayer = useAppStore((s) => s.addPlayer);
   const updatePlayer = useAppStore((s) => s.updatePlayer);
@@ -27,27 +28,47 @@ export default function PlayersMode() {
   const addTeam = useAppStore((s) => s.addTeam);
   const updateTeam = useAppStore((s) => s.updateTeam);
 
-  const [tab, setTab] = useState<Tab>("players");
-  const [view, setView] = useState<View>("list");
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
-  const [editingPlayer, setEditingPlayer] = useState<Player | undefined>();
+  // Derive current view from URL
+  const pathname = location.pathname;
+  const playerId = params.playerId;
+
+  const view = useMemo(() => {
+    if (pathname === "/players/new") return "form" as const;
+    if (pathname === "/players/teams/new") return "team-form" as const;
+    if (pathname === "/players/teams") return "team-list" as const;
+    if (playerId && pathname.endsWith("/edit")) return "edit" as const;
+    if (playerId) return "detail" as const;
+    return "list" as const;
+  }, [pathname, playerId]);
+
+  // Derive tab from URL
+  const tab: Tab = pathname.startsWith("/players/teams") ? "teams" : "players";
+
+  // Find selected player from URL param
+  const selectedPlayer = useMemo(() => {
+    if (!playerId) return null;
+    return players.find((p) => p.id === playerId) ?? null;
+  }, [playerId, players]);
+
+  // Editing player for edit view
+  const editingPlayer = view === "edit" ? selectedPlayer ?? undefined : undefined;
+
   const [editingTeam, setEditingTeam] = useState<Team | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const handleSelect = useCallback((player: Player) => {
-    setSelectedPlayer(player);
-    setView("detail");
-  }, []);
+    navigate(`/players/${player.id}`);
+  }, [navigate]);
 
   const handleAdd = useCallback(() => {
-    setEditingPlayer(undefined);
-    setView("form");
-  }, []);
+    navigate("/players/new");
+  }, [navigate]);
 
   const handleEdit = useCallback(() => {
-    setEditingPlayer(selectedPlayer ?? undefined);
-    setView("form");
-  }, [selectedPlayer]);
+    if (selectedPlayer) {
+      navigate(`/players/${selectedPlayer.id}/edit`);
+    }
+  }, [selectedPlayer, navigate]);
 
   const handleSave = useCallback(
     (player: Player) => {
@@ -56,10 +77,9 @@ export default function PlayersMode() {
       } else {
         addPlayer(player);
       }
-      setSelectedPlayer(player);
-      setView("detail");
+      navigate(`/players/${player.id}`);
     },
-    [editingPlayer, addPlayer, updatePlayer],
+    [editingPlayer, addPlayer, updatePlayer, navigate],
   );
 
   const handleDelete = useCallback(() => {
@@ -71,10 +91,9 @@ export default function PlayersMode() {
     if (deleteTarget) {
       deletePlayer(deleteTarget);
       setDeleteTarget(null);
-      setSelectedPlayer(null);
-      setView("list");
+      navigate("/players");
     }
-  }, [deleteTarget, deletePlayer]);
+  }, [deleteTarget, deletePlayer, navigate]);
 
   const handleSaveTeam = useCallback(
     (team: Team) => {
@@ -84,49 +103,69 @@ export default function PlayersMode() {
         addTeam(team);
       }
       setEditingTeam(undefined);
-      setView("list");
+      navigate("/players/teams");
     },
-    [editingTeam, addTeam, updateTeam],
+    [editingTeam, addTeam, updateTeam, navigate],
   );
 
   const handleStartTraining = useCallback(
     (playerId: string) => {
-      // Navigate to train mode with player pre-selected via query param
       navigate("/train", { state: { initialPlayerId: playerId } });
     },
     [navigate],
   );
 
   const handleTabChange = useCallback((t: Tab) => {
-    setTab(t);
-    setView("list");
-    setSelectedPlayer(null);
-    setEditingPlayer(undefined);
+    if (t === "teams") {
+      navigate("/players/teams");
+    } else {
+      navigate("/players");
+    }
     setEditingTeam(undefined);
-  }, []);
+  }, [navigate]);
 
   // Team form view
   if (view === "team-form") {
     return (
-      <TeamForm
-        team={editingTeam}
-        onSave={handleSaveTeam}
-        onCancel={() => {
-          setEditingTeam(undefined);
-          setView("list");
-        }}
-      />
+      <>
+        <TeamForm
+          team={editingTeam}
+          onSave={handleSaveTeam}
+          onCancel={() => {
+            setEditingTeam(undefined);
+            navigate("/players/teams");
+          }}
+        />
+        <Outlet />
+      </>
     );
   }
 
-  // Player form view
+  // Player form view (new)
   if (view === "form") {
     return (
-      <PlayerForm
-        player={editingPlayer}
-        onSave={handleSave}
-        onCancel={() => setView(selectedPlayer ? "detail" : "list")}
-      />
+      <>
+        <PlayerForm
+          player={undefined}
+          onSave={handleSave}
+          onCancel={() => navigate("/players")}
+        />
+        <Outlet />
+      </>
+    );
+  }
+
+  // Player form view (edit)
+  if (view === "edit" && editingPlayer) {
+    return (
+      <>
+        <PlayerForm
+          player={editingPlayer}
+          onSave={handleSave}
+          onCancel={() => navigate(`/players/${editingPlayer.id}`)}
+        />
+        <Outlet />
+      </>
     );
   }
 
@@ -135,11 +174,9 @@ export default function PlayersMode() {
     return (
       <>
         <PlayerDetail
-          player={
-            players.find((p) => p.id === selectedPlayer.id) ?? selectedPlayer
-          }
+          player={selectedPlayer}
           onEdit={handleEdit}
-          onBack={() => setView("list")}
+          onBack={() => navigate("/players")}
           onDelete={handleDelete}
           onStartTraining={handleStartTraining}
         />
@@ -150,6 +187,7 @@ export default function PlayersMode() {
           title="Spieler l&ouml;schen"
           message="M&ouml;chtest du diesen Spieler wirklich l&ouml;schen? Diese Aktion kann nicht r&uuml;ckg&auml;ngig gemacht werden."
         />
+        <Outlet />
       </>
     );
   }
@@ -167,11 +205,11 @@ export default function PlayersMode() {
         <TeamList
           onAdd={() => {
             setEditingTeam(undefined);
-            setView("team-form");
+            navigate("/players/teams/new");
           }}
           onEdit={(team) => {
             setEditingTeam(team);
-            setView("team-form");
+            navigate("/players/teams/new");
           }}
         />
       )}
@@ -185,6 +223,7 @@ export default function PlayersMode() {
           message="M&ouml;chtest du diesen Spieler wirklich l&ouml;schen? Diese Aktion kann nicht r&uuml;ckg&auml;ngig gemacht werden."
         />
       )}
+      <Outlet />
     </div>
   );
 }

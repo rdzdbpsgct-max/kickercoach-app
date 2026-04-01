@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Card, Badge } from "../../components/ui";
-import type { Evaluation } from "../../domain/models/Evaluation";
+import type { Evaluation, EvaluationType } from "../../domain/models/Evaluation";
 import type { Category } from "../../domain/models/CoachCard";
 
 const CATEGORIES: Category[] = [
@@ -16,6 +16,33 @@ const SKILL_COLORS: Record<Category, string> = {
   Offensive: "#06b6d4",
   Mental: "#ec4899",
 };
+
+const EVALUATION_TYPE_LABELS: Record<EvaluationType, string> = {
+  session: "Training",
+  match: "Spiel",
+  general: "Allgemein",
+};
+
+const EVALUATION_TYPE_COLORS: Record<EvaluationType, "blue" | "orange" | "green"> = {
+  session: "blue",
+  match: "orange",
+  general: "green",
+};
+
+function StarDisplay({ rating, max = 5 }: { rating: number; max?: number }) {
+  return (
+    <span className="inline-flex gap-0.5">
+      {Array.from({ length: max }, (_, i) => (
+        <span
+          key={i}
+          className={`text-sm ${i < rating ? "text-kicker-orange" : "text-border"}`}
+        >
+          ★
+        </span>
+      ))}
+    </span>
+  );
+}
 
 interface ProgressViewProps {
   evaluations: Evaluation[];
@@ -166,7 +193,17 @@ export function ProgressView({ evaluations }: ProgressViewProps) {
         {[...sorted].reverse().map((ev) => (
           <Card key={ev.id} className="py-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-text">{ev.date}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-text">{ev.date}</span>
+                {ev.type && (
+                  <Badge color={EVALUATION_TYPE_COLORS[ev.type]}>
+                    {EVALUATION_TYPE_LABELS[ev.type]}
+                  </Badge>
+                )}
+                {ev.overallRating != null && (
+                  <StarDisplay rating={ev.overallRating} />
+                )}
+              </div>
               <div className="flex gap-1.5">
                 {ev.skillRatings.map((sr) => (
                   <span
@@ -180,6 +217,33 @@ export function ProgressView({ evaluations }: ProgressViewProps) {
             </div>
             {ev.notes && (
               <p className="mt-1 text-xs text-text-dim">{ev.notes}</p>
+            )}
+            {ev.techniqueRatings && ev.techniqueRatings.length > 0 && (
+              <div className="mt-2 border-t border-border pt-2">
+                <span className="text-[10px] font-semibold text-text-dim">
+                  Technik-Bewertungen
+                </span>
+                <div className="mt-1 flex flex-col gap-1">
+                  {ev.techniqueRatings.map((tr, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-xs">
+                      <span className="font-medium text-text-muted">
+                        {tr.techniqueId}
+                      </span>
+                      <StarDisplay rating={tr.rating} />
+                      {tr.successRate != null && (
+                        <span className="text-text-dim">
+                          {tr.successRate}% Erfolg
+                        </span>
+                      )}
+                      {tr.comment && (
+                        <span className="text-text-dim italic">
+                          {tr.comment}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
           </Card>
         ))}

@@ -30,14 +30,16 @@ export default function CardDetail({
 
   useEffect(() => {
     import("../../data/drills").then((mod) => {
-      const drills = mod.DEFAULT_DRILLS.filter(
-        (d) =>
-          d.focusSkill.toLowerCase().includes(card.category.toLowerCase()) ||
-          card.tags.some((tag) =>
-            d.focusSkill.toLowerCase().includes(tag.toLowerCase()),
-          ),
-      );
-      setMatchingDrills(drills.slice(0, 3));
+      mod.loadDrills().then((allDrills) => {
+        const drills = allDrills.filter(
+          (d) =>
+            d.focusSkill.toLowerCase().includes(card.category.toLowerCase()) ||
+            card.tags.some((tag) =>
+              d.focusSkill.toLowerCase().includes(tag.toLowerCase()),
+            ),
+        );
+        setMatchingDrills(drills.slice(0, 3));
+      });
     });
   }, [card.category, card.tags]);
 

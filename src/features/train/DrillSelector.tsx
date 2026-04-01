@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import type { Drill, DrillPhase, RodPosition } from "../../domain/models/Drill";
-import type { Difficulty } from "../../domain/models/CoachCard";
+import type { Difficulty, Category } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
 import { DIFFICULTY_LABELS, PHASE_LABELS } from "../../domain/constants";
 import { Badge, Card, Button, SearchBar } from "../../components/ui";
@@ -40,6 +40,25 @@ const POSITION_LABELS: Record<RodPosition, string> = {
   offense: "Sturm",
 };
 
+const CATEGORY_OPTIONS: (Category | "Alle")[] = [
+  "Alle",
+  "Torschuss",
+  "Passspiel",
+  "Ballkontrolle",
+  "Defensive",
+  "Taktik",
+  "Offensive",
+  "Mental",
+];
+
+const POSITION_OPTIONS: (RodPosition | "Alle")[] = [
+  "Alle",
+  "keeper",
+  "defense",
+  "midfield",
+  "offense",
+];
+
 interface DrillSelectorProps {
   drills: Drill[];
   selectedId: string | null;
@@ -63,6 +82,8 @@ export default function DrillSelector({
 }: DrillSelectorProps) {
   const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | "Alle">("Alle");
   const [phaseFilter, setPhaseFilter] = useState<DrillPhase | "Alle">("Alle");
+  const [categoryFilter, setCategoryFilter] = useState<Category | "Alle">("Alle");
+  const [positionFilter, setPositionFilter] = useState<RodPosition | "Alle">("Alle");
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
@@ -72,6 +93,12 @@ export default function DrillSelector({
     }
     if (phaseFilter !== "Alle") {
       result = result.filter((d) => d.phase === phaseFilter);
+    }
+    if (categoryFilter !== "Alle") {
+      result = result.filter((d) => d.category === categoryFilter);
+    }
+    if (positionFilter !== "Alle") {
+      result = result.filter((d) => d.position === positionFilter);
     }
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -84,7 +111,7 @@ export default function DrillSelector({
       );
     }
     return result;
-  }, [drills, difficultyFilter, phaseFilter, search]);
+  }, [drills, difficultyFilter, phaseFilter, categoryFilter, positionFilter, search]);
 
   // Split into recommended + rest
   const recommended = useMemo(() => {
@@ -226,6 +253,42 @@ export default function DrillSelector({
               }`}
             >
               {opt === "Alle" ? "Alle Phasen" : PHASE_LABELS[opt]}
+            </button>
+          ))}
+        </div>
+
+        {/* Category filter */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {CATEGORY_OPTIONS.map((opt) => (
+            <button
+              key={opt}
+              onClick={() => setCategoryFilter(opt)}
+              aria-pressed={categoryFilter === opt}
+              className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
+                categoryFilter === opt
+                  ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                  : "border border-border text-text-muted hover:border-accent/50"
+              }`}
+            >
+              {opt === "Alle" ? "Alle Kategorien" : opt}
+            </button>
+          ))}
+        </div>
+
+        {/* Position filter */}
+        <div className="flex flex-wrap items-center gap-1.5">
+          {POSITION_OPTIONS.map((opt) => (
+            <button
+              key={opt}
+              onClick={() => setPositionFilter(opt)}
+              aria-pressed={positionFilter === opt}
+              className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
+                positionFilter === opt
+                  ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                  : "border border-border text-text-muted hover:border-accent/50"
+              }`}
+            >
+              {opt === "Alle" ? "Alle Positionen" : POSITION_LABELS[opt]}
             </button>
           ))}
           <span className="ml-auto self-center text-xs text-text-dim">

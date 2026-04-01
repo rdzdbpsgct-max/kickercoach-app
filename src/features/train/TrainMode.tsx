@@ -75,7 +75,7 @@ export default function TrainMode() {
   // Load drills
   useEffect(() => {
     import("../../data/drills").then((mod) => {
-      setDefaultDrills(mod.DEFAULT_DRILLS);
+      mod.loadDrills().then(setDefaultDrills);
     });
   }, []);
 

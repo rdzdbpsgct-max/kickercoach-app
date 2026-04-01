@@ -1,7 +1,18 @@
 import { useState } from "react";
+import { z } from "zod";
 import { Button, FormField, Input, Textarea, Select } from "../../components/ui";
+import { CategorySchema } from "../../domain/schemas/coachCard";
 import type { Category } from "../../domain/models/CoachCard";
 import type { Goal } from "../../domain/models/Goal";
+
+const GoalFormSchema = z.object({
+  title: z.string().min(1, "Titel ist erforderlich"),
+  description: z.string().optional(),
+  category: CategorySchema,
+  targetDate: z.string().optional(),
+  targetValue: z.union([z.number().min(0, "Wert muss >= 0 sein"), z.undefined()]),
+  currentValue: z.union([z.number().min(0, "Wert muss >= 0 sein"), z.undefined()]),
+});
 
 interface GoalFormProps {
   playerId: string;
@@ -25,15 +36,26 @@ export function GoalForm({ playerId, goal, onSave, onCancel }: GoalFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors: Record<string, string> = {};
-    if (!title.trim()) newErrors.title = "Titel ist erforderlich";
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
     const tv = targetValue ? Number(targetValue) : undefined;
     const cv = currentValue ? Number(currentValue) : undefined;
+    const result = GoalFormSchema.safeParse({
+      title: title.trim(),
+      description: description.trim() || undefined,
+      category,
+      targetDate: targetDate || undefined,
+      targetValue: tv,
+      currentValue: cv,
+    });
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as string;
+        if (!fieldErrors[field]) fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+    setErrors({});
 
     onSave({
       id: goal?.id ?? crypto.randomUUID(),
