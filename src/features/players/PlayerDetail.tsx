@@ -29,14 +29,18 @@ interface PlayerDetailProps {
 }
 
 export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining }: PlayerDetailProps) {
-  const goals = useAppStore((s) => s.getPlayerGoals(player.id));
+  const allGoals = useAppStore((s) => s.goals);
   const addGoal = useAppStore((s) => s.addGoal);
   const updateGoal = useAppStore((s) => s.updateGoal);
   const deleteGoal = useAppStore((s) => s.deleteGoal);
 
-  const evaluations = useAppStore((s) => s.getPlayerEvaluations(player.id));
-  const playerNotes = useAppStore((s) => s.getPlayerNotes(player.id));
+  const allEvaluations = useAppStore((s) => s.evaluations);
+  const allNotes = useAppStore((s) => s.coachingNotes);
   const allPlayerTechniques = useAppStore((s) => s.playerTechniques);
+
+  const goals = useMemo(() => allGoals.filter((g) => g.playerId === player.id), [allGoals, player.id]);
+  const evaluations = useMemo(() => allEvaluations.filter((e) => e.playerId === player.id), [allEvaluations, player.id]);
+  const playerNotes = useMemo(() => allNotes.filter((n) => n.playerId === player.id), [allNotes, player.id]);
   const playerTechniques = useMemo(
     () => allPlayerTechniques.filter((pt) => pt.playerId === player.id),
     [allPlayerTechniques, player.id],

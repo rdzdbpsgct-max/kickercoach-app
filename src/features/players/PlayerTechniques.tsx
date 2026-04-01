@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useAppStore } from "../../store";
 import { Card, Badge } from "../../components/ui";
-import type { TechniqueStatus } from "../../domain/models/PlayerTechnique";
+import type { TechniqueStatus, PlayerTechnique } from "../../domain/models/PlayerTechnique";
 import type { Technique } from "../../domain/models/Technique";
 
 const STATUS_LABELS: Record<TechniqueStatus, string> = {
@@ -34,7 +34,11 @@ interface PlayerTechniquesProps {
 
 export function PlayerTechniques({ playerId }: PlayerTechniquesProps) {
   const techniques = useAppStore((s) => s.techniques);
-  const playerTechniques = useAppStore((s) => s.getPlayerTechniques(playerId));
+  const allPlayerTechniques = useAppStore((s) => s.playerTechniques);
+  const playerTechniques = useMemo(
+    () => allPlayerTechniques.filter((pt: PlayerTechnique) => pt.playerId === playerId),
+    [allPlayerTechniques, playerId],
+  );
   const addPlayerTechnique = useAppStore((s) => s.addPlayerTechnique);
   const updatePlayerTechnique = useAppStore((s) => s.updatePlayerTechnique);
 
