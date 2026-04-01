@@ -48,7 +48,24 @@ export const createCoachingSlice: StateCreator<
   deleteGoal: (id) =>
     set((s) => ({ goals: s.goals.filter((g) => g.id !== id) })),
   addEvaluation: (evaluation) =>
-    set((s) => ({ evaluations: [...s.evaluations, evaluation] })),
+    set((s) => {
+      const newEvaluations = [...s.evaluations, evaluation];
+
+      // Auto-update goal progress from skill ratings
+      const updatedGoals = s.goals.map((goal) => {
+        if (goal.status !== "active" || goal.playerId !== evaluation.playerId)
+          return goal;
+        const matchingRating = evaluation.skillRatings.find(
+          (sr) => sr.category === goal.category,
+        );
+        if (matchingRating && goal.targetValue != null) {
+          return { ...goal, currentValue: matchingRating.rating * 20 };
+        }
+        return goal;
+      });
+
+      return { evaluations: newEvaluations, goals: updatedGoals };
+    }),
   deleteEvaluation: (id) =>
     set((s) => ({
       evaluations: s.evaluations.filter((e) => e.id !== id),
