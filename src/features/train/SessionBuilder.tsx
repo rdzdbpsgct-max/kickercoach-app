@@ -41,6 +41,7 @@ export default function SessionBuilder({
   const teams = useAppStore((s) => s.teams);
   const sessionTemplates = useAppStore((s) => s.sessionTemplates);
   const saveSessionAsTemplate = useAppStore((s) => s.saveSessionAsTemplate);
+  const deleteSessionTemplate = useAppStore((s) => s.deleteSessionTemplate);
   const [templateSaved, setTemplateSaved] = useState(false);
 
   const [name, setName] = useState(editSession?.name ?? "");
@@ -143,26 +144,34 @@ export default function SessionBuilder({
 
       {/* Load from template */}
       {sessionTemplates.length > 0 && !editSession && (
-        <FormField label="Aus Vorlage laden">
-          <Select
-            value=""
-            onChange={(e) => {
-              const tmpl = sessionTemplates.find((t) => t.id === e.target.value);
-              if (tmpl) {
-                setName(tmpl.name);
-                setSelectedDrillIds(tmpl.drillIds);
-                setFocusAreas(tmpl.focusAreas);
-              }
-            }}
-          >
-            <option value="">Vorlage waehlen...</option>
-            {sessionTemplates.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name} ({t.drillIds.length} Drills)
-              </option>
+        <div className="flex flex-col gap-1">
+          <label className="text-[11px] font-medium text-text-dim">Aus Vorlage laden</label>
+          <div className="flex flex-wrap gap-1.5">
+            {sessionTemplates.map((t, idx) => (
+              <div key={t.id ?? idx} className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setName(t.name);
+                    setSelectedDrillIds(t.drillIds);
+                    setFocusAreas(t.focusAreas ?? []);
+                  }}
+                  className="rounded-full border border-border px-3 py-1.5 text-xs text-text-muted hover:border-accent/50 min-h-[36px] transition-all"
+                >
+                  {t.name} ({t.drillIds.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => t.id && deleteSessionTemplate(t.id)}
+                  className="rounded-full border border-border px-2 py-1.5 text-xs text-kicker-red hover:border-kicker-red/50 min-h-[36px] transition-all"
+                  title="Vorlage loeschen"
+                >
+                  &#10005;
+                </button>
+              </div>
             ))}
-          </Select>
-        </FormField>
+          </div>
+        </div>
       )}
 
       {/* Name */}
