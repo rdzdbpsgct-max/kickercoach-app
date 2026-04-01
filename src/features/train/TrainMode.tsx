@@ -25,7 +25,8 @@ type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor" 
 
 export default function TrainMode() {
   const location = useLocation();
-  const initialPlayerId = (location.state as { initialPlayerId?: string } | null)?.initialPlayerId;
+  const initialPlayerId = (location.state as { quickStart?: boolean; initialPlayerId?: string } | null)?.initialPlayerId;
+  const quickStart = (location.state as { quickStart?: boolean; initialPlayerId?: string } | null)?.quickStart;
 
   const [defaultDrills, setDefaultDrills] = useState<Drill[]>([]);
   const [view, setView] = useState<View>(initialPlayerId ? "session-builder" : "drills");
@@ -51,6 +52,7 @@ export default function TrainMode() {
   const [lastSavedSession, setLastSavedSession] = useState<Session | null>(null);
   const [editTrainingPlan, setEditTrainingPlan] = useState<TrainingPlan | undefined>();
   const [completedReps, setCompletedReps] = useState(0);
+  const [quickStartTemplate, setQuickStartTemplate] = useState<string | null>(null);
   const players = useAppStore((s) => s.players);
 
   // Merge default + custom drills
@@ -219,6 +221,17 @@ export default function TrainMode() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [view, selectedDrill, timer, handleNext, handlePrev, handleReset]);
 
+  // Quick-start: auto-load last template and navigate to session-builder
+  useEffect(() => {
+    if (quickStart) {
+      const templates = useAppStore.getState().sessionTemplates;
+      if (templates.length > 0) {
+        setQuickStartTemplate(templates[templates.length - 1].id ?? null);
+      }
+      setView("session-builder");
+    }
+  }, [quickStart]);
+
   // Training Plan Editor view
   if (view === "training-plan-editor") {
     return (
@@ -328,9 +341,11 @@ export default function TrainMode() {
         drills={allDrills}
         editSession={editSession}
         initialPlayerIds={initialPlayerId ? [initialPlayerId] : undefined}
+        quickStartTemplateId={quickStartTemplate}
         onSave={handleSaveSession}
         onCancel={() => {
           setEditSession(null);
+          setQuickStartTemplate(null);
           setView("drills");
         }}
       />
@@ -499,6 +514,19 @@ export default function TrainMode() {
           </Button>
           <Button variant="secondary" onClick={() => setView("journal")}>
             Tagebuch
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              const templates = useAppStore.getState().sessionTemplates;
+              if (templates.length > 0) {
+                setQuickStartTemplate(templates[templates.length - 1].id ?? null);
+              }
+              setEditSession(null);
+              setView("session-builder");
+            }}
+          >
+            Schnellstart
           </Button>
           <Button
             onClick={() => {

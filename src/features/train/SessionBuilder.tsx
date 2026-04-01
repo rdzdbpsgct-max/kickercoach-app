@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Drill, DrillPhase } from "../../domain/models/Drill";
 import type { Category } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
@@ -26,6 +26,7 @@ interface SessionBuilderProps {
   onCancel: () => void;
   editSession?: Session | null;
   initialPlayerIds?: string[];
+  quickStartTemplateId?: string | null;
 }
 
 export default function SessionBuilder({
@@ -34,6 +35,7 @@ export default function SessionBuilder({
   onCancel,
   editSession,
   initialPlayerIds,
+  quickStartTemplateId,
 }: SessionBuilderProps) {
   const players = useAppStore((s) => s.players);
   const teams = useAppStore((s) => s.teams);
@@ -54,6 +56,18 @@ export default function SessionBuilder({
   );
   const [rating, setRating] = useState<number | undefined>(editSession?.rating);
   const [selectedTeamId, setSelectedTeamId] = useState<string | undefined>(editSession?.teamId);
+
+  // Auto-load quick-start template
+  useEffect(() => {
+    if (quickStartTemplateId) {
+      const tmpl = sessionTemplates.find((t) => t.id === quickStartTemplateId);
+      if (tmpl) {
+        setName(tmpl.name);
+        setSelectedDrillIds(tmpl.drillIds);
+        setFocusAreas(tmpl.focusAreas ?? []);
+      }
+    }
+  }, [quickStartTemplateId]);
 
   const totalDuration = calculateSessionDuration(selectedDrillIds, drills);
 
