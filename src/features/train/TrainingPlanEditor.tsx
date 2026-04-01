@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { TrainingPlan, TrainingWeek, SessionTemplate } from "../../domain/models/TrainingPlan";
 import type { Category } from "../../domain/models/CoachCard";
+import type { Drill } from "../../domain/models/Drill";
 import { Button, FormField, Input, Textarea, Card } from "../../components/ui";
 import { useAppStore } from "../../store";
 
@@ -23,7 +24,9 @@ interface TrainingPlanEditorProps {
 
 export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingPlanEditorProps) {
   const players = useAppStore((s) => s.players);
+  const customDrills = useAppStore((s) => s.customDrills);
 
+  const [availableDrills, setAvailableDrills] = useState<Drill[]>([]);
   const [name, setName] = useState(plan?.name ?? "");
   const [goal, setGoal] = useState(plan?.goal ?? "");
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>(plan?.playerIds ?? []);
@@ -31,6 +34,10 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
     plan?.weeks ?? [{ weekNumber: 1, sessionTemplates: [{ ...EMPTY_SESSION }] }],
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    import("../../data/drills").then((mod) => mod.loadDrills().then((d) => setAvailableDrills([...d, ...customDrills])));
+  }, [customDrills]);
 
   const addWeek = () => {
     setWeeks([...weeks, { weekNumber: weeks.length + 1, sessionTemplates: [{ ...EMPTY_SESSION }] }]);
@@ -237,6 +244,34 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
                         {cat}
                       </button>
                     ))}
+                  </div>
+                  <div className="mt-2 flex flex-col gap-1">
+                    <label className="text-[11px] font-medium text-text-dim">Drills</label>
+                    <div className="flex flex-wrap gap-1">
+                      {availableDrills.map((drill) => (
+                        <button
+                          key={drill.id}
+                          type="button"
+                          onClick={() => {
+                            const current = session.drillIds;
+                            const newIds = current.includes(drill.id)
+                              ? current.filter((id) => id !== drill.id)
+                              : [...current, drill.id];
+                            updateSession(wi, si, { drillIds: newIds });
+                          }}
+                          className={`rounded-full px-2 py-1 text-[11px] min-h-[36px] transition-all ${
+                            session.drillIds.includes(drill.id)
+                              ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                              : "border border-border text-text-muted"
+                          }`}
+                        >
+                          {drill.name}
+                        </button>
+                      ))}
+                    </div>
+                    {session.drillIds.length > 0 && (
+                      <span className="text-[10px] text-text-dim">{session.drillIds.length} Drills gewaehlt</span>
+                    )}
                   </div>
                 </div>
               ))}
