@@ -235,7 +235,7 @@ export default function HomePage() {
                   </div>
                 ))}
                 {activeGoals.length > 4 && (
-                  <Link to="/players" className="text-[10px] text-accent hover:text-accent-hover">
+                  <Link to={`/players/${activeGoals[4]?.playerId}`} className="text-[10px] text-accent hover:text-accent-hover">
                     +{activeGoals.length - 4} weitere Ziele
                   </Link>
                 )}
@@ -255,7 +255,7 @@ export default function HomePage() {
                   return (
                     <Link
                       key={player.id}
-                      to="/players"
+                      to={`/players/${player.id}`}
                       className="flex items-center gap-2 rounded-lg p-1 -mx-1 hover:bg-card-hover transition-colors"
                     >
                       <span
