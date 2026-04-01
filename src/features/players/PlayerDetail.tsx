@@ -36,7 +36,11 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
 
   const evaluations = useAppStore((s) => s.getPlayerEvaluations(player.id));
   const playerNotes = useAppStore((s) => s.getPlayerNotes(player.id));
-  const playerTechniques = useAppStore((s) => s.playerTechniques.filter((pt) => pt.playerId === player.id));
+  const allPlayerTechniques = useAppStore((s) => s.playerTechniques);
+  const playerTechniques = useMemo(
+    () => allPlayerTechniques.filter((pt) => pt.playerId === player.id),
+    [allPlayerTechniques, player.id],
+  );
 
   const [showGoalForm, setShowGoalForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | undefined>();
