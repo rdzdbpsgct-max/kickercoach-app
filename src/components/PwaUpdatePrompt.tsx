@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Button } from "./ui";
 
 /**
@@ -9,6 +10,7 @@ import { Button } from "./ui";
 export function PwaUpdatePrompt() {
   const [showUpdate, setShowUpdate] = useState(false);
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
@@ -68,9 +70,9 @@ export function PwaUpdatePrompt() {
         >
           <div className="flex items-center justify-between gap-3">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-text">Neue Version verfügbar</p>
+              <p className="text-sm font-semibold text-text">{t("pwa.updateAvailable")}</p>
               <p className="text-xs text-text-muted">
-                Aktualisiere für die neuesten Funktionen und Fixes.
+                {t("pwa.updateDescription")}
               </p>
             </div>
             <div className="flex gap-2">
@@ -79,10 +81,10 @@ export function PwaUpdatePrompt() {
                 size="sm"
                 onClick={() => setShowUpdate(false)}
               >
-                Später
+                {t("actions.later")}
               </Button>
               <Button size="sm" onClick={handleUpdate}>
-                Aktualisieren
+                {t("actions.update")}
               </Button>
             </div>
           </div>

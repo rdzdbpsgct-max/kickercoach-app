@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Button, Card } from "./ui";
+import i18n from "../i18n";
 
 interface Props {
   children: ReactNode;
@@ -33,11 +34,11 @@ export class FeatureErrorBoundary extends Component<Props, State> {
             <div className="mb-3 text-3xl">&#9888;&#65039;</div>
             <h2 className="mb-2 text-lg font-bold text-text">
               {this.props.featureName
-                ? `Fehler in ${this.props.featureName}`
-                : "Ein Fehler ist aufgetreten"}
+                ? i18n.t("error.titleWithFeature", { featureName: this.props.featureName })
+                : i18n.t("error.title")}
             </h2>
             <p className="mb-4 text-sm text-text-muted">
-              Dieser Bereich hat einen Fehler verursacht. Die restliche App funktioniert weiterhin.
+              {i18n.t("error.description")}
             </p>
             {this.state.error && (
               <p className="mb-4 rounded-lg bg-kicker-red/10 p-2 text-xs text-kicker-red">
@@ -47,7 +48,7 @@ export class FeatureErrorBoundary extends Component<Props, State> {
             <Button
               onClick={() => this.setState({ hasError: false, error: null })}
             >
-              Erneut versuchen
+              {i18n.t("actions.retry")}
             </Button>
           </Card>
         </div>
