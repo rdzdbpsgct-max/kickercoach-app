@@ -1,27 +1,29 @@
 import { type ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import BottomNav from "./BottomNav";
 import { useTheme } from "../hooks/useTheme";
 
-const tabs = [
-  { to: "/", label: "Home", icon: "\u{1F3E0}" },
-  { to: "/learn", label: "Lernen", icon: "\uD83D\uDCDA" },
-  { to: "/train", label: "Training", icon: "\u23F1\uFE0F" },
-  { to: "/plan", label: "Matchplan", icon: "\uD83D\uDCCB" },
-  { to: "/board", label: "Taktik", icon: "\uD83C\uDFAF" },
-  { to: "/players", label: "Spieler", icon: "\uD83D\uDC64" },
-  { to: "/analytics", label: "Analyse", icon: "\uD83D\uDCCA" },
-] as const;
-
 export default function Layout({ children }: { children: ReactNode }) {
   const { theme, toggleTheme } = useTheme();
+  const { t } = useTranslation();
+
+  const tabs = [
+    { to: "/", label: t("nav.home"), icon: "\u{1F3E0}" },
+    { to: "/learn", label: t("nav.learn"), icon: "\uD83D\uDCDA" },
+    { to: "/train", label: t("nav.train"), icon: "\u23F1\uFE0F" },
+    { to: "/plan", label: t("nav.plan"), icon: "\uD83D\uDCCB" },
+    { to: "/board", label: t("nav.board"), icon: "\uD83C\uDFAF" },
+    { to: "/players", label: t("nav.players"), icon: "\uD83D\uDC64" },
+    { to: "/analytics", label: t("nav.analytics"), icon: "\uD83D\uDCCA" },
+  ];
 
   return (
     <div className="flex h-full flex-col bg-bg text-text">
       {/* Skip to content */}
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-accent focus:text-bg focus:px-4 focus:py-2 focus:rounded">
-        Zum Inhalt springen
+        {t("skipToContent")}
       </a>
 
       {/* Desktop Header */}
@@ -40,16 +42,16 @@ export default function Layout({ children }: { children: ReactNode }) {
           </div>
           <div>
             <div className="text-base font-bold tracking-tight">
-              KickerCoach
+              {t("appName")}
             </div>
             <div className="-mt-0.5 text-[11px] text-text-dim">
-              by SpielerGeist
+              {t("appTagline")}
             </div>
           </div>
         </NavLink>
 
         <div className="flex items-center gap-3">
-          <nav className="flex gap-1.5" aria-label="Hauptnavigation">
+          <nav className="flex gap-1.5" aria-label={t("nav.mainNav")}>
             {tabs.map((tab) => (
               <NavLink
                 key={tab.to}
@@ -74,7 +76,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             whileTap={{ scale: 0.9 }}
             onClick={toggleTheme}
             className="flex h-9 w-9 items-center justify-center rounded-xl border border-border text-text-muted hover:text-text hover:bg-surface-hover transition-all"
-            aria-label={theme === "dark" ? "Light Mode aktivieren" : "Dark Mode aktivieren"}
+            aria-label={t(theme === "dark" ? "theme.activateLight" : "theme.activateDark")}
           >
             {theme === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19"}
           </motion.button>
