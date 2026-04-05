@@ -55,7 +55,7 @@ export default function Journal({
   const stats = calculateSessionStats(filteredSessions);
 
   return (
-    <div className="flex flex-col gap-4 overflow-hidden">
+    <div className="flex flex-col gap-4 overflow-y-auto">
       {/* Actions */}
       {sessions.length > 0 && (
         <div className="flex justify-end no-print">

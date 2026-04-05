@@ -119,7 +119,7 @@ export default function PlanMode() {
 
   return (
     <motion.div
-      className="flex flex-1 flex-col gap-4 overflow-hidden"
+      className="flex flex-1 flex-col gap-4 overflow-y-auto"
       variants={containerVariants}
       initial="hidden"
       animate="visible"

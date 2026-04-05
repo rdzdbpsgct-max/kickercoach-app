@@ -265,7 +265,7 @@ export default function TrainMode() {
   // Training Plan List view
   if (view === "training-plans") {
     return (
-      <motion.div className="flex flex-1 flex-col gap-4 overflow-hidden" {...fadeIn}>
+      <motion.div className="flex flex-1 flex-col gap-4 overflow-y-auto" {...fadeIn}>
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold">Trainingspl&auml;ne</h1>
           <button
@@ -363,7 +363,7 @@ export default function TrainMode() {
   // Journal view
   if (view === "journal") {
     return (
-      <motion.div className="flex flex-1 flex-col gap-4 overflow-hidden" {...fadeIn}>
+      <motion.div className="flex flex-1 flex-col gap-4 overflow-y-auto" {...fadeIn}>
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold">Trainingstagebuch</h1>
           <button
@@ -388,7 +388,7 @@ export default function TrainMode() {
   // Timer view
   if (view === "timer" && selectedDrill) {
     return (
-      <motion.div className="flex flex-1 flex-col gap-6 overflow-hidden" {...fadeIn}>
+      <motion.div className="flex flex-1 flex-col gap-6 overflow-y-auto" {...fadeIn}>
         <div className="flex items-center justify-between">
           <div>
             <button
@@ -522,7 +522,7 @@ export default function TrainMode() {
 
   // Default: Drill selector with sub-nav
   return (
-    <motion.div className="flex flex-1 flex-col gap-4 overflow-hidden" {...fadeIn}>
+    <motion.div className="flex flex-1 flex-col gap-4 overflow-y-auto" {...fadeIn}>
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Training</h1>
         <div className="flex gap-2">

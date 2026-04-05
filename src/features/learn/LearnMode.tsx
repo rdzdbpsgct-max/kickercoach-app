@@ -72,7 +72,7 @@ export default function LearnMode() {
 
   return (
     <motion.div
-      className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden"
+      className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
