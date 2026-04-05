@@ -1,6 +1,7 @@
 import type { StateCreator } from "zustand";
 import type { Drill } from "../../domain/models/Drill";
 import type { AppState } from "../types";
+import { generateId } from "../../utils/id";
 
 export interface DrillSlice {
   customDrills: Drill[];
@@ -38,7 +39,7 @@ export const createDrillSlice: StateCreator<AppState, [], [], DrillSlice> = (
     set((s) => ({
       drillTemplates: [
         ...s.drillTemplates,
-        { ...drill, id: `tmpl-${crypto.randomUUID()}`, isCustom: true },
+        { ...drill, id: `tmpl-${generateId()}`, isCustom: true },
       ],
     })),
   deleteDrillTemplate: (id) =>

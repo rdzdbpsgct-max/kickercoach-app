@@ -7,6 +7,7 @@ import { PHASE_LABELS, ALL_CATEGORIES, STAR_LABELS, STAR_RATING_SCALE } from "..
 import { Button, FormField, Input, Select, Textarea, StarRating } from "../../components/ui";
 import { useAppStore } from "../../store";
 import type { Session, DrillResult } from "../../store";
+import { generateId } from "../../utils/id";
 
 export interface PlanSessionContext {
   planId: string;
@@ -131,7 +132,7 @@ export default function SessionBuilder({
         : editSession?.drillResults;
 
     const session: Session = {
-      id: editSession?.id ?? crypto.randomUUID(),
+      id: editSession?.id ?? generateId(),
       name: name.trim(),
       date: sessionDate,
       drillIds: selectedDrillIds,
@@ -161,7 +162,7 @@ export default function SessionBuilder({
               disabled={templateSaved}
               onClick={() => {
                 saveSessionAsTemplate({
-                  id: crypto.randomUUID(),
+                  id: generateId(),
                   name: name.trim(),
                   drillIds: selectedDrillIds,
                   focusAreas,

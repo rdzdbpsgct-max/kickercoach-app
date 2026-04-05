@@ -6,6 +6,10 @@ import type { Technique } from "../../domain/models/Technique";
 import type { PlayerTechnique } from "../../domain/models/PlayerTechnique";
 import type { AppState } from "../types";
 import { STAR_RATING_SCALE } from "../../domain/constants";
+import { EvaluationSchema } from "../../domain/schemas/evaluation";
+import { CoachingNoteSchema } from "../../domain/schemas/coachingNote";
+import { GoalSchema } from "../../domain/schemas/goal";
+import { validateOrWarn } from "../../utils/validate";
 
 export interface CoachingSlice {
   goals: Goal[];
@@ -42,16 +46,20 @@ export const createCoachingSlice: StateCreator<
   techniques: [],
   playerTechniques: [],
   setTechniques: (techniques) => set({ techniques }),
-  addGoal: (goal) => set((s) => ({ goals: [...s.goals, goal] })),
+  addGoal: (goal) => {
+    const validated = validateOrWarn(goal, GoalSchema, "addGoal");
+    set((s) => ({ goals: [...s.goals, validated] }));
+  },
   updateGoal: (id, updates) =>
     set((s) => ({
       goals: s.goals.map((g) => (g.id === id ? { ...g, ...updates } : g)),
     })),
   deleteGoal: (id) =>
     set((s) => ({ goals: s.goals.filter((g) => g.id !== id) })),
-  addEvaluation: (evaluation) =>
+  addEvaluation: (evaluation) => {
+    const validated = validateOrWarn(evaluation, EvaluationSchema, "addEvaluation");
     set((s) => {
-      const newEvaluations = [...s.evaluations, evaluation];
+      const newEvaluations = [...s.evaluations, validated];
 
       // Auto-update goal progress from skill ratings
       const updatedGoals = s.goals.map((goal) => {
@@ -67,13 +75,16 @@ export const createCoachingSlice: StateCreator<
       });
 
       return { evaluations: newEvaluations, goals: updatedGoals };
-    }),
+    });
+  },
   deleteEvaluation: (id) =>
     set((s) => ({
       evaluations: s.evaluations.filter((e) => e.id !== id),
     })),
-  addCoachingNote: (note) =>
-    set((s) => ({ coachingNotes: [...s.coachingNotes, note] })),
+  addCoachingNote: (note) => {
+    const validated = validateOrWarn(note, CoachingNoteSchema, "addCoachingNote");
+    set((s) => ({ coachingNotes: [...s.coachingNotes, validated] }));
+  },
   updateCoachingNote: (id, updates) =>
     set((s) => ({
       coachingNotes: s.coachingNotes.map((n) =>

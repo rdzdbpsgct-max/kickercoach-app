@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { CoachingNote } from "../../domain/models/CoachingNote";
 import { useAppStore } from "../../store";
 import { Button, Input, Select } from "../../components/ui";
+import { generateId } from "../../utils/id";
 
 const CATEGORIES = [
   { value: "tactical", label: "Taktisch" },
@@ -25,7 +26,7 @@ export function QuickNote({ playerId, sessionId, matchPlanId }: QuickNoteProps) 
     if (!text.trim()) return;
 
     addCoachingNote({
-      id: crypto.randomUUID(),
+      id: generateId(),
       playerId,
       sessionId,
       matchPlanId,

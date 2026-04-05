@@ -5,6 +5,7 @@ import type { Difficulty, Category } from "../../domain/models/CoachCard";
 import { PHASE_LABELS } from "../../domain/constants";
 import { Button, FormField, Input, Textarea, Select } from "../../components/ui";
 import { useAppStore } from "../../store";
+import { generateId } from "../../utils/id";
 
 const DrillFormSchema = z.object({
   name: z.string().min(1, "Name ist erforderlich"),
@@ -71,7 +72,7 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
     setErrors({});
 
     onSave({
-      id: drill?.id ?? crypto.randomUUID(),
+      id: drill?.id ?? generateId(),
       name: name.trim(),
       focusSkill: focusSkill.trim(),
       description: description.trim() || undefined,

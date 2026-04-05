@@ -1,6 +1,8 @@
 import type { StateCreator } from "zustand";
 import type { Session } from "../../domain/models/Session";
 import type { AppState } from "../types";
+import { SessionSchema } from "../../domain/schemas/session";
+import { validateOrWarn } from "../../utils/validate";
 
 export interface SessionSlice {
   sessions: Session[];
@@ -16,8 +18,10 @@ export const createSessionSlice: StateCreator<
   SessionSlice
 > = (set) => ({
   sessions: [],
-  addSession: (session) =>
-    set((s) => ({ sessions: [...s.sessions, session] })),
+  addSession: (session) => {
+    const validated = validateOrWarn(session, SessionSchema, "addSession");
+    set((s) => ({ sessions: [...s.sessions, validated] }));
+  },
   updateSession: (id, updates) =>
     set((s) => ({
       sessions: s.sessions.map((ses) =>

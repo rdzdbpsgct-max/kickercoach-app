@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAppStore } from "../../store";
 import { Button, Card, FormField, Input, Textarea } from "../../components/ui";
 import type { Team } from "../../domain/models/Team";
+import { generateId } from "../../utils/id";
 
 interface TeamFormProps {
   team?: Team;
@@ -26,7 +27,7 @@ export function TeamForm({ team, onSave, onCancel }: TeamFormProps) {
   const handleSubmit = () => {
     if (!canSave) return;
     onSave({
-      id: team?.id ?? crypto.randomUUID(),
+      id: team?.id ?? generateId(),
       name: name.trim(),
       playerIds: [player1, player2],
       notes: notes.trim() || undefined,

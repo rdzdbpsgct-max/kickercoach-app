@@ -6,10 +6,11 @@ import { useAppStore } from "../../store";
 import { Button } from "../../components/ui";
 import MatchPlanEditor from "./MatchPlanEditor";
 import MatchPlanList from "./MatchPlanList";
+import { generateId } from "../../utils/id";
 
 function createEmptyPlan(): MatchPlan {
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     opponent: "",
     date: new Date().toISOString().slice(0, 10),
     analysis: "",
@@ -95,7 +96,7 @@ export default function PlanMode() {
           );
           return;
         }
-        const plan: MatchPlan = { ...result.data, id: crypto.randomUUID() };
+        const plan: MatchPlan = { ...result.data, id: generateId() };
         addMatchPlan(plan);
       } catch {
         setImportError(

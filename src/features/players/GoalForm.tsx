@@ -4,6 +4,7 @@ import { Button, FormField, Input, Textarea, Select } from "../../components/ui"
 import { CategorySchema } from "../../domain/schemas/coachCard";
 import type { Category } from "../../domain/models/CoachCard";
 import type { Goal } from "../../domain/models/Goal";
+import { generateId } from "../../utils/id";
 
 const GoalFormSchema = z.object({
   title: z.string().min(1, "Titel ist erforderlich"),
@@ -58,7 +59,7 @@ export function GoalForm({ playerId, goal, onSave, onCancel }: GoalFormProps) {
     setErrors({});
 
     onSave({
-      id: goal?.id ?? crypto.randomUUID(),
+      id: goal?.id ?? generateId(),
       playerId,
       title: title.trim(),
       description: description.trim() || undefined,

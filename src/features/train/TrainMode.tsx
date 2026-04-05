@@ -1,18 +1,13 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import type { Drill } from "../../domain/models/Drill";
-import { advanceBlock, previousBlock } from "../../domain/logic/drill";
-import { useTimer } from "../../hooks/useTimer";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useAppStore } from "../../store";
-import { STORAGE_KEYS, STAR_LABELS } from "../../domain/constants";
 import { makeCompletionKey } from "../../domain/logic/drill";
-import { Button, ConfirmDialog, Textarea, StarRating } from "../../components/ui";
-import Timer from "./Timer";
-import BlockProgress from "./BlockProgress";
+import { Button, ConfirmDialog } from "../../components/ui";
 import DrillSelector from "./DrillSelector";
 import DrillEditor from "./DrillEditor";
+import DrillTimerView from "./DrillTimerView";
 import SessionBuilder from "./SessionBuilder";
 import SessionRating from "./SessionRating";
 import TrainingPlanList from "./TrainingPlanList";
@@ -24,7 +19,16 @@ import type { TrainingPlan } from "../../domain/models/TrainingPlan";
 import type { PlanSessionContext } from "./SessionBuilder";
 import { getRecommendedDrillIds } from "../../domain/logic/recommendations";
 
-type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor" | "session-rating" | "session-retrospective" | "training-plans" | "training-plan-editor";
+type View =
+  | "drills"
+  | "timer"
+  | "session-builder"
+  | "journal"
+  | "drill-editor"
+  | "session-rating"
+  | "session-retrospective"
+  | "training-plans"
+  | "training-plan-editor";
 
 const fadeIn = {
   initial: { opacity: 0, y: 12 },
@@ -35,17 +39,20 @@ const fadeIn = {
 
 export default function TrainMode() {
   const location = useLocation();
-  const initialPlayerId = (location.state as { quickStart?: boolean; initialPlayerId?: string } | null)?.initialPlayerId;
-  const quickStart = (location.state as { quickStart?: boolean; initialPlayerId?: string } | null)?.quickStart;
+  const locState = location.state as {
+    quickStart?: boolean;
+    initialPlayerId?: string;
+  } | null;
+  const initialPlayerId = locState?.initialPlayerId;
+  const quickStart = locState?.quickStart;
 
   const [defaultDrills, setDefaultDrills] = useState<Drill[]>([]);
-  const [view, setView] = useState<View>(initialPlayerId ? "session-builder" : "drills");
-  const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
-  const [blockIndex, setBlockIndex] = useState(0);
-  const [autoAdvance, setAutoAdvance] = useLocalStorage(
-    STORAGE_KEYS.autoAdvance,
-    true,
+  const [view, setView] = useState<View>(
+    initialPlayerId ? "session-builder" : "drills",
   );
+  const [selectedDrill, setSelectedDrill] = useState<Drill | null>(null);
+
+  // Store selectors
   const sessions = useAppStore((s) => s.sessions);
   const addSession = useAppStore((s) => s.addSession);
   const updateSession = useAppStore((s) => s.updateSession);
@@ -54,25 +61,33 @@ export default function TrainMode() {
   const addCustomDrill = useAppStore((s) => s.addCustomDrill);
   const updateCustomDrill = useAppStore((s) => s.updateCustomDrill);
   const deleteCustomDrill = useAppStore((s) => s.deleteCustomDrill);
-  const [editSession, setEditSession] = useState<Session | null>(null);
   const addTrainingPlan = useAppStore((s) => s.addTrainingPlan);
   const updateTrainingPlan = useAppStore((s) => s.updateTrainingPlan);
-  const [editDrill, setEditDrill] = useState<Drill | undefined>();
-  const [deleteDrillId, setDeleteDrillId] = useState<string | null>(null);
-  const [lastSavedSession, setLastSavedSession] = useState<Session | null>(null);
-  const markPlanSessionCompleted = useAppStore((s) => s.markPlanSessionCompleted);
-  const [editTrainingPlan, setEditTrainingPlan] = useState<TrainingPlan | undefined>();
-  const [completedReps, setCompletedReps] = useState(0);
-  const [quickStartTemplate, setQuickStartTemplate] = useState<string | null>(null);
-  const [planSessionContext, setPlanSessionContext] = useState<PlanSessionContext | null>(null);
+  const markPlanSessionCompleted = useAppStore(
+    (s) => s.markPlanSessionCompleted,
+  );
   const players = useAppStore((s) => s.players);
 
-  // Drill result tracking
-  const [drillResults, setDrillResults] = useState<Record<string, { rating: number; notes?: string }>>({});
-  const [showResultCapture, setShowResultCapture] = useState(false);
-  const [resultRating, setResultRating] = useState(0);
-  const [resultNotes, setResultNotes] = useState("");
+  // Sub-view state
+  const [editSession, setEditSession] = useState<Session | null>(null);
+  const [editDrill, setEditDrill] = useState<Drill | undefined>();
+  const [deleteDrillId, setDeleteDrillId] = useState<string | null>(null);
+  const [lastSavedSession, setLastSavedSession] = useState<Session | null>(
+    null,
+  );
+  const [editTrainingPlan, setEditTrainingPlan] = useState<
+    TrainingPlan | undefined
+  >();
+  const [quickStartTemplate, setQuickStartTemplate] = useState<string | null>(
+    null,
+  );
+  const [planSessionContext, setPlanSessionContext] =
+    useState<PlanSessionContext | null>(null);
 
+  // Drill result tracking (persists across drill runs within a session)
+  const [drillResults, setDrillResults] = useState<
+    Record<string, { rating: number; notes?: string }>
+  >({});
   const drillResultCount = Object.keys(drillResults).length;
   const drillResultLabel = `${drillResultCount} Drill-Ergebnis${drillResultCount !== 1 ? "se" : ""} erfasst`;
 
@@ -93,7 +108,7 @@ export default function TrainMode() {
   const recommendLabel = useMemo(() => {
     if (!initialPlayerId) return undefined;
     const player = players.find((p) => p.id === initialPlayerId);
-    return player ? `Empfohlen fuer ${player.name}` : undefined;
+    return player ? `Empfohlen für ${player.name}` : undefined;
   }, [initialPlayerId, players]);
 
   // Load drills
@@ -102,201 +117,6 @@ export default function TrainMode() {
       mod.loadDrills().then(setDefaultDrills);
     });
   }, []);
-
-  const currentBlock = selectedDrill?.blocks[blockIndex];
-  const isLastBlock = selectedDrill ? blockIndex === selectedDrill.blocks.length - 1 : false;
-
-  const handleBlockFinish = useCallback(() => {
-    if (!selectedDrill || !autoAdvance) return;
-    const next = advanceBlock(selectedDrill, blockIndex);
-    if (next) {
-      setBlockIndex(next.blockIndex);
-    } else if (isLastBlock) {
-      // Last block finished - show result capture
-      setShowResultCapture(true);
-    }
-  }, [selectedDrill, blockIndex, autoAdvance, isLastBlock]);
-
-  const timer = useTimer(
-    currentBlock?.durationSeconds ?? 0,
-    handleBlockFinish,
-  );
-
-  // Show result capture when last block reps are completed
-  useEffect(() => {
-    if (!selectedDrill || !isLastBlock || !currentBlock) return;
-    if (currentBlock.type !== "repetitions") return;
-    const reps = currentBlock.repetitions ?? 0;
-    if (completedReps >= reps && !showResultCapture) {
-      setShowResultCapture(true);
-    }
-  }, [completedReps, selectedDrill, isLastBlock, currentBlock, showResultCapture]);
-
-  const resetDrillSession = useCallback(() => {
-    setShowResultCapture(false);
-    setResultRating(0);
-    setResultNotes("");
-    setSelectedDrill(null);
-    setBlockIndex(0);
-    setView("drills");
-  }, []);
-
-  const handleSaveResult = useCallback(() => {
-    if (!selectedDrill || resultRating === 0) return;
-    setDrillResults((prev) => ({
-      ...prev,
-      [selectedDrill.id]: {
-        rating: resultRating,
-        notes: resultNotes.trim() || undefined,
-      },
-    }));
-    resetDrillSession();
-  }, [selectedDrill, resultRating, resultNotes, resetDrillSession]);
-
-  const handleSkipResult = resetDrillSession;
-
-  const handleSelectDrill = (drill: Drill) => {
-    setSelectedDrill(drill);
-    setBlockIndex(0);
-    setCompletedReps(0);
-    setShowResultCapture(false);
-    setResultRating(0);
-    setResultNotes("");
-    setView("timer");
-  };
-
-  const handleNext = useCallback(() => {
-    if (!selectedDrill) return;
-    const next = advanceBlock(selectedDrill, blockIndex);
-    if (next) {
-      timer.reset();
-      setBlockIndex(next.blockIndex);
-      setCompletedReps(0);
-    }
-  }, [selectedDrill, blockIndex, timer]);
-
-  const handlePrev = useCallback(() => {
-    if (!selectedDrill) return;
-    const prev = previousBlock(selectedDrill, blockIndex);
-    if (prev) {
-      timer.reset();
-      setBlockIndex(prev.blockIndex);
-      setCompletedReps(0);
-    }
-  }, [selectedDrill, blockIndex, timer]);
-
-  const handleReset = useCallback(() => {
-    timer.reset();
-    setBlockIndex(0);
-    setCompletedReps(0);
-    setShowResultCapture(false);
-  }, [timer]);
-
-  const handleRepIncrement = useCallback(() => {
-    if (!currentBlock || currentBlock.type !== "repetitions") return;
-    setCompletedReps((prev) => prev + 1);
-  }, [currentBlock]);
-
-  const handleRepDecrement = useCallback(() => {
-    setCompletedReps((prev) => Math.max(0, prev - 1));
-  }, []);
-
-  // Auto-advance after completing all reps (skip for last block - result capture handles it)
-  useEffect(() => {
-    if (!selectedDrill || !autoAdvance || !currentBlock) return;
-    if (currentBlock.type !== "repetitions") return;
-    const reps = currentBlock.repetitions ?? 0;
-    if (completedReps < reps) return;
-    if (isLastBlock) return;
-
-    const timeout = setTimeout(() => {
-      const nextBlock = advanceBlock(selectedDrill, blockIndex);
-      if (nextBlock) {
-        setBlockIndex(nextBlock.blockIndex);
-        setCompletedReps(0);
-      }
-    }, 500);
-
-    return () => clearTimeout(timeout);
-  }, [completedReps, selectedDrill, autoAdvance, currentBlock, blockIndex, isLastBlock]);
-
-  const handleSaveSession = (session: Session) => {
-    if (editSession) {
-      updateSession(session.id, session);
-      setEditSession(null);
-      setView("journal");
-    } else {
-      addSession(session);
-      // Track plan session completion
-      if (planSessionContext) {
-        markPlanSessionCompleted(
-          planSessionContext.planId,
-          makeCompletionKey(planSessionContext.weekIndex, planSessionContext.sessionIndex, session.id),
-        );
-        setPlanSessionContext(null);
-      }
-      setEditSession(null);
-      setLastSavedSession(session);
-      // Clear drill results after session is saved
-      setDrillResults({});
-      if (session.playerIds.length > 0) {
-        setView("session-rating");
-      } else {
-        setView("session-retrospective");
-      }
-    }
-  };
-
-  const handleDeleteSession = (id: string) => {
-    deleteSession(id);
-  };
-
-  const handleSaveDrill = (drill: Drill) => {
-    if (editDrill) {
-      updateCustomDrill(drill.id, drill);
-    } else {
-      addCustomDrill(drill);
-    }
-    setEditDrill(undefined);
-    setView("drills");
-  };
-
-  // Keyboard shortcuts
-  useEffect(() => {
-    if (view !== "timer" || !selectedDrill) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      )
-        return;
-
-      switch (e.code) {
-        case "Space":
-          e.preventDefault();
-          timer.toggle();
-          break;
-        case "KeyN":
-        case "ArrowRight":
-          e.preventDefault();
-          handleNext();
-          break;
-        case "KeyP":
-        case "ArrowLeft":
-          e.preventDefault();
-          handlePrev();
-          break;
-        case "KeyR":
-          e.preventDefault();
-          handleReset();
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [view, selectedDrill, timer, handleNext, handlePrev, handleReset]);
 
   // Quick-start: auto-load last template and navigate to session-builder
   useEffect(() => {
@@ -309,7 +129,68 @@ export default function TrainMode() {
     }
   }, [quickStart]);
 
-  // Training Plan Editor view
+  // ── Handlers ──────────────────────────────────────────────────────
+
+  const handleSelectDrill = (drill: Drill) => {
+    setSelectedDrill(drill);
+    setView("timer");
+  };
+
+  const handleDrillResultSave = (
+    drillId: string,
+    result: { rating: number; notes?: string },
+  ) => {
+    setDrillResults((prev) => ({ ...prev, [drillId]: result }));
+    setSelectedDrill(null);
+    setView("drills");
+  };
+
+  const handleDrillResultSkip = () => {
+    setSelectedDrill(null);
+    setView("drills");
+  };
+
+  const handleSaveSession = (session: Session) => {
+    if (editSession) {
+      updateSession(session.id, session);
+      setEditSession(null);
+      setView("journal");
+    } else {
+      addSession(session);
+      if (planSessionContext) {
+        markPlanSessionCompleted(
+          planSessionContext.planId,
+          makeCompletionKey(
+            planSessionContext.weekIndex,
+            planSessionContext.sessionIndex,
+            session.id,
+          ),
+        );
+        setPlanSessionContext(null);
+      }
+      setEditSession(null);
+      setLastSavedSession(session);
+      setDrillResults({});
+      if (session.playerIds.length > 0) {
+        setView("session-rating");
+      } else {
+        setView("session-retrospective");
+      }
+    }
+  };
+
+  const handleSaveDrill = (drill: Drill) => {
+    if (editDrill) {
+      updateCustomDrill(drill.id, drill);
+    } else {
+      addCustomDrill(drill);
+    }
+    setEditDrill(undefined);
+    setView("drills");
+  };
+
+  // ── View rendering ────────────────────────────────────────────────
+
   if (view === "training-plan-editor") {
     return (
       <TrainingPlanEditor
@@ -331,17 +212,16 @@ export default function TrainMode() {
     );
   }
 
-  // Training Plan List view
   if (view === "training-plans") {
     return (
       <motion.div className="flex flex-col gap-4" {...fadeIn}>
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold">Trainingspl&auml;ne</h1>
+          <h1 className="text-xl font-bold">Trainingspläne</h1>
           <button
             onClick={() => setView("drills")}
             className="text-xs text-text-dim hover:text-accent transition-colors"
           >
-            &larr; Zurueck
+            &larr; Zurück
           </button>
         </div>
         <TrainingPlanList
@@ -364,33 +244,33 @@ export default function TrainMode() {
     );
   }
 
-  // Session Rating view
   if (view === "session-rating" && lastSavedSession) {
     return (
       <SessionRating
         sessionId={lastSavedSession.id}
         playerIds={lastSavedSession.playerIds}
-        onComplete={() => {
-          setView("session-retrospective");
-        }}
-        onSkip={() => {
-          setView("session-retrospective");
-        }}
+        onComplete={() => setView("session-retrospective")}
+        onSkip={() => setView("session-retrospective")}
       />
     );
   }
 
-  // Session Retrospective view
   if (view === "session-retrospective" && lastSavedSession) {
     return (
-      <motion.div className="flex flex-1 flex-col gap-4 overflow-auto pb-4" {...fadeIn}>
+      <motion.div
+        className="flex flex-1 flex-col gap-4 overflow-auto pb-4"
+        {...fadeIn}
+      >
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold">Retrospektive</h2>
         </div>
         <SessionRetrospectiveForm
           initial={lastSavedSession.retrospective}
           onSave={(retro) => {
-            updateSession(lastSavedSession.id, { ...lastSavedSession, retrospective: retro });
+            updateSession(lastSavedSession.id, {
+              ...lastSavedSession,
+              retrospective: retro,
+            });
             setLastSavedSession(null);
             setView("journal");
           }}
@@ -403,7 +283,6 @@ export default function TrainMode() {
     );
   }
 
-  // Drill Editor view
   if (view === "drill-editor") {
     return (
       <DrillEditor
@@ -417,7 +296,6 @@ export default function TrainMode() {
     );
   }
 
-  // Session Builder view
   if (view === "session-builder") {
     return (
       <SessionBuilder
@@ -438,7 +316,6 @@ export default function TrainMode() {
     );
   }
 
-  // Journal view
   if (view === "journal") {
     return (
       <motion.div className="flex flex-col gap-4" {...fadeIn}>
@@ -448,7 +325,7 @@ export default function TrainMode() {
             onClick={() => setView("drills")}
             className="text-xs text-text-dim hover:text-accent transition-colors"
           >
-            &larr; Zurueck
+            &larr; Zurück
           </button>
         </div>
         <Journal
@@ -458,224 +335,39 @@ export default function TrainMode() {
             setEditSession(session);
             setView("session-builder");
           }}
-          onDelete={handleDeleteSession}
+          onDelete={(id) => deleteSession(id)}
         />
       </motion.div>
     );
   }
 
-  // Timer view
   if (view === "timer" && selectedDrill) {
     return (
-      <motion.div className="flex flex-col gap-6" {...fadeIn}>
-        <div className="flex items-center justify-between">
-          <div>
-            <button
-              onClick={() => {
-                setSelectedDrill(null);
-                setBlockIndex(0);
-                setShowResultCapture(false);
-                setView("drills");
-              }}
-              className="mb-1 text-xs text-text-dim hover:text-accent transition-colors"
-            >
-              &larr; Zurueck zur Auswahl
-            </button>
-            <h1 className="text-xl font-bold">{selectedDrill.name}</h1>
-            <p className="text-sm text-text-muted">
-              {selectedDrill.focusSkill}
-            </p>
-            {selectedDrill.description && (
-              <p className="mt-0.5 text-xs text-text-dim">
-                {selectedDrill.description}
-              </p>
-            )}
-          </div>
-          <label className="flex items-center gap-2 cursor-pointer text-sm text-text-muted">
-            <input
-              type="checkbox"
-              checked={autoAdvance}
-              onChange={(e) => setAutoAdvance(e.target.checked)}
-              className="accent-accent"
-            />
-            Auto-Advance
-          </label>
-        </div>
-
-        <div className="flex flex-1 flex-col items-center justify-center gap-6">
-          <AnimatePresence mode="wait">
-            {currentBlock && !showResultCapture && (
-              <motion.div
-                key={blockIndex}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="flex flex-col items-center gap-6"
-              >
-                <div className="text-sm font-medium text-text-muted">
-                  {currentBlock.note ||
-                    (currentBlock.type === "work" ? "Training" : "Pause")}
-                </div>
-
-                <Timer
-                  remainingSeconds={timer.remainingSeconds}
-                  isRunning={timer.isRunning}
-                  isFinished={currentBlock.type === "repetitions" ? (completedReps >= (currentBlock.repetitions ?? 0)) : timer.isFinished}
-                  blockType={currentBlock.type}
-                  repetitions={currentBlock.repetitions}
-                  completedReps={completedReps}
-                />
-
-                <div className="flex items-center gap-3">
-                  <Button
-                    variant="secondary"
-                    onClick={handlePrev}
-                    disabled={blockIndex === 0}
-                  >
-                    Zurueck
-                  </Button>
-                  {currentBlock.type === "repetitions" ? (
-                    /* Repetition controls */
-                    <>
-                      <Button
-                        variant="secondary"
-                        onClick={handleRepDecrement}
-                        disabled={completedReps === 0}
-                      >
-                        -1
-                      </Button>
-                      <Button
-                        size="lg"
-                        onClick={handleRepIncrement}
-                        disabled={completedReps >= (currentBlock.repetitions ?? 0)}
-                      >
-                        +1
-                      </Button>
-                    </>
-                  ) : (
-                    <Button
-                      size="lg"
-                      onClick={timer.toggle}
-                    >
-                      {timer.isFinished
-                        ? "Reset"
-                        : timer.isRunning
-                          ? "Pause"
-                          : "Start"}
-                    </Button>
-                  )}
-                  <Button
-                    variant="secondary"
-                    onClick={handleNext}
-                    disabled={blockIndex === selectedDrill.blocks.length - 1}
-                  >
-                    Weiter
-                  </Button>
-                </div>
-
-                <button
-                  onClick={handleReset}
-                  className="text-xs text-text-dim hover:text-text transition-colors"
-                >
-                  Reset (R)
-                </button>
-
-                <div className="flex gap-4 text-[11px] text-text-dim">
-                  <span>Space: Start/Pause</span>
-                  <span>&larr;/P: Prev</span>
-                  <span>&rarr;/N: Next</span>
-                  <span>R: Reset</span>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Drill Result Capture Panel */}
-            {showResultCapture && (
-              <motion.div
-                key="result-capture"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-                className="flex flex-col items-center gap-5 w-full max-w-sm"
-              >
-                <div className="text-center">
-                  <div className="text-lg font-bold text-kicker-green mb-1">Drill abgeschlossen!</div>
-                  <div className="text-sm text-text-muted">{selectedDrill.name}</div>
-                </div>
-
-                <div className="w-full rounded-xl border border-border bg-card p-4 flex flex-col gap-4">
-                  <div className="text-sm font-semibold text-text">Ergebnis erfassen</div>
-
-                  {/* Quality rating 1-5 */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-medium text-text-dim">Qualitaet</label>
-                    <StarRating
-                      rating={resultRating}
-                      size="lg"
-                      onChange={setResultRating}
-                    />
-                    <div className="text-[11px] text-text-dim">
-                      {resultRating === 0 ? "Waehle eine Bewertung" : STAR_LABELS[resultRating]}
-                    </div>
-                  </div>
-
-                  {/* Optional note */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-medium text-text-dim">Notiz (optional)</label>
-                    <Textarea
-                      value={resultNotes}
-                      onChange={(e) => setResultNotes(e.target.value.slice(0, 200))}
-                      placeholder="Kurze Anmerkung zum Drill..."
-                      rows={2}
-                    />
-                    <div className="text-[10px] text-text-dim text-right">{resultNotes.length}/200</div>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-3">
-                    <button
-                      onClick={handleSkipResult}
-                      className="text-xs text-text-dim hover:text-text transition-colors"
-                    >
-                      Ueberspringen
-                    </button>
-                    <Button
-                      onClick={handleSaveResult}
-                      disabled={resultRating === 0}
-                    >
-                      Speichern
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        <BlockProgress
-          blocks={selectedDrill.blocks}
-          currentIndex={blockIndex}
-        />
-
-        {/* Show collected results count */}
-        {drillResultCount > 0 && (
-          <div className="text-center text-[11px] text-text-dim">
-            {drillResultLabel}
-          </div>
-        )}
-      </motion.div>
+      <DrillTimerView
+        drill={selectedDrill}
+        drillResultCount={drillResultCount}
+        drillResultLabel={drillResultLabel}
+        onBack={() => {
+          setSelectedDrill(null);
+          setView("drills");
+        }}
+        onSaveResult={handleDrillResultSave}
+        onSkipResult={handleDrillResultSkip}
+      />
     );
   }
 
-  // Default: Drill selector with sub-nav
+  // Default: Drill selector
   return (
     <motion.div className="flex flex-col gap-4" {...fadeIn}>
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Training</h1>
         <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => setView("training-plans")}>
-            Pl&auml;ne
+          <Button
+            variant="secondary"
+            onClick={() => setView("training-plans")}
+          >
+            Pläne
           </Button>
           <Button variant="secondary" onClick={() => setView("journal")}>
             Tagebuch
@@ -685,7 +377,9 @@ export default function TrainMode() {
             onClick={() => {
               const templates = useAppStore.getState().sessionTemplates;
               if (templates.length > 0) {
-                setQuickStartTemplate(templates[templates.length - 1].id ?? null);
+                setQuickStartTemplate(
+                  templates[templates.length - 1].id ?? null,
+                );
               }
               setEditSession(null);
               setView("session-builder");
@@ -704,11 +398,12 @@ export default function TrainMode() {
         </div>
       </div>
 
-      {/* Show collected results indicator */}
       {drillResultCount > 0 && (
         <div className="rounded-lg border border-accent/30 bg-accent-dim px-3 py-2 text-xs text-accent-hover flex items-center justify-between">
           <span>{drillResultLabel}</span>
-          <span className="text-text-dim">Werden bei Session-Erstellung gespeichert</span>
+          <span className="text-text-dim">
+            Werden bei Session-Erstellung gespeichert
+          </span>
         </div>
       )}
 
@@ -728,6 +423,7 @@ export default function TrainMode() {
         recommendedDrillIds={recommendedDrillIds}
         recommendLabel={recommendLabel}
       />
+
       <ConfirmDialog
         open={deleteDrillId !== null}
         onClose={() => setDeleteDrillId(null)}
@@ -737,8 +433,8 @@ export default function TrainMode() {
             setDeleteDrillId(null);
           }
         }}
-        title="Drill l&ouml;schen"
-        message="M&ouml;chtest du diesen eigenen Drill wirklich l&ouml;schen?"
+        title="Drill löschen"
+        message="Möchtest du diesen eigenen Drill wirklich löschen?"
       />
     </motion.div>
   );

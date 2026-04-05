@@ -4,6 +4,7 @@ import { Card, Badge } from "../../components/ui";
 import { TECHNIQUE_STATUS_LABELS } from "../../domain/constants";
 import type { TechniqueStatus, PlayerTechnique } from "../../domain/models/PlayerTechnique";
 import type { Technique } from "../../domain/models/Technique";
+import { generateId } from "../../utils/id";
 
 const STATUS_ORDER: TechniqueStatus[] = [
   "not_started",
@@ -59,7 +60,7 @@ export function PlayerTechniques({ playerId }: PlayerTechniquesProps) {
       updatePlayerTechnique(ptId, { status: nextStatus });
     } else {
       addPlayerTechnique({
-        id: crypto.randomUUID(),
+        id: generateId(),
         playerId,
         techniqueId,
         status: nextStatus,

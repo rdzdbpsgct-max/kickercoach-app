@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import { FeatureErrorBoundary } from "./components/ErrorBoundary";
 import QuickActionFAB from "./components/QuickActionFAB";
 import { useInitStore } from "./hooks/useInitStore";
+import { PwaUpdatePrompt } from "./components/PwaUpdatePrompt";
 
 const HomePage = lazy(() => import("./features/home/HomePage"));
 const LearnMode = lazy(() => import("./features/learn/LearnMode"));
@@ -132,6 +133,7 @@ export default function App() {
       <Layout>
         <AnimatedRoutes />
         <QuickActionFAB />
+        <PwaUpdatePrompt />
       </Layout>
     </ErrorBoundary>
   );

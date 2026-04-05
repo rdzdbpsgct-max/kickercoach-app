@@ -1,6 +1,8 @@
 import type { StateCreator } from "zustand";
 import type { Player } from "../../domain/models/Player";
 import type { AppState } from "../types";
+import { PlayerSchema } from "../../domain/schemas/player";
+import { validateOrWarn } from "../../utils/validate";
 
 export interface PlayerSlice {
   players: Player[];
@@ -13,7 +15,10 @@ export const createPlayerSlice: StateCreator<AppState, [], [], PlayerSlice> = (
   set,
 ) => ({
   players: [],
-  addPlayer: (player) => set((s) => ({ players: [...s.players, player] })),
+  addPlayer: (player) => {
+    const validated = validateOrWarn(player, PlayerSchema, "addPlayer");
+    set((s) => ({ players: [...s.players, validated] }));
+  },
   updatePlayer: (id, updates) =>
     set((s) => ({
       players: s.players.map((p) =>

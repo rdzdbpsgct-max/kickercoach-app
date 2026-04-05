@@ -4,6 +4,7 @@ import type { Category } from "../../domain/models/CoachCard";
 import type { Drill } from "../../domain/models/Drill";
 import { Button, FormField, Input, Textarea, Card } from "../../components/ui";
 import { useAppStore } from "../../store";
+import { generateId } from "../../utils/id";
 
 const EMPTY_SESSION: SessionTemplate = {
   name: "",
@@ -111,7 +112,7 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
     }
 
     onSave({
-      id: plan?.id ?? crypto.randomUUID(),
+      id: plan?.id ?? generateId(),
       name: name.trim(),
       playerIds: selectedPlayerIds,
       weeks,

@@ -4,6 +4,7 @@ import type {
   BallMarker,
 } from "../../../domain/models/TacticalBoard";
 import { RODS, FIELD, FIGURE_SPACING } from "../../../data/fieldConfig";
+import { generateId } from "../../../utils/id";
 
 /**
  * Distribute figures on a rod using realistic fixed spacing.
@@ -49,7 +50,7 @@ export function createDefaultScene(
   name: string = "Neue Szene",
 ): TacticalScene {
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     name,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

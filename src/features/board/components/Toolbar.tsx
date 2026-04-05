@@ -96,7 +96,7 @@ export default function Toolbar({
         <IconButton
           size="sm"
           onClick={onResetFigures}
-          title="Stangen zur&uuml;cksetzen"
+          title="Stangen zurücksetzen"
         >
           &#8634;
         </IconButton>
@@ -108,7 +108,7 @@ export default function Toolbar({
           size="sm"
           onClick={() => dispatch({ type: "UNDO" })}
           disabled={!canUndo}
-          title="R&uuml;ckg&auml;ngig (Ctrl+Z)"
+          title="Rückgängig (Ctrl+Z)"
         >
           &#8630;
         </IconButton>

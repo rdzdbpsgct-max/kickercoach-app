@@ -4,6 +4,7 @@ import type { Evaluation, SkillRating } from "../../domain/models/Evaluation";
 import { useAppStore } from "../../store";
 import { Button, Card, FormField, Textarea } from "../../components/ui";
 import { ALL_CATEGORIES } from "../../domain/constants";
+import { generateId } from "../../utils/id";
 
 interface SessionRatingProps {
   sessionId: string;
@@ -45,7 +46,7 @@ export default function SessionRating({
       }));
 
     const evaluation: Evaluation = {
-      id: crypto.randomUUID(),
+      id: generateId(),
       playerId: currentPlayer.id,
       sessionId,
       date: new Date().toISOString().slice(0, 10),

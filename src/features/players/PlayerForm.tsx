@@ -6,6 +6,7 @@ import { DEFAULT_SKILL_RATINGS, PositionSchema } from "../../domain/schemas/play
 import { DifficultySchema } from "../../domain/schemas/coachCard";
 import type { Player, Position, SkillRatings } from "../../domain/models/Player";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
+import { generateId } from "../../utils/id";
 
 const PlayerFormSchema = z.object({
   name: z.string().min(1, "Name ist erforderlich"),
@@ -56,7 +57,7 @@ export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
     setErrors({});
 
     onSave({
-      id: player?.id ?? crypto.randomUUID(),
+      id: player?.id ?? generateId(),
       name: name.trim(),
       nickname: nickname.trim() || undefined,
       preferredPosition: position,

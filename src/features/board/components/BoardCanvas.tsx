@@ -9,6 +9,7 @@ import FieldLayer from "./FieldLayer";
 import FigureLayer from "./FigureLayer";
 import AnnotationLayer from "./AnnotationLayer";
 import OverlayLayer from "./OverlayLayer";
+import { generateId } from "../../../utils/id";
 
 interface BoardCanvasProps {
   state: BoardState;
@@ -98,7 +99,7 @@ export default function BoardCanvas({
         dispatch({
           type: "ADD_ARROW",
           arrow: {
-            id: crypto.randomUUID(),
+            id: generateId(),
             arrowType: tool.arrowType,
             start: startPoint,
             end: currentPoint,
@@ -110,7 +111,7 @@ export default function BoardCanvas({
           dispatch({
             type: "ADD_ZONE",
             zone: {
-              id: crypto.randomUUID(),
+              id: generateId(),
               shape: "circle",
               origin: { x: startPoint.x - r, y: startPoint.y - r },
               size: { width: r * 2, height: r * 2 },
@@ -123,7 +124,7 @@ export default function BoardCanvas({
           dispatch({
             type: "ADD_ZONE",
             zone: {
-              id: crypto.randomUUID(),
+              id: generateId(),
               shape: "rectangle",
               origin: { x, y },
               size: { width: Math.abs(dx), height: Math.abs(dy) },

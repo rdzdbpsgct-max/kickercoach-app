@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "../store";
+import { generateId } from "../utils/id";
 
 const ACTIONS = [
   { label: "Notiz", icon: "\u{1F4DD}", action: "note" as const },
@@ -56,7 +57,7 @@ export default function QuickActionFAB() {
   const handleSaveNote = () => {
     if (!noteText.trim()) return;
     addCoachingNote({
-      id: crypto.randomUUID(),
+      id: generateId(),
       playerId: notePlayerId || undefined,
       date: new Date().toISOString().slice(0, 10),
       category: noteCategory,
