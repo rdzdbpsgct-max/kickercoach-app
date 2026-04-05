@@ -27,7 +27,7 @@ interface PlayerTechniquesProps {
 }
 
 export function PlayerTechniques({ playerId }: PlayerTechniquesProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["players", "common"]);
   const techniques = useAppStore((s) => s.techniques);
   const allPlayerTechniques = useAppStore((s) => s.playerTechniques);
   const playerTechniques = useMemo(
@@ -73,7 +73,7 @@ export function PlayerTechniques({ playerId }: PlayerTechniquesProps) {
     return (
       <Card>
         <p className="text-xs text-text-dim">
-          Keine Techniken geladen. Techniken werden beim Start der App geladen.
+          {t("techniques.emptyMessage")}
         </p>
       </Card>
     );
@@ -98,7 +98,7 @@ export function PlayerTechniques({ playerId }: PlayerTechniquesProps) {
                   )}
                 </div>
                 <Badge color={STATUS_BADGE_COLORS[status]}>
-                  {t(`constants.techniqueStatus.${status}`)}
+                  {t(`constants.techniqueStatus.${status}`, { ns: "common" })}
                 </Badge>
               </button>
             ))}

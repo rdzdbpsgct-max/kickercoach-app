@@ -36,7 +36,7 @@ interface PlayerDetailProps {
 }
 
 export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining }: PlayerDetailProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["players", "common"]);
   const allGoals = useAppStore((s) => s.goals);
   const addGoal = useAppStore((s) => s.addGoal);
   const updateGoal = useAppStore((s) => s.updateGoal);
@@ -100,7 +100,7 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
     >
       <motion.div className="flex items-center gap-3" variants={sectionVariants} transition={{ duration: 0.2 }}>
         <Button variant="ghost" size="sm" onClick={onBack}>
-          &#8592; Zur&uuml;ck
+          {t("detail.back")}
         </Button>
       </motion.div>
 
@@ -121,15 +121,15 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
             )}
           </h1>
           <div className="mt-1 flex gap-2">
-            <Badge color="blue">{t(`constants.position.${player.preferredPosition}`)}</Badge>
-            <Badge color="orange">{t(`constants.difficulty.${player.level}`)}</Badge>
+            <Badge color="blue">{t(`constants.position.${player.preferredPosition}`, { ns: "common" })}</Badge>
+            <Badge color="orange">{t(`constants.difficulty.${player.level}`, { ns: "common" })}</Badge>
           </div>
         </div>
       </motion.div>
 
       <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
         <Card>
-          <h2 className="mb-3 text-sm font-semibold text-text">Skill-Profil</h2>
+          <h2 className="mb-3 text-sm font-semibold text-text">{t("detail.skillProfile")}</h2>
           <SkillRadar ratings={player.skillRatings} />
         </Card>
       </motion.div>
@@ -138,14 +138,14 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
       {onStartTraining && (
         <motion.div className="flex gap-2 no-print" variants={sectionVariants} transition={{ duration: 0.25 }}>
           <Button onClick={() => onStartTraining(player.id)}>
-            Training starten
+            {t("detail.startTraining")}
           </Button>
         </motion.div>
       )}
 
       {/* Goals section */}
       <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
-        <h2 className="mb-3 text-sm font-semibold text-text">Trainingsziele</h2>
+        <h2 className="mb-3 text-sm font-semibold text-text">{t("detail.goals")}</h2>
         {showGoalForm ? (
           <Card>
             <GoalForm
@@ -177,18 +177,20 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
 
       {/* Techniques */}
       <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
-        <h2 className="mb-3 text-sm font-semibold text-text">Techniken</h2>
+        <h2 className="mb-3 text-sm font-semibold text-text">{t("detail.techniques")}</h2>
         <PlayerTechniques playerId={player.id} />
       </motion.div>
 
       {/* Progress & Evaluation history */}
       <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
         <h2 className="mb-3 text-sm font-semibold text-text">
-          Fortschritt {evaluations.length > 0 && `(${evaluations.length} Bewertungen)`}
+          {evaluations.length > 0
+            ? t("detail.progressCount", { count: evaluations.length })
+            : t("detail.progress")}
         </h2>
         {skillTrends && (
           <Card className="mb-3">
-            <h3 className="mb-2 text-xs font-semibold text-text-dim">Skill-Trend</h3>
+            <h3 className="mb-2 text-xs font-semibold text-text-dim">{t("detail.skillTrend")}</h3>
             <div className="flex flex-wrap gap-2">
               {Object.entries(skillTrends).map(([cat, trend]) => (
                 <span key={cat} className="flex items-center gap-1 text-xs">
@@ -210,7 +212,7 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
 
       {/* Coaching Notes */}
       <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
-        <h2 className="mb-3 text-sm font-semibold text-text">Coaching-Notizen</h2>
+        <h2 className="mb-3 text-sm font-semibold text-text">{t("detail.coachingNotes")}</h2>
         <div className="mb-3">
           <QuickNote playerId={player.id} />
         </div>
@@ -220,16 +222,16 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
       {player.notes && (
         <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
           <Card>
-            <h2 className="mb-2 text-sm font-semibold text-text">Profil-Notizen</h2>
+            <h2 className="mb-2 text-sm font-semibold text-text">{t("detail.profileNotes")}</h2>
             <p className="text-sm text-text-muted whitespace-pre-wrap">{player.notes}</p>
           </Card>
         </motion.div>
       )}
 
       <motion.div className="flex gap-3 no-print" variants={sectionVariants} transition={{ duration: 0.25 }}>
-        <Button onClick={onEdit}>Bearbeiten</Button>
-        <Button variant="secondary" onClick={printCurrentPage}>Profil drucken</Button>
-        <Button variant="danger" onClick={onDelete}>L&ouml;schen</Button>
+        <Button onClick={onEdit}>{t("detail.edit")}</Button>
+        <Button variant="secondary" onClick={printCurrentPage}>{t("detail.printProfile")}</Button>
+        <Button variant="danger" onClick={onDelete}>{t("detail.delete")}</Button>
       </motion.div>
     </motion.div>
   );

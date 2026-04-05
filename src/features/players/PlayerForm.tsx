@@ -4,17 +4,10 @@ import { Button, FormField, Input, Textarea, Select } from "../../components/ui"
 import { SkillRadar } from "./SkillRadar";
 import { DEFAULT_SKILL_RATINGS, PositionSchema } from "../../domain/schemas/player";
 import { DifficultySchema } from "../../domain/schemas/coachCard";
+import { useTranslation } from "react-i18next";
 import type { Player, Position, SkillRatings } from "../../domain/models/Player";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
 import { generateId } from "../../utils/id";
-
-const PlayerFormSchema = z.object({
-  name: z.string().min(1, "Name ist erforderlich"),
-  nickname: z.string().optional(),
-  position: PositionSchema,
-  level: DifficultySchema,
-  notes: z.string(),
-});
 
 const AVATAR_COLORS = [
   "#3b82f6", "#ef4444", "#22c55e", "#f59e0b",
@@ -28,6 +21,16 @@ interface PlayerFormProps {
 }
 
 export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
+  const { t } = useTranslation(["players", "common"]);
+
+  const PlayerFormSchema = z.object({
+    name: z.string().min(1, t("form.nameRequired")),
+    nickname: z.string().optional(),
+    position: PositionSchema,
+    level: DifficultySchema,
+    notes: z.string(),
+  });
+
   const [name, setName] = useState(player?.name ?? "");
   const [nickname, setNickname] = useState(player?.nickname ?? "");
   const [position, setPosition] = useState<Position>(player?.preferredPosition ?? "both");
@@ -77,41 +80,41 @@ export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 overflow-auto pb-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField label="Name" required error={errors.name}>
+        <FormField label={t("form.nameLabel")} required error={errors.name}>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Spielername"
+            placeholder={t("form.namePlaceholder")}
             error={errors.name}
           />
         </FormField>
-        <FormField label="Spitzname">
+        <FormField label={t("form.nicknameLabel")}>
           <Input
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            placeholder="Optional"
+            placeholder={t("form.nicknamePlaceholder")}
           />
         </FormField>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField label="Bevorzugte Position">
+        <FormField label={t("form.positionLabel")}>
           <Select value={position} onChange={(e) => setPosition(e.target.value as Position)}>
-            <option value="offense">Sturm</option>
-            <option value="defense">Abwehr</option>
-            <option value="both">Beides</option>
+            <option value="offense">{t("form.positionOffense")}</option>
+            <option value="defense">{t("form.positionDefense")}</option>
+            <option value="both">{t("form.positionBoth")}</option>
           </Select>
         </FormField>
-        <FormField label="Niveau">
+        <FormField label={t("form.levelLabel")}>
           <Select value={level} onChange={(e) => setLevel(e.target.value as Difficulty)}>
-            <option value="beginner">Anf&auml;nger</option>
-            <option value="intermediate">Fortgeschritten</option>
-            <option value="advanced">Profi</option>
+            <option value="beginner">{t("form.levelBeginner")}</option>
+            <option value="intermediate">{t("form.levelIntermediate")}</option>
+            <option value="advanced">{t("form.levelAdvanced")}</option>
           </Select>
         </FormField>
       </div>
 
-      <FormField label="Status">
+      <FormField label={t("form.statusLabel")}>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
@@ -120,12 +123,12 @@ export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
             className="h-4 w-4 rounded border-border text-accent focus:ring-accent/30"
           />
           <span className="text-sm text-text">
-            {isActive ? "Aktiv" : "Inaktiv"}
+            {isActive ? t("form.statusActive") : t("form.statusInactive")}
           </span>
         </label>
       </FormField>
 
-      <FormField label="Farbe">
+      <FormField label={t("form.colorLabel")}>
         <div className="flex gap-2">
           {AVATAR_COLORS.map((color) => (
             <button
@@ -136,32 +139,32 @@ export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
                 avatarColor === color ? "ring-2 ring-accent ring-offset-2 ring-offset-bg" : ""
               }`}
               style={{ backgroundColor: color }}
-              aria-label={`Farbe ${color}`}
+              aria-label={t("form.colorAriaLabel", { color })}
             />
           ))}
         </div>
       </FormField>
 
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-text">Skill-Profil</h3>
+        <h3 className="mb-3 text-sm font-semibold text-text">{t("form.skillProfile")}</h3>
         <SkillRadar ratings={skillRatings} editable onChange={handleSkillChange} />
       </div>
 
-      <FormField label="Notizen">
+      <FormField label={t("form.notesLabel")}>
         <Textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="St&auml;rken, Schw&auml;chen, Beobachtungen..."
+          placeholder={t("form.notesPlaceholder")}
           rows={3}
         />
       </FormField>
 
       <div className="flex justify-end gap-3">
         <Button type="button" variant="secondary" onClick={onCancel}>
-          Abbrechen
+          {t("form.cancel")}
         </Button>
         <Button type="submit">
-          {player ? "Speichern" : "Spieler anlegen"}
+          {player ? t("form.save") : t("form.create")}
         </Button>
       </div>
     </form>

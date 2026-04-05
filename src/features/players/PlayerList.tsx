@@ -24,7 +24,7 @@ interface PlayerListProps {
 }
 
 export function PlayerList({ players, onSelect, onAdd }: PlayerListProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["players", "common"]);
   const [search, setSearch] = useState("");
   const [showInactive, setShowInactive] = useState(false);
 
@@ -58,9 +58,9 @@ export function PlayerList({ players, onSelect, onAdd }: PlayerListProps) {
     return (
       <EmptyState
         icon="&#128100;"
-        title="Noch keine Spieler"
-        description="Lege deinen ersten Spieler an, um mit dem Coaching zu starten."
-        action={{ label: "Spieler anlegen", onClick: onAdd }}
+        title={t("list.emptyTitle")}
+        description={t("list.emptyDescription")}
+        action={{ label: t("list.emptyAction"), onClick: onAdd }}
       />
     );
   }
@@ -69,16 +69,16 @@ export function PlayerList({ players, onSelect, onAdd }: PlayerListProps) {
     <div className="flex flex-col gap-4 overflow-auto pb-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-text">
-          Spieler ({filtered.length})
+          {t("list.title", { count: filtered.length })}
         </h2>
         <Button size="sm" onClick={onAdd}>
-          + Spieler anlegen
+          {t("list.addPlayer")}
         </Button>
       </div>
       <div className="flex items-center gap-3">
         {players.length > 3 && (
           <div className="flex-1">
-            <SearchBar value={search} onChange={setSearch} placeholder="Spieler suchen..." />
+            <SearchBar value={search} onChange={setSearch} placeholder={t("list.searchPlaceholder")} />
           </div>
         )}
         {inactiveCount > 0 && (
@@ -90,7 +90,7 @@ export function PlayerList({ players, onSelect, onAdd }: PlayerListProps) {
               className="h-3.5 w-3.5 rounded border-border text-accent focus:ring-accent/30"
             />
             <span className="text-[11px] text-text-muted whitespace-nowrap">
-              Inaktive ({inactiveCount})
+              {t("list.showInactive", { count: inactiveCount })}
             </span>
           </label>
         )}
@@ -121,9 +121,9 @@ export function PlayerList({ players, onSelect, onAdd }: PlayerListProps) {
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-text truncate">{player.name}</p>
                   <div className="mt-1 flex gap-1.5 flex-wrap">
-                    <Badge color="blue">{t(`constants.position.${player.preferredPosition}`)}</Badge>
-                    <Badge color="orange">{t(`constants.difficulty.${player.level}`)}</Badge>
-                    {inactive && <Badge color="red">Inaktiv</Badge>}
+                    <Badge color="blue">{t(`constants.position.${player.preferredPosition}`, { ns: "common" })}</Badge>
+                    <Badge color="orange">{t(`constants.difficulty.${player.level}`, { ns: "common" })}</Badge>
+                    {inactive && <Badge color="red">{t("list.badgeInactive")}</Badge>}
                   </div>
                 </div>
               </Card>
