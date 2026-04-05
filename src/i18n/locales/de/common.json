@@ -1,0 +1,109 @@
+{
+  "appName": "KickerCoach",
+  "appTagline": "by SpielerGeist",
+  "skipToContent": "Zum Inhalt springen",
+  "nav": {
+    "home": "Home",
+    "learn": "Lernen",
+    "train": "Training",
+    "plan": "Matchplan",
+    "board": "Taktik",
+    "players": "Spieler",
+    "analytics": "Analyse",
+    "settings": "Einstellungen",
+    "more": "Mehr",
+    "moreAreas": "Weitere Bereiche",
+    "mainNav": "Hauptnavigation"
+  },
+  "theme": {
+    "activateLight": "Light Mode aktivieren",
+    "activateDark": "Dark Mode aktivieren"
+  },
+  "actions": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "back": "Zurück",
+    "close": "Schließen",
+    "retry": "Erneut versuchen",
+    "search": "Suchen",
+    "confirm": "Bestätigen",
+    "later": "Später",
+    "update": "Aktualisieren"
+  },
+  "error": {
+    "title": "Ein Fehler ist aufgetreten",
+    "titleWithFeature": "Fehler in {{featureName}}",
+    "description": "Dieser Bereich hat einen Fehler verursacht. Die restliche App funktioniert weiterhin.",
+    "unknown": "Unbekannter Fehler"
+  },
+  "pwa": {
+    "updateAvailable": "Neue Version verfügbar",
+    "updateDescription": "Aktualisiere für die neuesten Funktionen und Fixes."
+  },
+  "quickAction": {
+    "note": "Notiz",
+    "training": "Training",
+    "evaluation": "Bewertung"
+  },
+  "constants": {
+    "difficulty": {
+      "beginner": "Einsteiger",
+      "intermediate": "Fortgeschritten",
+      "advanced": "Profi"
+    },
+    "phase": {
+      "warmup": "Aufwärmen",
+      "technique": "Technik",
+      "game": "Spielform",
+      "cooldown": "Cool-Down"
+    },
+    "position": {
+      "offense": "Sturm",
+      "defense": "Abwehr",
+      "both": "Beides"
+    },
+    "techniqueStatus": {
+      "not_started": "Nicht begonnen",
+      "learning": "Lernend",
+      "developing": "Aufbauend",
+      "proficient": "Sicher",
+      "mastered": "Gemeistert"
+    },
+    "star": ["", "Schlecht", "Mässig", "OK", "Gut", "Super"],
+    "evaluationType": {
+      "session": "Training",
+      "match": "Spiel",
+      "general": "Allgemein"
+    },
+    "mood": {
+      "great": "Super",
+      "good": "Gut",
+      "ok": "OK",
+      "tired": "Müde",
+      "frustrated": "Frustriert"
+    },
+    "noteCategory": {
+      "tactical": "Taktik",
+      "technical": "Technik",
+      "mental": "Mental",
+      "communication": "Kommunikation"
+    },
+    "notePriority": {
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "high": "Hoch"
+    },
+    "category": {
+      "Torschuss": "Torschuss",
+      "Passspiel": "Passspiel",
+      "Ballkontrolle": "Ballkontrolle",
+      "Defensive": "Defensive",
+      "Taktik": "Taktik",
+      "Offensive": "Offensive",
+      "Mental": "Mental"
+    }
+  }
+}
