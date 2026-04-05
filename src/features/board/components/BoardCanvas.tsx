@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Stage } from "react-konva";
 import type Konva from "konva";
 import type { BoardState, BoardAction } from "../hooks/useBoardReducer";
@@ -22,6 +23,7 @@ export default function BoardCanvas({
   dispatch,
   stageRef,
 }: BoardCanvasProps) {
+  const { t } = useTranslation("board");
   const { containerRef, dimensions } = useCanvasDimensions();
   const { scene, tool, selectedElementId, drawingInProgress } = state;
 
@@ -156,7 +158,7 @@ export default function BoardCanvas({
         className="flex flex-1 items-center justify-center"
         style={{ touchAction: "none" }}
       >
-        <span className="text-sm text-text-dim">Laden...</span>
+        <span className="text-sm text-text-dim">{t("loading")}</span>
       </div>
     );
   }

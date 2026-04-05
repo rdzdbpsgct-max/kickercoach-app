@@ -1,0 +1,47 @@
+{
+  "sceneName": "Szenen-Name",
+  "loading": "Laden...",
+  "tools": {
+    "select": "Auswahl",
+    "arrow": "Pfeil",
+    "zone": "Zone",
+    "eraser": "Radierer"
+  },
+  "arrowTypes": {
+    "pass": "Pass",
+    "shot": "Schuss",
+    "block": "Block"
+  },
+  "zoneShapes": {
+    "rectangle": "Rechteck",
+    "circle": "Kreis"
+  },
+  "subLabels": {
+    "type": "Typ:",
+    "shape": "Form:",
+    "color": "Farbe:"
+  },
+  "tooltips": {
+    "ballToggle": "Ball ein/aus",
+    "resetFigures": "Stangen zurücksetzen",
+    "undo": "Rückgängig (Ctrl+Z)",
+    "redo": "Wiederherstellen (Ctrl+Y)"
+  },
+  "buttons": {
+    "scenes": "Szenen",
+    "save": "Speichern",
+    "exportPng": "PNG"
+  },
+  "sceneManager": {
+    "title": "Szenen",
+    "close": "Schliessen",
+    "noScenes": "Keine Szenen",
+    "noScenesDescription": "Noch keine Szenen gespeichert.",
+    "cancel": "Abbrechen",
+    "load": "Laden",
+    "newScene": "Neue Szene",
+    "saveCurrent": "Aktuelle speichern",
+    "deleteTitle": "Szene loeschen",
+    "deleteMessage": "Moechtest du diese Szene wirklich loeschen?"
+  }
+}

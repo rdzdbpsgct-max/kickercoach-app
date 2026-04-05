@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import type { ToolState, ToolType, ArrowType, ZoneShape } from "../../../domain/models/TacticalBoard";
 import type { BoardAction } from "../hooks/useBoardReducer";
@@ -16,22 +17,22 @@ interface ToolbarProps {
   onResetFigures: () => void;
 }
 
-const TOOLS: { type: ToolType; label: string; icon: string; key: string }[] = [
-  { type: "select", label: "Auswahl", icon: "\u{1F446}", key: "1" },
-  { type: "arrow", label: "Pfeil", icon: "\u{27A1}\uFE0F", key: "2" },
-  { type: "zone", label: "Zone", icon: "\u{1F7E9}", key: "3" },
-  { type: "eraser", label: "Radierer", icon: "\u{1F6AB}", key: "4" },
+const TOOLS: { type: ToolType; labelKey: string; icon: string; key: string }[] = [
+  { type: "select", labelKey: "tools.select", icon: "\u{1F446}", key: "1" },
+  { type: "arrow", labelKey: "tools.arrow", icon: "\u{27A1}\uFE0F", key: "2" },
+  { type: "zone", labelKey: "tools.zone", icon: "\u{1F7E9}", key: "3" },
+  { type: "eraser", labelKey: "tools.eraser", icon: "\u{1F6AB}", key: "4" },
 ];
 
-const ARROW_TYPES: { type: ArrowType; label: string; color: string }[] = [
-  { type: "pass", label: "Pass", color: "bg-kicker-blue" },
-  { type: "shot", label: "Schuss", color: "bg-kicker-red" },
-  { type: "block", label: "Block", color: "bg-kicker-orange" },
+const ARROW_TYPES: { type: ArrowType; labelKey: string; color: string }[] = [
+  { type: "pass", labelKey: "arrowTypes.pass", color: "bg-kicker-blue" },
+  { type: "shot", labelKey: "arrowTypes.shot", color: "bg-kicker-red" },
+  { type: "block", labelKey: "arrowTypes.block", color: "bg-kicker-orange" },
 ];
 
-const ZONE_SHAPES: { shape: ZoneShape; label: string }[] = [
-  { shape: "rectangle", label: "Rechteck" },
-  { shape: "circle", label: "Kreis" },
+const ZONE_SHAPES: { shape: ZoneShape; labelKey: string }[] = [
+  { shape: "rectangle", labelKey: "zoneShapes.rectangle" },
+  { shape: "circle", labelKey: "zoneShapes.circle" },
 ];
 
 export default function Toolbar({
@@ -45,6 +46,8 @@ export default function Toolbar({
   onShowScenes,
   onResetFigures,
 }: ToolbarProps) {
+  const { t } = useTranslation("board");
+
   return (
     <div className="flex flex-col gap-2">
       {/* Main toolbar row */}
@@ -57,20 +60,20 @@ export default function Toolbar({
             dispatch({ type: "SET_SCENE_NAME", name: e.target.value })
           }
           className="w-32 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs text-text focus:border-accent focus:outline-none md:w-40"
-          placeholder="Szenen-Name"
+          placeholder={t("sceneName")}
         />
 
         <div className="mx-1 h-6 w-px bg-border" />
 
         {/* Tool buttons */}
-        {TOOLS.map((t) => (
+        {TOOLS.map((tl) => (
           <motion.button
-            key={t.type}
-            onClick={() => dispatch({ type: "SET_TOOL", tool: { activeTool: t.type } })}
-            aria-pressed={tool.activeTool === t.type}
-            title={`${t.label} (${t.key})`}
+            key={tl.type}
+            onClick={() => dispatch({ type: "SET_TOOL", tool: { activeTool: tl.type } })}
+            aria-pressed={tool.activeTool === tl.type}
+            title={`${t(tl.labelKey)} (${tl.key})`}
             className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
-              tool.activeTool === t.type
+              tool.activeTool === tl.type
                 ? "border-2 border-accent bg-accent-dim text-accent"
                 : "border border-border text-text-muted hover:border-accent/50"
             }`}
@@ -78,8 +81,8 @@ export default function Toolbar({
             whileTap={{ scale: 0.92 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
-            <span>{t.icon}</span>
-            <span className="hidden md:inline">{t.label}</span>
+            <span>{tl.icon}</span>
+            <span className="hidden md:inline">{t(tl.labelKey)}</span>
           </motion.button>
         ))}
 
@@ -87,7 +90,7 @@ export default function Toolbar({
         <IconButton
           size="sm"
           onClick={() => dispatch({ type: "TOGGLE_BALL" })}
-          title="Ball ein/aus"
+          title={t("tooltips.ballToggle")}
         >
           &#9917;
         </IconButton>
@@ -96,7 +99,7 @@ export default function Toolbar({
         <IconButton
           size="sm"
           onClick={onResetFigures}
-          title="Stangen zurücksetzen"
+          title={t("tooltips.resetFigures")}
         >
           &#8634;
         </IconButton>
@@ -108,7 +111,7 @@ export default function Toolbar({
           size="sm"
           onClick={() => dispatch({ type: "UNDO" })}
           disabled={!canUndo}
-          title="Rückgängig (Ctrl+Z)"
+          title={t("tooltips.undo")}
         >
           &#8630;
         </IconButton>
@@ -116,20 +119,20 @@ export default function Toolbar({
           size="sm"
           onClick={() => dispatch({ type: "REDO" })}
           disabled={!canRedo}
-          title="Wiederherstellen (Ctrl+Y)"
+          title={t("tooltips.redo")}
         >
           &#8631;
         </IconButton>
 
         <div className="ml-auto flex gap-1.5">
           <Button variant="secondary" size="sm" onClick={onShowScenes}>
-            Szenen
+            {t("buttons.scenes")}
           </Button>
           <Button variant="secondary" size="sm" onClick={onSave}>
-            Speichern
+            {t("buttons.save")}
           </Button>
           <Button size="sm" onClick={onExport}>
-            PNG
+            {t("buttons.exportPng")}
           </Button>
         </div>
       </div>
@@ -145,7 +148,7 @@ export default function Toolbar({
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
-            <span className="text-[11px] text-text-dim">Typ:</span>
+            <span className="text-[11px] text-text-dim">{t("subLabels.type")}</span>
             {ARROW_TYPES.map((at) => (
               <motion.button
                 key={at.type}
@@ -160,7 +163,7 @@ export default function Toolbar({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.93 }}
               >
-                {at.label}
+                {t(at.labelKey)}
               </motion.button>
             ))}
           </motion.div>
@@ -176,7 +179,7 @@ export default function Toolbar({
             transition={{ duration: 0.2, ease: "easeOut" }}
           >
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] text-text-dim">Form:</span>
+              <span className="text-[11px] text-text-dim">{t("subLabels.shape")}</span>
               {ZONE_SHAPES.map((zs) => (
                 <motion.button
                   key={zs.shape}
@@ -191,12 +194,12 @@ export default function Toolbar({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.93 }}
                 >
-                  {zs.label}
+                  {t(zs.labelKey)}
                 </motion.button>
               ))}
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-[11px] text-text-dim">Farbe:</span>
+              <span className="text-[11px] text-text-dim">{t("subLabels.color")}</span>
               {ZONE_COLORS.map((color, i) => (
                 <motion.button
                   key={i}

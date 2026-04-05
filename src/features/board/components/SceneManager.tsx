@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import type { TacticalScene } from "../../../domain/models/TacticalBoard";
 import type { BoardAction } from "../hooks/useBoardReducer";
@@ -41,6 +42,7 @@ export default function SceneManager({
   dispatch,
   onClose,
 }: SceneManagerProps) {
+  const { t } = useTranslation("board");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -95,11 +97,11 @@ export default function SceneManager({
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
-          <h2 className="text-base font-bold text-text">Szenen</h2>
+          <h2 className="text-base font-bold text-text">{t("sceneManager.title")}</h2>
           <button
             onClick={onClose}
             className="text-text-dim hover:text-text transition-colors"
-            aria-label="Schliessen"
+            aria-label={t("sceneManager.close")}
           >
             &#10005;
           </button>
@@ -110,8 +112,8 @@ export default function SceneManager({
           {savedScenes.length === 0 ? (
             <EmptyState
               icon="&#127912;"
-              title="Keine Szenen"
-              description="Noch keine Szenen gespeichert."
+              title={t("sceneManager.noScenes")}
+              description={t("sceneManager.noScenesDescription")}
             />
           ) : (
             <ul className="flex flex-col gap-2">
@@ -151,7 +153,7 @@ export default function SceneManager({
                         type="button"
                         onClick={() => setEditingId(null)}
                       >
-                        Abbrechen
+                        {t("sceneManager.cancel")}
                       </Button>
                     </form>
                   ) : (
@@ -169,7 +171,7 @@ export default function SceneManager({
                         size="sm"
                         onClick={() => handleLoad(scene)}
                       >
-                        Laden
+                        {t("sceneManager.load")}
                       </Button>
                       <button
                         onClick={() => {
@@ -202,10 +204,10 @@ export default function SceneManager({
             className="flex-1"
             onClick={handleNewScene}
           >
-            Neue Szene
+            {t("sceneManager.newScene")}
           </Button>
           <Button size="sm" className="flex-1" onClick={handleSaveCurrent}>
-            Aktuelle speichern
+            {t("sceneManager.saveCurrent")}
           </Button>
         </div>
       </motion.div>
@@ -216,8 +218,8 @@ export default function SceneManager({
         onConfirm={() => {
           if (deleteId) handleDelete(deleteId);
         }}
-        title="Szene loeschen"
-        message="Moechtest du diese Szene wirklich loeschen?"
+        title={t("sceneManager.deleteTitle")}
+        message={t("sceneManager.deleteMessage")}
       />
     </motion.div>
   );
