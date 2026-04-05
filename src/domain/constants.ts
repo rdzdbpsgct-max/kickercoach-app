@@ -2,6 +2,7 @@ import type { Difficulty, Category } from "./models/CoachCard";
 import type { DrillPhase } from "./models/Drill";
 import type { Position } from "./models/Player";
 import type { TechniqueStatus } from "./models/PlayerTechnique";
+import type { NotePriority } from "./models/CoachingNote";
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
   beginner: "Einsteiger",
@@ -86,3 +87,44 @@ export const TECHNIQUE_STATUS_COLORS: Record<TechniqueStatus, string> = {
 };
 
 export const MAX_VISIBLE_TAGS = 3;
+
+export const ALL_CATEGORIES: Category[] = [
+  "Torschuss",
+  "Passspiel",
+  "Ballkontrolle",
+  "Defensive",
+  "Taktik",
+  "Offensive",
+  "Mental",
+];
+
+export const STAR_LABELS = ["", "Schlecht", "Mässig", "OK", "Gut", "Super"];
+
+/** Multiplier to convert a 1–5 star rating to a 0–100 success rate. */
+export const STAR_RATING_SCALE = 20;
+
+export const NOTE_CATEGORY_LABELS: Record<string, string> = {
+  tactical: "Taktik",
+  technical: "Technik",
+  mental: "Mental",
+  communication: "Kommunikation",
+};
+
+export const NOTE_CATEGORY_COLORS: Record<string, "orange" | "blue" | "accent" | "green"> = {
+  tactical: "orange",
+  technical: "blue",
+  mental: "accent",
+  communication: "green",
+};
+
+export const NOTE_PRIORITY_LABELS: Record<NotePriority, string> = {
+  low: "Niedrig",
+  medium: "Mittel",
+  high: "Hoch",
+};
+
+export const NOTE_PRIORITY_COLORS: Record<NotePriority, "green" | "orange" | "red"> = {
+  low: "green",
+  medium: "orange",
+  high: "red",
+};

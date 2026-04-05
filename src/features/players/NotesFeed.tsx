@@ -2,32 +2,12 @@ import { useState } from "react";
 import type { CoachingNote } from "../../domain/models/CoachingNote";
 import { useAppStore } from "../../store";
 import { Badge, Card, EmptyState, ConfirmDialog, Textarea, Button, Select } from "../../components/ui";
-
-const CATEGORY_LABELS: Record<string, string> = {
-  tactical: "Taktisch",
-  technical: "Technisch",
-  mental: "Mental",
-  communication: "Kommunikation",
-};
-
-const CATEGORY_COLORS: Record<string, "blue" | "orange" | "green" | "accent"> = {
-  tactical: "blue",
-  technical: "orange",
-  mental: "accent",
-  communication: "green",
-};
-
-const PRIORITY_LABELS: Record<string, string> = {
-  low: "Niedrig",
-  medium: "Mittel",
-  high: "Hoch",
-};
-
-const PRIORITY_COLORS: Record<string, "green" | "orange" | "red"> = {
-  low: "green",
-  medium: "orange",
-  high: "red",
-};
+import {
+  NOTE_CATEGORY_LABELS,
+  NOTE_CATEGORY_COLORS,
+  NOTE_PRIORITY_LABELS,
+  NOTE_PRIORITY_COLORS,
+} from "../../domain/constants";
 
 const FILTER_OPTIONS: (CoachingNote["category"] | "all")[] = [
   "all",
@@ -105,7 +85,7 @@ export function NotesFeed({ notes }: NotesFeedProps) {
                 : "border border-border text-text-muted hover:border-accent/50"
             }`}
           >
-            {opt === "all" ? "Alle" : CATEGORY_LABELS[opt]}
+            {opt === "all" ? "Alle" : NOTE_CATEGORY_LABELS[opt]}
           </button>
         ))}
         <span className="ml-auto text-[10px] text-text-dim self-center">
@@ -157,12 +137,12 @@ export function NotesFeed({ notes }: NotesFeedProps) {
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <Badge color={CATEGORY_COLORS[note.category]}>
-                      {CATEGORY_LABELS[note.category]}
+                    <Badge color={NOTE_CATEGORY_COLORS[note.category]}>
+                      {NOTE_CATEGORY_LABELS[note.category]}
                     </Badge>
                     {note.priority && (
-                      <Badge color={PRIORITY_COLORS[note.priority]}>
-                        {PRIORITY_LABELS[note.priority]}
+                      <Badge color={NOTE_PRIORITY_COLORS[note.priority]}>
+                        {NOTE_PRIORITY_LABELS[note.priority]}
                       </Badge>
                     )}
                     {note.resolved && (

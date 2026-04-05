@@ -3,22 +3,10 @@ import type { Drill, DrillPhase } from "../../domain/models/Drill";
 import type { Category } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
 import { calculateSessionDuration } from "../../domain/logic/session";
-import { PHASE_LABELS } from "../../domain/constants";
+import { PHASE_LABELS, ALL_CATEGORIES, STAR_LABELS, STAR_RATING_SCALE } from "../../domain/constants";
 import { Button, FormField, Input, Select, Textarea } from "../../components/ui";
 import { useAppStore } from "../../store";
 import type { Session, DrillResult } from "../../store";
-
-const CATEGORIES: Category[] = [
-  "Torschuss",
-  "Passspiel",
-  "Ballkontrolle",
-  "Defensive",
-  "Taktik",
-  "Offensive",
-  "Mental",
-];
-
-const STAR_LABELS = ["", "Schlecht", "Mässig", "OK", "Gut", "Super"];
 
 export interface PlanSessionContext {
   planId: string;
@@ -136,7 +124,7 @@ export default function SessionBuilder({
               drillId,
               completed: !!result,
               blocksCompleted: result ? (drills.find((d) => d.id === drillId)?.blocks.length ?? 0) : 0,
-              successRate: result ? result.rating * 20 : undefined, // Convert 1-5 to 0-100
+              successRate: result ? result.rating * STAR_RATING_SCALE : undefined,
               notes: result?.notes,
             };
           }).filter((r) => r.completed)
@@ -367,7 +355,7 @@ export default function SessionBuilder({
           Schwerpunkte
         </label>
         <div className="flex flex-wrap gap-1.5">
-          {CATEGORIES.map((cat) => {
+          {ALL_CATEGORIES.map((cat) => {
             const isSelected = focusAreas.includes(cat);
             return (
               <button

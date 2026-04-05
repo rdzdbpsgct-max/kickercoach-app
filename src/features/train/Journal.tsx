@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { formatTime } from "../../domain/logic/time";
 import { calculateSessionStats } from "../../domain/logic/session";
+import { buildNameMap } from "../../domain/logic/drill";
+import { STAR_RATING_SCALE } from "../../domain/constants";
 import { Card, Badge, Button, EmptyState, ConfirmDialog, SearchBar, StarRating } from "../../components/ui";
 import { printCurrentPage } from "../../utils/print";
 import { useAppStore } from "../../store";
@@ -26,11 +28,10 @@ export default function Journal({
   const [filterPlayerId, setFilterPlayerId] = useState<string | "">("");
   const [expandedSessionId, setExpandedSessionId] = useState<string | null>(null);
 
-  const getPlayerName = (id: string) =>
-    players.find((p) => p.id === id)?.name ?? "?";
-
-  const getDrillName = (drillId: string) =>
-    drills?.find((d) => d.id === drillId)?.name ?? drillId.substring(0, 12);
+  const playerNameMap = useMemo(() => buildNameMap(players), [players]);
+  const drillNameMap = useMemo(() => buildNameMap(drills ?? []), [drills]);
+  const getPlayerName = (id: string) => playerNameMap.get(id) ?? "?";
+  const getDrillName = (id: string) => drillNameMap.get(id) ?? id.substring(0, 12);
 
   const filteredSessions = useMemo(() => {
     let result = sessions;
@@ -45,12 +46,12 @@ export default function Journal({
     if (filterPlayerId) {
       result = result.filter((s) => s.playerIds.includes(filterPlayerId));
     }
-    return result;
+    return [...result].reverse();
   }, [sessions, search, filterPlayerId]);
 
   const stats = calculateSessionStats(filteredSessions);
 
-  const ratingToStars = (successRate: number) => Math.round(successRate / 20);
+  const ratingToStars = (successRate: number) => Math.round(successRate / STAR_RATING_SCALE);
 
   return (
     <div className="flex flex-col gap-4">
@@ -138,7 +139,7 @@ export default function Journal({
         />
       ) : (
         <div className="flex flex-col gap-2 overflow-auto">
-          {[...filteredSessions].reverse().map((session) => (
+          {filteredSessions.map((session) => (
             <Card key={session.id} interactive>
               <div className="flex items-center justify-between">
                 <button

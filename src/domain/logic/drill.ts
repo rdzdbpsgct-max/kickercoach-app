@@ -1,4 +1,30 @@
 import type { Drill, TrainingBlock } from "../models/Drill";
+import type { Player } from "../models/Player";
+
+/** Look up a drill name by ID, falling back to a truncated ID. */
+export function getDrillName(id: string, drills: Drill[]): string {
+  return drills.find((d) => d.id === id)?.name ?? id.substring(0, 12);
+}
+
+/** Look up a player name by ID. */
+export function getPlayerName(id: string, players: Player[]): string {
+  return players.find((p) => p.id === id)?.name ?? "?";
+}
+
+/** Build a Map from id → name for O(1) lookups. */
+export function buildNameMap(items: { id: string; name: string }[]): Map<string, string> {
+  return new Map(items.map((i) => [i.id, i.name]));
+}
+
+/** Completion key protocol for training plan session tracking. */
+export function makeCompletionKey(weekIndex: number, sessionIndex: number, sessionId: string): string {
+  return `plan:${weekIndex}-${sessionIndex}:${sessionId}`;
+}
+
+/** Check if a stored key matches a given week/session index. */
+export function matchesCompletionKey(storedKey: string, weekIndex: number, sessionIndex: number): boolean {
+  return storedKey.startsWith(`plan:${weekIndex}-${sessionIndex}:`);
+}
 
 export interface BlockState {
   blockIndex: number;

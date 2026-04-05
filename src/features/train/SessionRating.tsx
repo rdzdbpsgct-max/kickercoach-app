@@ -3,16 +3,7 @@ import type { Category } from "../../domain/models/CoachCard";
 import type { Evaluation, SkillRating } from "../../domain/models/Evaluation";
 import { useAppStore } from "../../store";
 import { Button, Card, FormField, Textarea } from "../../components/ui";
-
-const CATEGORIES: Category[] = [
-  "Torschuss",
-  "Passspiel",
-  "Ballkontrolle",
-  "Defensive",
-  "Taktik",
-  "Offensive",
-  "Mental",
-];
+import { ALL_CATEGORIES } from "../../domain/constants";
 
 interface SessionRatingProps {
   sessionId: string;
@@ -34,7 +25,7 @@ export default function SessionRating({
 
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [ratings, setRatings] = useState<Record<Category, number | null>>(
-    Object.fromEntries(CATEGORIES.map((c) => [c, null])) as Record<Category, number | null>,
+    Object.fromEntries(ALL_CATEGORIES.map((c) => [c, null])) as Record<Category, number | null>,
   );
   const [notes, setNotes] = useState("");
 
@@ -46,7 +37,7 @@ export default function SessionRating({
 
   const handleSave = () => {
     // Only include categories where the user explicitly set a rating
-    const skillRatings: SkillRating[] = CATEGORIES
+    const skillRatings: SkillRating[] = ALL_CATEGORIES
       .filter((cat) => ratings[cat] !== null)
       .map((cat) => ({
         category: cat,
@@ -67,7 +58,7 @@ export default function SessionRating({
     if (currentPlayerIndex < participatingPlayers.length - 1) {
       setCurrentPlayerIndex(currentPlayerIndex + 1);
       setRatings(
-        Object.fromEntries(CATEGORIES.map((c) => [c, null])) as Record<Category, number | null>,
+        Object.fromEntries(ALL_CATEGORIES.map((c) => [c, null])) as Record<Category, number | null>,
       );
       setNotes("");
     } else {
@@ -102,7 +93,7 @@ export default function SessionRating({
       <Card>
         <h3 className="mb-3 text-sm font-semibold text-text">Skill-Bewertung</h3>
         <div className="flex flex-col gap-2.5">
-          {CATEGORIES.map((cat) => {
+          {ALL_CATEGORIES.map((cat) => {
             const current = ratings[cat];
             return (
               <div key={cat} className="flex items-center gap-3">

@@ -39,7 +39,7 @@ export const createTrainingSlice: StateCreator<
   markPlanSessionCompleted: (planId, sessionId) =>
     set((s) => ({
       trainingPlans: s.trainingPlans.map((p) =>
-        p.id === planId
+        p.id === planId && !(p.completedSessionIds ?? []).includes(sessionId)
           ? {
               ...p,
               completedSessionIds: [

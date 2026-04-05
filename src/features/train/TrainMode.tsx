@@ -6,7 +6,8 @@ import { advanceBlock, previousBlock } from "../../domain/logic/drill";
 import { useTimer } from "../../hooks/useTimer";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useAppStore } from "../../store";
-import { STORAGE_KEYS } from "../../domain/constants";
+import { STORAGE_KEYS, STAR_LABELS } from "../../domain/constants";
+import { makeCompletionKey } from "../../domain/logic/drill";
 import { Button, ConfirmDialog, Textarea } from "../../components/ui";
 import Timer from "./Timer";
 import BlockProgress from "./BlockProgress";
@@ -72,6 +73,9 @@ export default function TrainMode() {
   const [resultRating, setResultRating] = useState(0);
   const [resultNotes, setResultNotes] = useState("");
 
+  const drillResultCount = Object.keys(drillResults).length;
+  const drillResultLabel = `${drillResultCount} Drill-Ergebnis${drillResultCount !== 1 ? "se" : ""} erfasst`;
+
   // Merge default + custom drills
   const allDrills = useMemo(
     () => [...defaultDrills, ...customDrills],
@@ -118,15 +122,6 @@ export default function TrainMode() {
     handleBlockFinish,
   );
 
-  // Show result capture when last block timer finishes
-  useEffect(() => {
-    if (isLastBlock && timer.isFinished && selectedDrill && !showResultCapture) {
-      if (currentBlock?.type !== "repetitions") {
-        setShowResultCapture(true);
-      }
-    }
-  }, [isLastBlock, timer.isFinished, selectedDrill, showResultCapture, currentBlock]);
-
   // Show result capture when last block reps are completed
   useEffect(() => {
     if (!selectedDrill || !isLastBlock || !currentBlock) return;
@@ -137,6 +132,15 @@ export default function TrainMode() {
     }
   }, [completedReps, selectedDrill, isLastBlock, currentBlock, showResultCapture]);
 
+  const resetDrillSession = useCallback(() => {
+    setShowResultCapture(false);
+    setResultRating(0);
+    setResultNotes("");
+    setSelectedDrill(null);
+    setBlockIndex(0);
+    setView("drills");
+  }, []);
+
   const handleSaveResult = useCallback(() => {
     if (!selectedDrill || resultRating === 0) return;
     setDrillResults((prev) => ({
@@ -146,22 +150,10 @@ export default function TrainMode() {
         notes: resultNotes.trim() || undefined,
       },
     }));
-    setShowResultCapture(false);
-    setResultRating(0);
-    setResultNotes("");
-    setSelectedDrill(null);
-    setBlockIndex(0);
-    setView("drills");
-  }, [selectedDrill, resultRating, resultNotes]);
+    resetDrillSession();
+  }, [selectedDrill, resultRating, resultNotes, resetDrillSession]);
 
-  const handleSkipResult = useCallback(() => {
-    setShowResultCapture(false);
-    setResultRating(0);
-    setResultNotes("");
-    setSelectedDrill(null);
-    setBlockIndex(0);
-    setView("drills");
-  }, []);
+  const handleSkipResult = resetDrillSession;
 
   const handleSelectDrill = (drill: Drill) => {
     setSelectedDrill(drill);
@@ -237,8 +229,10 @@ export default function TrainMode() {
       addSession(session);
       // Track plan session completion
       if (planSessionContext) {
-        const completionKey = `plan:${planSessionContext.weekIndex}-${planSessionContext.sessionIndex}:${session.id}`;
-        markPlanSessionCompleted(planSessionContext.planId, completionKey);
+        markPlanSessionCompleted(
+          planSessionContext.planId,
+          makeCompletionKey(planSessionContext.weekIndex, planSessionContext.sessionIndex, session.id),
+        );
         setPlanSessionContext(null);
       }
       setEditSession(null);
@@ -634,12 +628,7 @@ export default function TrainMode() {
                       ))}
                     </div>
                     <div className="text-[11px] text-text-dim">
-                      {resultRating === 0 && "Waehle eine Bewertung"}
-                      {resultRating === 1 && "Schlecht"}
-                      {resultRating === 2 && "Maessig"}
-                      {resultRating === 3 && "OK"}
-                      {resultRating === 4 && "Gut"}
-                      {resultRating === 5 && "Super"}
+                      {resultRating === 0 ? "Waehle eine Bewertung" : STAR_LABELS[resultRating]}
                     </div>
                   </div>
 
@@ -681,9 +670,9 @@ export default function TrainMode() {
         />
 
         {/* Show collected results count */}
-        {Object.keys(drillResults).length > 0 && (
+        {drillResultCount > 0 && (
           <div className="text-center text-[11px] text-text-dim">
-            {Object.keys(drillResults).length} Drill-Ergebnis{Object.keys(drillResults).length !== 1 ? "se" : ""} erfasst
+            {drillResultLabel}
           </div>
         )}
       </motion.div>
@@ -727,11 +716,9 @@ export default function TrainMode() {
       </div>
 
       {/* Show collected results indicator */}
-      {Object.keys(drillResults).length > 0 && (
+      {drillResultCount > 0 && (
         <div className="rounded-lg border border-accent/30 bg-accent-dim px-3 py-2 text-xs text-accent-hover flex items-center justify-between">
-          <span>
-            {Object.keys(drillResults).length} Drill-Ergebnis{Object.keys(drillResults).length !== 1 ? "se" : ""} erfasst
-          </span>
+          <span>{drillResultLabel}</span>
           <span className="text-text-dim">Werden bei Session-Erstellung gespeichert</span>
         </div>
       )}

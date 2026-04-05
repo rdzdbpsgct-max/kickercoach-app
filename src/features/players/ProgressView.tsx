@@ -2,11 +2,13 @@ import { useMemo } from "react";
 import { Card, Badge } from "../../components/ui";
 import type { Evaluation, EvaluationType } from "../../domain/models/Evaluation";
 import type { Category } from "../../domain/models/CoachCard";
-import type { PlayerTechnique, TechniqueStatus } from "../../domain/models/PlayerTechnique";
-
-const CATEGORIES: Category[] = [
-  "Torschuss", "Passspiel", "Ballkontrolle", "Defensive", "Taktik", "Offensive", "Mental",
-];
+import type { PlayerTechnique } from "../../domain/models/PlayerTechnique";
+import type { TechniqueStatus } from "../../domain/models/PlayerTechnique";
+import {
+  ALL_CATEGORIES,
+  TECHNIQUE_STATUS_LABELS,
+  TECHNIQUE_STATUS_COLORS,
+} from "../../domain/constants";
 
 const SKILL_COLORS: Record<Category, string> = {
   Torschuss: "#ef4444",
@@ -16,15 +18,6 @@ const SKILL_COLORS: Record<Category, string> = {
   Taktik: "#8b5cf6",
   Offensive: "#06b6d4",
   Mental: "#ec4899",
-};
-
-const STATUS_LABELS: Record<TechniqueStatus, string> = {
-  not_started: "Offen", learning: "Lernend", developing: "Entwickelnd",
-  proficient: "Sicher", mastered: "Gemeistert",
-};
-const STATUS_COLORS: Record<TechniqueStatus, string> = {
-  not_started: "bg-border", learning: "bg-kicker-orange", developing: "bg-kicker-blue",
-  proficient: "bg-kicker-green", mastered: "bg-accent",
 };
 
 const EVALUATION_TYPE_LABELS: Record<EvaluationType, string> = {
@@ -72,7 +65,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
     const last = sorted[sorted.length - 1];
     const changes: { category: Category; diff: number }[] = [];
 
-    for (const cat of CATEGORIES) {
+    for (const cat of ALL_CATEGORIES) {
       const firstRating = first.skillRatings.find((r) => r.category === cat)?.rating ?? 0;
       const lastRating = last.skillRatings.find((r) => r.category === cat)?.rating ?? 0;
       if (firstRating !== lastRating) {
@@ -109,8 +102,8 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
               if (count === 0) return null;
               return (
                 <div key={status} className="flex items-center gap-1 text-xs">
-                  <span className={`h-2.5 w-2.5 rounded-full ${STATUS_COLORS[status]}`} />
-                  <span className="text-text-muted">{STATUS_LABELS[status]}</span>
+                  <span className={`h-2.5 w-2.5 rounded-full ${TECHNIQUE_STATUS_COLORS[status]}`} />
+                  <span className="text-text-muted">{TECHNIQUE_STATUS_LABELS[status]}</span>
                   <span className="font-medium text-text">{count}</span>
                 </div>
               );
@@ -147,7 +140,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
       {/* Mini line charts per skill */}
       {sorted.length >= 2 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {CATEGORIES.map((cat) => {
+          {ALL_CATEGORIES.map((cat) => {
             const points = sorted.map((ev, i) => {
               const rating = ev.skillRatings.find((r) => r.category === cat)?.rating ?? 0;
               const x = padX + (i / (sorted.length - 1)) * (chartW - 2 * padX);

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { TrainingPlan } from "../../domain/models/TrainingPlan";
 import { Card, Button, Badge, EmptyState, ConfirmDialog } from "../../components/ui";
 import { printCurrentPage } from "../../utils/print";
 import { useAppStore } from "../../store";
+import { buildNameMap, matchesCompletionKey } from "../../domain/logic/drill";
 
 interface TrainingPlanListProps {
   onEdit: (plan: TrainingPlan) => void;
@@ -17,30 +18,28 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
 
-  const getPlayerName = (id: string) =>
-    players.find((p) => p.id === id)?.name ?? "?";
+  const playerNameMap = useMemo(() => buildNameMap(players), [players]);
+  const getPlayerName = (id: string) => playerNameMap.get(id) ?? "?";
 
-  /** Build a stable key for a session template within a plan: "weekIdx-sessionIdx" */
-  const sessionKey = (weekIdx: number, sessionIdx: number) =>
-    `${weekIdx}-${sessionIdx}`;
+  const isSessionCompleted = (plan: TrainingPlan, weekIdx: number, sessionIdx: number) =>
+    (plan.completedSessionIds ?? []).some((id) => matchesCompletionKey(id, weekIdx, sessionIdx));
 
-  /** Check whether a session template has been completed (its key exists in completedSessionIds) */
-  const isSessionCompleted = (plan: TrainingPlan, weekIdx: number, sessionIdx: number) => {
-    const key = sessionKey(weekIdx, sessionIdx);
-    return (plan.completedSessionIds ?? []).some((id) => id.startsWith(`plan:${key}:`) || id === key);
-  };
-
-  /** Count completed sessions for a given week */
-  const weekCompletedCount = (plan: TrainingPlan, weekIdx: number) =>
-    plan.weeks[weekIdx].sessionTemplates.filter((_tmpl, si) => isSessionCompleted(plan, weekIdx, si)).length;
-
-  /** Total session templates across the plan */
-  const totalSessions = (plan: TrainingPlan) =>
-    plan.weeks.reduce((sum, w) => sum + w.sessionTemplates.length, 0);
-
-  /** Total completed across the plan */
-  const totalCompleted = (plan: TrainingPlan) =>
-    plan.weeks.reduce((sum, _w, wi) => sum + weekCompletedCount(plan, wi), 0);
+  /** Pre-computed progress summaries per plan */
+  const planProgress = useMemo(() => {
+    const result = new Map<string, { completed: number; total: number }>();
+    for (const plan of trainingPlans) {
+      let total = 0;
+      let completed = 0;
+      for (let wi = 0; wi < plan.weeks.length; wi++) {
+        for (let si = 0; si < plan.weeks[wi].sessionTemplates.length; si++) {
+          total++;
+          if (isSessionCompleted(plan, wi, si)) completed++;
+        }
+      }
+      result.set(plan.id, { completed, total });
+    }
+    return result;
+  }, [trainingPlans]);
 
   if (trainingPlans.length === 0) {
     return (
@@ -64,8 +63,7 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
       </div>
       {trainingPlans.map((plan) => {
         const isExpanded = expandedPlanId === plan.id;
-        const completed = totalCompleted(plan);
-        const total = totalSessions(plan);
+        const { completed, total } = planProgress.get(plan.id) ?? { completed: 0, total: 0 };
         const progressPct = total > 0 ? Math.round((completed / total) * 100) : 0;
 
         return (
@@ -139,7 +137,7 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
             {isExpanded && (
               <div className="mt-3 flex flex-col gap-3 border-t border-border pt-3">
                 {plan.weeks.map((week, wi) => {
-                  const weekDone = weekCompletedCount(plan, wi);
+                  const weekDone = week.sessionTemplates.filter((_t, si) => isSessionCompleted(plan, wi, si)).length;
                   const weekTotal = week.sessionTemplates.length;
                   return (
                     <div key={wi}>

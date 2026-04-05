@@ -2,6 +2,8 @@ import { useMemo, useState, useEffect } from "react";
 import { useAppStore } from "../../store";
 import { Card } from "../../components/ui";
 import { SimpleBarChart } from "../../components/ui/SimpleBarChart";
+import { STAR_RATING_SCALE } from "../../domain/constants";
+import { buildNameMap } from "../../domain/logic/drill";
 import type { Drill } from "../../domain/models/Drill";
 
 type ChartMode = "usage" | "quality";
@@ -21,11 +23,10 @@ export function DrillStatsChart() {
     [defaultDrills, customDrills],
   );
 
-  const getDrillName = (id: string) =>
-    allDrills.find((d) => d.id === id)?.name ?? id.substring(0, 12);
+  const drillNameMap = useMemo(() => buildNameMap(allDrills), [allDrills]);
+  const resolveName = (id: string) => drillNameMap.get(id) ?? id.substring(0, 12);
 
   const usageData = useMemo(() => {
-    // Count drill usage across sessions
     const counts = new Map<string, number>();
     for (const session of sessions) {
       for (const drillId of session.drillIds) {
@@ -33,18 +34,16 @@ export function DrillStatsChart() {
       }
     }
 
-    // Map to drill names and sort by count
     return Array.from(counts.entries())
       .map(([id, count]) => ({
-        label: getDrillName(id),
+        label: resolveName(id),
         value: count,
       }))
       .sort((a, b) => b.value - a.value)
       .slice(0, 8);
-  }, [sessions, allDrills]);
+  }, [sessions, drillNameMap]);
 
   const qualityData = useMemo(() => {
-    // Collect quality ratings per drill from drillResults
     const ratings = new Map<string, { total: number; count: number }>();
     for (const session of sessions) {
       if (!session.drillResults) continue;
@@ -57,15 +56,14 @@ export function DrillStatsChart() {
       }
     }
 
-    // Convert to chart data (average rating on 1-5 scale)
     return Array.from(ratings.entries())
       .map(([id, { total, count }]) => ({
-        label: getDrillName(id),
-        value: Math.round((total / count / 20) * 10) / 10, // Convert 0-100 to 1-5 scale
+        label: resolveName(id),
+        value: Math.round((total / count / STAR_RATING_SCALE) * 10) / 10,
       }))
       .sort((a, b) => b.value - a.value)
       .slice(0, 8);
-  }, [sessions, allDrills]);
+  }, [sessions, drillNameMap]);
 
   const hasQualityData = qualityData.length > 0;
   const chartData = mode === "quality" ? qualityData : usageData;
