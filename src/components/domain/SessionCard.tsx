@@ -1,33 +1,8 @@
 import { motion } from "framer-motion";
-import { Card, Badge } from "../ui";
+import { Card, Badge, StarRating } from "../ui";
 import { formatTime } from "../../domain/logic/time";
+import { MOOD_LABELS, MOOD_COLORS } from "../../domain/constants";
 import type { Session } from "../../domain/models/Session";
-
-const MOOD_LABELS: Record<string, string> = {
-  great: "Super",
-  good: "Gut",
-  ok: "OK",
-  tired: "Muede",
-  frustrated: "Frustriert",
-};
-
-const MOOD_COLORS: Record<string, "green" | "blue" | "orange" | "red"> = {
-  great: "green",
-  good: "blue",
-  ok: "orange",
-  tired: "orange",
-  frustrated: "red",
-};
-
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <span className="text-xs text-kicker-orange">
-      {Array.from({ length: 5 }, (_, i) =>
-        i < rating ? "\u2605" : "\u2606",
-      ).join("")}
-    </span>
-  );
-}
 
 interface SessionCardProps {
   session: Session;

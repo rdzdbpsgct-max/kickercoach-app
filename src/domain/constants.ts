@@ -3,6 +3,8 @@ import type { DrillPhase } from "./models/Drill";
 import type { Position } from "./models/Player";
 import type { TechniqueStatus } from "./models/PlayerTechnique";
 import type { NotePriority } from "./models/CoachingNote";
+import type { EvaluationType } from "./models/Evaluation";
+import type { Mood } from "./models/Session";
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
   beginner: "Einsteiger",
@@ -102,6 +104,44 @@ export const STAR_LABELS = ["", "Schlecht", "Mässig", "OK", "Gut", "Super"];
 
 /** Multiplier to convert a 1–5 star rating to a 0–100 success rate. */
 export const STAR_RATING_SCALE = 20;
+
+export const EVALUATION_TYPE_LABELS: Record<EvaluationType, string> = {
+  session: "Training",
+  match: "Spiel",
+  general: "Allgemein",
+};
+
+export const EVALUATION_TYPE_COLORS: Record<EvaluationType, "blue" | "orange" | "green"> = {
+  session: "blue",
+  match: "orange",
+  general: "green",
+};
+
+export const MOOD_LABELS: Record<Mood, string> = {
+  great: "Super",
+  good: "Gut",
+  ok: "OK",
+  tired: "Muede",
+  frustrated: "Frustriert",
+};
+
+export const MOOD_COLORS: Record<Mood, "green" | "blue" | "orange" | "red"> = {
+  great: "green",
+  good: "blue",
+  ok: "orange",
+  tired: "orange",
+  frustrated: "red",
+};
+
+export const SKILL_COLORS: Record<Category, string> = {
+  Torschuss: "#ef4444",
+  Passspiel: "#3b82f6",
+  Ballkontrolle: "#22c55e",
+  Defensive: "#f59e0b",
+  Taktik: "#8b5cf6",
+  Offensive: "#06b6d4",
+  Mental: "#ec4899",
+};
 
 export const NOTE_CATEGORY_LABELS: Record<string, string> = {
   tactical: "Taktik",

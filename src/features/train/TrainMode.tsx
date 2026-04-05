@@ -8,7 +8,7 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useAppStore } from "../../store";
 import { STORAGE_KEYS, STAR_LABELS } from "../../domain/constants";
 import { makeCompletionKey } from "../../domain/logic/drill";
-import { Button, ConfirmDialog, Textarea } from "../../components/ui";
+import { Button, ConfirmDialog, Textarea, StarRating } from "../../components/ui";
 import Timer from "./Timer";
 import BlockProgress from "./BlockProgress";
 import DrillSelector from "./DrillSelector";
@@ -611,22 +611,11 @@ export default function TrainMode() {
                   {/* Quality rating 1-5 */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-medium text-text-dim">Qualitaet</label>
-                    <div className="flex gap-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          onClick={() => setResultRating(resultRating === star ? 0 : star)}
-                          className={`text-3xl transition-transform hover:scale-110 ${
-                            star <= resultRating
-                              ? "text-kicker-orange"
-                              : "text-text-dim"
-                          }`}
-                          aria-label={`${star} Sterne`}
-                        >
-                          {star <= resultRating ? "\u2605" : "\u2606"}
-                        </button>
-                      ))}
-                    </div>
+                    <StarRating
+                      rating={resultRating}
+                      size="lg"
+                      onChange={setResultRating}
+                    />
                     <div className="text-[11px] text-text-dim">
                       {resultRating === 0 ? "Waehle eine Bewertung" : STAR_LABELS[resultRating]}
                     </div>

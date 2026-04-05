@@ -4,7 +4,7 @@ import type { Category } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
 import { calculateSessionDuration } from "../../domain/logic/session";
 import { PHASE_LABELS, ALL_CATEGORIES, STAR_LABELS, STAR_RATING_SCALE } from "../../domain/constants";
-import { Button, FormField, Input, Select, Textarea } from "../../components/ui";
+import { Button, FormField, Input, Select, Textarea, StarRating } from "../../components/ui";
 import { useAppStore } from "../../store";
 import type { Session, DrillResult } from "../../store";
 
@@ -379,22 +379,11 @@ export default function SessionBuilder({
         <label className="text-xs font-medium text-text-dim">
           Bewertung {rating ? `\u2014 ${STAR_LABELS[rating]}` : ""}
         </label>
-        <div className="flex gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              onClick={() => setRating(rating === star ? undefined : star)}
-              className={`text-2xl transition-transform hover:scale-110 ${
-                rating && star <= rating
-                  ? "text-kicker-orange"
-                  : "text-text-dim"
-              }`}
-              aria-label={`${star} Sterne`}
-            >
-              {rating && star <= rating ? "\u2605" : "\u2606"}
-            </button>
-          ))}
-        </div>
+        <StarRating
+          rating={rating ?? 0}
+          size="lg"
+          onChange={(v) => setRating(v === 0 ? undefined : v)}
+        />
       </div>
 
       {/* Notes */}

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { Card, Badge } from "../../components/ui";
-import type { Evaluation, EvaluationType } from "../../domain/models/Evaluation";
+import { Card, Badge, StarRating } from "../../components/ui";
+import type { Evaluation } from "../../domain/models/Evaluation";
 import type { Category } from "../../domain/models/CoachCard";
 import type { PlayerTechnique } from "../../domain/models/PlayerTechnique";
 import type { TechniqueStatus } from "../../domain/models/PlayerTechnique";
@@ -8,44 +8,10 @@ import {
   ALL_CATEGORIES,
   TECHNIQUE_STATUS_LABELS,
   TECHNIQUE_STATUS_COLORS,
+  SKILL_COLORS,
+  EVALUATION_TYPE_LABELS,
+  EVALUATION_TYPE_COLORS,
 } from "../../domain/constants";
-
-const SKILL_COLORS: Record<Category, string> = {
-  Torschuss: "#ef4444",
-  Passspiel: "#3b82f6",
-  Ballkontrolle: "#22c55e",
-  Defensive: "#f59e0b",
-  Taktik: "#8b5cf6",
-  Offensive: "#06b6d4",
-  Mental: "#ec4899",
-};
-
-const EVALUATION_TYPE_LABELS: Record<EvaluationType, string> = {
-  session: "Training",
-  match: "Spiel",
-  general: "Allgemein",
-};
-
-const EVALUATION_TYPE_COLORS: Record<EvaluationType, "blue" | "orange" | "green"> = {
-  session: "blue",
-  match: "orange",
-  general: "green",
-};
-
-function StarDisplay({ rating, max = 5 }: { rating: number; max?: number }) {
-  return (
-    <span className="inline-flex gap-0.5">
-      {Array.from({ length: max }, (_, i) => (
-        <span
-          key={i}
-          className={`text-sm ${i < rating ? "text-kicker-orange" : "text-border"}`}
-        >
-          ★
-        </span>
-      ))}
-    </span>
-  );
-}
 
 interface ProgressViewProps {
   evaluations: Evaluation[];
@@ -225,7 +191,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
                   </Badge>
                 )}
                 {ev.overallRating != null && (
-                  <StarDisplay rating={ev.overallRating} />
+                  <StarRating size="md" rating={ev.overallRating} />
                 )}
               </div>
               <div className="flex gap-1.5">
@@ -253,7 +219,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
                       <span className="font-medium text-text-muted">
                         {tr.techniqueId}
                       </span>
-                      <StarDisplay rating={tr.rating} />
+                      <StarRating size="md" rating={tr.rating} />
                       {tr.successRate != null && (
                         <span className="text-text-dim">
                           {tr.successRate}% Erfolg

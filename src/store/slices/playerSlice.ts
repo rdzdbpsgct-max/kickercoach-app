@@ -29,6 +29,7 @@ export const createPlayerSlice: StateCreator<AppState, [], [], PlayerSlice> = (
       playerTechniques: s.playerTechniques.filter(
         (pt) => pt.playerId !== id,
       ),
+      // Doubles teams require exactly 2 players — remove the team if a member is deleted
       teams: s.teams.filter((t) => !t.playerIds.includes(id)),
       sessions: s.sessions.map((ses) => ({
         ...ses,

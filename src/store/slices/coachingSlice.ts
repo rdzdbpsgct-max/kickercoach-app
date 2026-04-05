@@ -5,6 +5,7 @@ import type { CoachingNote } from "../../domain/models/CoachingNote";
 import type { Technique } from "../../domain/models/Technique";
 import type { PlayerTechnique } from "../../domain/models/PlayerTechnique";
 import type { AppState } from "../types";
+import { STAR_RATING_SCALE } from "../../domain/constants";
 
 export interface CoachingSlice {
   goals: Goal[];
@@ -60,7 +61,7 @@ export const createCoachingSlice: StateCreator<
           (sr) => sr.category === goal.category,
         );
         if (matchingRating && goal.targetValue != null) {
-          return { ...goal, currentValue: matchingRating.rating * 20 };
+          return { ...goal, currentValue: matchingRating.rating * STAR_RATING_SCALE };
         }
         return goal;
       });

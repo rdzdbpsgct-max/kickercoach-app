@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Layout from "./components/Layout";
 import { FeatureErrorBoundary } from "./components/ErrorBoundary";
 import QuickActionFAB from "./components/QuickActionFAB";
+import { useInitStore } from "./hooks/useInitStore";
 
 const HomePage = lazy(() => import("./features/home/HomePage"));
 const LearnMode = lazy(() => import("./features/learn/LearnMode"));
@@ -27,6 +28,22 @@ class ErrorBoundary extends Component<
     return { hasError: true };
   }
 
+  handleEmergencyExport = () => {
+    try {
+      const raw = localStorage.getItem("kickercoach-store");
+      if (!raw) return;
+      const blob = new Blob([raw], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `kickercoach-notfall-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      // Silent fail — already in error state
+    }
+  };
+
   render() {
     if (this.state.hasError) {
       return (
@@ -38,12 +55,20 @@ class ErrorBoundary extends Component<
           <p className="text-sm text-text-muted">
             Bitte lade die Seite neu, um fortzufahren.
           </p>
-          <button
-            onClick={() => window.location.reload()}
-            className="rounded-xl border border-accent bg-accent px-6 py-2 text-sm font-bold text-bg hover:bg-accent-hover transition-all"
-          >
-            Seite neu laden
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={this.handleEmergencyExport}
+              className="rounded-xl border border-border px-6 py-2 text-sm font-bold text-text-muted hover:border-accent/50 transition-all"
+            >
+              Daten sichern
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              className="rounded-xl border border-accent bg-accent px-6 py-2 text-sm font-bold text-bg hover:bg-accent-hover transition-all"
+            >
+              Seite neu laden
+            </button>
+          </div>
         </div>
       );
     }
@@ -64,6 +89,7 @@ function LoadingFallback() {
 
 function AnimatedRoutes() {
   const location = useLocation();
+  useInitStore();
 
   return (
     <AnimatePresence mode="wait">
