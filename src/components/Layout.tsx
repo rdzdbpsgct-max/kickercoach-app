@@ -82,7 +82,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       </header>
 
       {/* Main content */}
-      <main id="main-content" role="main" className="flex flex-1 flex-col overflow-hidden p-3 pb-20 md:p-5 md:pb-5">
+      <main id="main-content" role="main" className="flex-1 overflow-y-auto p-3 pb-20 md:p-5 md:pb-5">
         {children}
       </main>
 

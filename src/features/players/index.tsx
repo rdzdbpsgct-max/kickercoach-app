@@ -201,7 +201,7 @@ export default function PlayersMode() {
 
   // List view with tabs
   return (
-    <motion.div className="flex flex-1 flex-col gap-4 overflow-y-auto" {...fadeIn}>
+    <motion.div className="flex flex-col gap-4" {...fadeIn}>
       <Tabs tabs={TABS} active={tab} onChange={handleTabChange} />
 
       {tab === "players" && (

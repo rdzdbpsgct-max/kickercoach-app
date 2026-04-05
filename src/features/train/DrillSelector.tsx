@@ -230,7 +230,7 @@ export default function DrillSelector({
   );
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
+    <div className="flex flex-col gap-3">
       {/* Search */}
       <SearchBar value={search} onChange={setSearch} placeholder="Drill suchen..." />
 
