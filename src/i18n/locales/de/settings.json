@@ -1,0 +1,32 @@
+{
+  "title": "Einstellungen",
+  "language": "Sprache",
+  "appearance": {
+    "title": "Erscheinungsbild",
+    "dark": "Dunkles Design",
+    "light": "Helles Design",
+    "toggle": "Theme umschalten"
+  },
+  "storage": {
+    "title": "Speicher",
+    "used": "{{kb}} KB belegt",
+    "limit": "~{{mb}} MB Limit",
+    "warning": "Speicher fast voll! Exportiere deine Daten als Backup und loesche alte Sessions."
+  },
+  "backup": {
+    "title": "Daten-Backup",
+    "exportDescription": "Exportiere alle deine Daten als JSON-Datei. So kannst du ein Backup erstellen oder die Daten auf ein anderes Geraet uebertragen.",
+    "exportButton": "Daten exportieren",
+    "importDescription": "Importiere ein zuvor exportiertes Backup. Achtung: Deine aktuellen Daten werden ersetzt!",
+    "importButton": "Backup importieren",
+    "importing": "Importiere...",
+    "importSuccess": "Import erfolgreich! Die App verwendet die neuen Daten nach dem naechsten Seitenwechsel.",
+    "importFailed": "Import fehlgeschlagen.",
+    "confirmTitle": "Daten importieren?",
+    "confirmMessage": "Achtung: Der Import ersetzt deine aktuellen Daten. Moechtest du fortfahren?",
+    "confirmButton": "Importieren"
+  },
+  "about": {
+    "description": "Deine digitale Coaching-App fuer Tischfussball."
+  }
+}

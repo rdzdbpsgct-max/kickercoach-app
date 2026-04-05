@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Button, Card, ConfirmDialog } from "../../components/ui";
 import { useTheme } from "../../hooks/useTheme";
 import { getStorageUsage, exportStoreData, importStoreData } from "../../utils/storage";
 import type { StorageUsage } from "../../utils/storage";
+import LanguageSelector from "../../components/LanguageSelector";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 12 },
@@ -15,6 +17,7 @@ const cardVariants = {
 };
 
 export default function SettingsPage() {
+  const { t } = useTranslation(["settings", "common"]);
   const [usage, setUsage] = useState<StorageUsage | null>(null);
   const [importStatus, setImportStatus] = useState<string>("");
   const [exportError, setExportError] = useState<string>("");
@@ -31,7 +34,7 @@ export default function SettingsPage() {
     setExportError("");
     const result = exportStoreData();
     if (!result.success) {
-      setExportError(result.error ?? "Unbekannter Fehler");
+      setExportError(result.error ?? t("common:error.unknown"));
     }
   };
 
@@ -40,19 +43,18 @@ export default function SettingsPage() {
     if (!file) return;
     setPendingFile(file);
     setConfirmImportOpen(true);
-    // Reset input so same file can be re-selected
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleImportConfirmed = async () => {
     if (!pendingFile) return;
-    setImportStatus("Importiere...");
+    setImportStatus(t("backup.importing"));
     const result = await importStoreData(pendingFile);
     setPendingFile(null);
     if (result.success) {
-      setImportStatus("Import erfolgreich! Die App verwendet die neuen Daten nach dem naechsten Seitenwechsel.");
+      setImportStatus(t("backup.importSuccess"));
     } else {
-      setImportStatus(result.error ?? "Import fehlgeschlagen.");
+      setImportStatus(result.error ?? t("backup.importFailed"));
     }
   };
 
@@ -64,7 +66,7 @@ export default function SettingsPage() {
         transition={{ duration: 0.3 }}
         className="bg-gradient-to-r from-kicker-green to-emerald-400 bg-clip-text text-xl font-bold text-transparent"
       >
-        Einstellungen
+        {t("title")}
       </motion.h1>
 
       {/* Theme Toggle — mobile only (desktop has it in header) */}
@@ -82,15 +84,15 @@ export default function SettingsPage() {
                 {theme === "dark" ? "🌙" : "☀️"}
               </div>
               <div>
-                <h2 className="text-sm font-semibold text-text">Erscheinungsbild</h2>
+                <h2 className="text-sm font-semibold text-text">{t("appearance.title")}</h2>
                 <p className="text-xs text-text-dim">
-                  {theme === "dark" ? "Dunkles Design" : "Helles Design"}
+                  {theme === "dark" ? t("appearance.dark") : t("appearance.light")}
                 </p>
               </div>
             </div>
             <button
               onClick={toggleTheme}
-              aria-label="Theme umschalten"
+              aria-label={t("appearance.toggle")}
               className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-kicker-green/50 ${
                 theme === "dark"
                   ? "bg-kicker-green"
@@ -107,7 +109,7 @@ export default function SettingsPage() {
         </Card>
       </motion.div>
 
-      {/* Storage usage */}
+      {/* Language Selector */}
       <motion.div
         custom={1}
         initial="hidden"
@@ -115,14 +117,26 @@ export default function SettingsPage() {
         variants={cardVariants}
       >
         <Card>
-          <h2 className="mb-3 text-sm font-semibold text-text">Speicher</h2>
+          <LanguageSelector />
+        </Card>
+      </motion.div>
+
+      {/* Storage usage */}
+      <motion.div
+        custom={2}
+        initial="hidden"
+        animate="visible"
+        variants={cardVariants}
+      >
+        <Card>
+          <h2 className="mb-3 text-sm font-semibold text-text">{t("storage.title")}</h2>
           {usage && (
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <div className="flex-1">
                   <div className="mb-1 flex justify-between text-xs text-text-dim">
-                    <span>{usage.usedKB} KB belegt</span>
-                    <span>~{usage.estimatedLimitMB} MB Limit</span>
+                    <span>{t("storage.used", { kb: usage.usedKB })}</span>
+                    <span>{t("storage.limit", { mb: usage.estimatedLimitMB })}</span>
                   </div>
                   <div className="h-2.5 overflow-hidden rounded-full bg-border">
                     <div
@@ -143,7 +157,7 @@ export default function SettingsPage() {
               </div>
               {usage.percentUsed > 80 && (
                 <div className="rounded-lg bg-kicker-red/10 p-2 text-xs text-kicker-red">
-                  Speicher fast voll! Exportiere deine Daten als Backup und loesche alte Sessions.
+                  {t("storage.warning")}
                 </div>
               )}
             </div>
@@ -153,20 +167,20 @@ export default function SettingsPage() {
 
       {/* Export / Import */}
       <motion.div
-        custom={2}
+        custom={3}
         initial="hidden"
         animate="visible"
         variants={cardVariants}
       >
         <Card>
-          <h2 className="mb-3 text-sm font-semibold text-text">Daten-Backup</h2>
+          <h2 className="mb-3 text-sm font-semibold text-text">{t("backup.title")}</h2>
           <div className="flex flex-col gap-3">
             <div>
               <p className="mb-2 text-xs text-text-muted">
-                Exportiere alle deine Daten als JSON-Datei. So kannst du ein Backup erstellen oder die Daten auf ein anderes Geraet uebertragen.
+                {t("backup.exportDescription")}
               </p>
               <Button size="sm" onClick={handleExport}>
-                Daten exportieren
+                {t("backup.exportButton")}
               </Button>
               {exportError && (
                 <p className="mt-2 text-xs text-kicker-red">{exportError}</p>
@@ -174,7 +188,7 @@ export default function SettingsPage() {
             </div>
             <div className="border-t border-border pt-3">
               <p className="mb-2 text-xs text-text-muted">
-                Importiere ein zuvor exportiertes Backup. Achtung: Deine aktuellen Daten werden ersetzt!
+                {t("backup.importDescription")}
               </p>
               <input
                 ref={fileInputRef}
@@ -188,7 +202,7 @@ export default function SettingsPage() {
                 variant="secondary"
                 onClick={() => fileInputRef.current?.click()}
               >
-                Backup importieren
+                {t("backup.importButton")}
               </Button>
               {importStatus && (
                 <p className="mt-2 text-xs text-kicker-green">{importStatus}</p>
@@ -200,16 +214,16 @@ export default function SettingsPage() {
 
       {/* App info */}
       <motion.div
-        custom={3}
+        custom={4}
         initial="hidden"
         animate="visible"
         variants={cardVariants}
       >
         <Card>
-          <h2 className="mb-2 text-sm font-semibold text-text">KickerCoach</h2>
-          <p className="text-xs text-text-dim">by SpielerGeist</p>
+          <h2 className="mb-2 text-sm font-semibold text-text">{t("common:appName")}</h2>
+          <p className="text-xs text-text-dim">{t("common:appTagline")}</p>
           <p className="mt-1 text-xs text-text-dim">
-            Deine digitale Coaching-App fuer Tischfussball.
+            {t("about.description")}
           </p>
         </Card>
       </motion.div>
@@ -221,10 +235,10 @@ export default function SettingsPage() {
           setPendingFile(null);
         }}
         onConfirm={handleImportConfirmed}
-        title="Daten importieren?"
-        message="Achtung: Der Import ersetzt deine aktuellen Daten. Moechtest du fortfahren?"
-        confirmLabel="Importieren"
-        cancelLabel="Abbrechen"
+        title={t("backup.confirmTitle")}
+        message={t("backup.confirmMessage")}
+        confirmLabel={t("backup.confirmButton")}
+        cancelLabel={t("common:actions.cancel")}
       />
     </div>
   );
