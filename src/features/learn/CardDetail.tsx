@@ -35,7 +35,7 @@ export default function CardDetail({
   allCards = [],
   onNavigateToCard,
 }: CardDetailProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["learn", "common"]);
   const navigate = useNavigate();
   const [matchingDrills, setMatchingDrills] = useState<Drill[]>([]);
 
@@ -76,10 +76,10 @@ export default function CardDetail({
       >
         <button
           onClick={onBack}
-          aria-label="Zurueck zur Bibliothek"
+          aria-label={t("detail.backToLibrary")}
           className="mb-2 text-xs text-text-dim hover:text-accent transition-colors"
         >
-          &larr; Zurueck zur Bibliothek
+          &larr; {t("detail.backToLibrary")}
         </button>
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -88,7 +88,7 @@ export default function CardDetail({
               <span
                 className={`font-medium ${DIFFICULTY_TEXT_COLORS[card.difficulty]}`}
               >
-                {t(`constants.difficulty.${card.difficulty}`)}
+                {t(`constants.difficulty.${card.difficulty}`, { ns: "common" })}
               </span>
               <span className="text-text-dim">&middot;</span>
               <span className="text-text-muted">{card.category}</span>
@@ -96,7 +96,7 @@ export default function CardDetail({
           </div>
           <button
             onClick={onToggleFavorite}
-            aria-label={isFavorite ? "Von Favoriten entfernen" : "Zu Favoriten hinzufuegen"}
+            aria-label={isFavorite ? t("detail.removeFavorite") : t("detail.addFavorite")}
             aria-pressed={isFavorite}
             className={`text-2xl transition-transform hover:scale-110 ${
               isFavorite ? "text-kicker-orange" : "text-text-dim"
@@ -144,7 +144,7 @@ export default function CardDetail({
         initial="hidden"
         animate="visible"
       >
-        <h2 className="mb-3 text-base font-bold">Schritte</h2>
+        <h2 className="mb-3 text-base font-bold">{t("detail.steps")}</h2>
         <ol className="flex flex-col gap-2.5">
           {card.steps.map((step, i) => (
             <motion.li
@@ -172,7 +172,7 @@ export default function CardDetail({
         animate="visible"
       >
         <h2 className="mb-3 text-base font-bold text-kicker-red">
-          Haeufige Fehler
+          {t("detail.commonMistakes")}
         </h2>
         <ul className="flex flex-col gap-2">
           {card.commonMistakes.map((mistake, i) => (
@@ -196,7 +196,7 @@ export default function CardDetail({
         animate="visible"
       >
         <h2 className="mb-3 text-base font-bold text-kicker-green">
-          Coach Tipps
+          {t("detail.coachTips")}
         </h2>
         <ul className="flex flex-col gap-2">
           {card.coachCues.map((cue, i) => (
@@ -221,7 +221,7 @@ export default function CardDetail({
           animate="visible"
         >
           <h2 className="mb-3 text-base font-bold text-kicker-orange">
-            Passende Drills
+            {t("detail.matchingDrills")}
           </h2>
           <div className="flex flex-wrap gap-2">
             {matchingDrills.map((drill) => (
@@ -253,13 +253,13 @@ export default function CardDetail({
           animate="visible"
         >
           <h2 className="mb-3 text-base font-bold text-accent">
-            Lernpfad
+            {t("detail.learningPath")}
           </h2>
 
           {prerequisiteCards.length > 0 && (
             <div className="mb-3">
               <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-dim">
-                Voraussetzungen
+                {t("detail.prerequisites")}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {prerequisiteCards.map((c) => (
@@ -279,7 +279,7 @@ export default function CardDetail({
           {nextStepCards.length > 0 && (
             <div>
               <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-text-dim">
-                Naechste Schritte
+                {t("detail.nextSteps")}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {nextStepCards.map((c) => (

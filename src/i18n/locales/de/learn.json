@@ -1,0 +1,27 @@
+{
+  "title": "Lernen",
+  "search": {
+    "placeholder": "Technik suchen...",
+    "favorites": "Favoriten",
+    "results": "{{count}} Ergebnisse",
+    "allLevels": "Alle Stufen",
+    "categoryFilter": "Kategorie Filter",
+    "difficultyFilter": "Schwierigkeitsgrad Filter"
+  },
+  "grid": {
+    "emptyTitle": "Keine Karten gefunden",
+    "emptyDescription": "Versuche einen anderen Filter oder Suchbegriff."
+  },
+  "detail": {
+    "backToLibrary": "Zurueck zur Bibliothek",
+    "removeFavorite": "Von Favoriten entfernen",
+    "addFavorite": "Zu Favoriten hinzufuegen",
+    "steps": "Schritte",
+    "commonMistakes": "Haeufige Fehler",
+    "coachTips": "Coach Tipps",
+    "matchingDrills": "Passende Drills",
+    "learningPath": "Lernpfad",
+    "prerequisites": "Voraussetzungen",
+    "nextSteps": "Naechste Schritte"
+  }
+}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import type {
   CoachCard,
   Difficulty,
@@ -11,6 +12,7 @@ import CardGrid from "./CardGrid";
 import CardDetail from "./CardDetail";
 
 export default function LearnMode() {
+  const { t } = useTranslation("learn");
   const [cards, setCards] = useState<CoachCard[]>([]);
   const [selectedCard, setSelectedCard] = useState<CoachCard | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,7 +85,7 @@ export default function LearnMode() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3, delay: 0.05 }}
       >
-        Lernen
+        {t("title")}
       </motion.h1>
 
       <motion.div

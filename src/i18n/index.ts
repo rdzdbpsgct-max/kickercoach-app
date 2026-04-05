@@ -4,9 +4,10 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import commonDe from "./locales/de/common.json";
 import homeDe from "./locales/de/home.json";
+import learnDe from "./locales/de/learn.json";
 
 const resources = {
-  de: { common: commonDe, home: homeDe },
+  de: { common: commonDe, home: homeDe, learn: learnDe },
 };
 
 i18n

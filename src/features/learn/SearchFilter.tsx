@@ -21,8 +21,6 @@ const DIFFICULTIES: (Difficulty | "Alle")[] = [
   "advanced",
 ];
 
-// DIFFICULTY_FILTER_LABELS now handled inline via t()
-
 interface SearchFilterProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
@@ -46,7 +44,7 @@ export default function SearchFilter({
   onToggleFavorites,
   resultCount,
 }: SearchFilterProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["learn", "common"]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -56,7 +54,7 @@ export default function SearchFilter({
           <SearchBar
             value={searchQuery}
             onChange={onSearchChange}
-            placeholder="Technik suchen..."
+            placeholder={t("search.placeholder")}
           />
         </div>
         <Button
@@ -65,12 +63,12 @@ export default function SearchFilter({
           aria-pressed={showFavoritesOnly}
           className={showFavoritesOnly ? "border-kicker-orange bg-kicker-orange/15 text-kicker-orange" : ""}
         >
-          {showFavoritesOnly ? "\u2605 Favoriten" : "\u2606 Favoriten"}
+          {showFavoritesOnly ? `\u2605 ${t("search.favorites")}` : `\u2606 ${t("search.favorites")}`}
         </Button>
       </div>
 
       {/* Category filter */}
-      <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Kategorie Filter">
+      <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={t("search.categoryFilter")}>
         {CATEGORIES.map((cat) => (
           <motion.button
             key={cat}
@@ -92,7 +90,7 @@ export default function SearchFilter({
 
       {/* Difficulty filter */}
       <div className="flex items-center gap-3">
-        <div className="flex gap-1.5" role="radiogroup" aria-label="Schwierigkeitsgrad Filter">
+        <div className="flex gap-1.5" role="radiogroup" aria-label={t("search.difficultyFilter")}>
           {DIFFICULTIES.map((diff) => (
             <motion.button
               key={diff}
@@ -107,7 +105,7 @@ export default function SearchFilter({
               layout
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             >
-              {diff === "Alle" ? "Alle Stufen" : t(`constants.difficulty.${diff}`)}
+              {diff === "Alle" ? t("search.allLevels") : t(`constants.difficulty.${diff}`, { ns: "common" })}
             </motion.button>
           ))}
         </div>
@@ -120,7 +118,7 @@ export default function SearchFilter({
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.2 }}
           >
-            {resultCount} Ergebnisse
+            {t("search.results", { count: resultCount })}
           </motion.span>
         </AnimatePresence>
       </div>

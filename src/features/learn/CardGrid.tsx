@@ -52,7 +52,7 @@ export default function CardGrid({
   favorites,
   onSelect,
 }: CardGridProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["learn", "common"]);
 
   if (cards.length === 0) {
     return (
@@ -63,8 +63,8 @@ export default function CardGrid({
       >
         <EmptyState
           icon="&#128269;"
-          title="Keine Karten gefunden"
-          description="Versuche einen anderen Filter oder Suchbegriff."
+          title={t("grid.emptyTitle")}
+          description={t("grid.emptyDescription")}
         />
       </motion.div>
     );
@@ -103,7 +103,7 @@ export default function CardGrid({
                 {card.category}
               </Badge>
               <Badge color={DIFFICULTY_BADGE_COLORS[card.difficulty]}>
-                {t(`constants.difficulty.${card.difficulty}`)}
+                {t(`constants.difficulty.${card.difficulty}`, { ns: "common" })}
               </Badge>
             </div>
 
