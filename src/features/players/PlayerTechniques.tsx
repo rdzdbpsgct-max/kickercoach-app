@@ -1,16 +1,9 @@
 import { useMemo } from "react";
 import { useAppStore } from "../../store";
 import { Card, Badge } from "../../components/ui";
+import { TECHNIQUE_STATUS_LABELS } from "../../domain/constants";
 import type { TechniqueStatus, PlayerTechnique } from "../../domain/models/PlayerTechnique";
 import type { Technique } from "../../domain/models/Technique";
-
-const STATUS_LABELS: Record<TechniqueStatus, string> = {
-  not_started: "Nicht begonnen",
-  learning: "Lernend",
-  developing: "Aufbauend",
-  proficient: "Sicher",
-  mastered: "Gemeistert",
-};
 
 const STATUS_ORDER: TechniqueStatus[] = [
   "not_started",
@@ -103,7 +96,7 @@ export function PlayerTechniques({ playerId }: PlayerTechniquesProps) {
                   )}
                 </div>
                 <Badge color={STATUS_BADGE_COLORS[status]}>
-                  {STATUS_LABELS[status]}
+                  {TECHNIQUE_STATUS_LABELS[status]}
                 </Badge>
               </button>
             ))}

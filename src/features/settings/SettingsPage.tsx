@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Button, Card } from "../../components/ui";
+import { Button, Card, ConfirmDialog } from "../../components/ui";
 import { useTheme } from "../../hooks/useTheme";
 import { getStorageUsage, exportStoreData, importStoreData } from "../../utils/storage";
 import type { StorageUsage } from "../../utils/storage";
@@ -17,6 +17,9 @@ const cardVariants = {
 export default function SettingsPage() {
   const [usage, setUsage] = useState<StorageUsage | null>(null);
   const [importStatus, setImportStatus] = useState<string>("");
+  const [exportError, setExportError] = useState<string>("");
+  const [confirmImportOpen, setConfirmImportOpen] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { theme, toggleTheme } = useTheme();
 
@@ -24,22 +27,32 @@ export default function SettingsPage() {
     setUsage(getStorageUsage());
   }, []);
 
-  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleExport = () => {
+    setExportError("");
+    const result = exportStoreData();
+    if (!result.success) {
+      setExportError(result.error ?? "Unbekannter Fehler");
+    }
+  };
+
+  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setPendingFile(file);
+    setConfirmImportOpen(true);
+    // Reset input so same file can be re-selected
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
-    const confirmed = window.confirm(
-      "Achtung: Der Import ersetzt deine aktuellen Daten. Moechtest du fortfahren?",
-    );
-    if (!confirmed) return;
-
+  const handleImportConfirmed = async () => {
+    if (!pendingFile) return;
     setImportStatus("Importiere...");
-    const success = await importStoreData(file);
-    if (success) {
-      setImportStatus("Import erfolgreich! Seite wird neu geladen...");
-      setTimeout(() => window.location.reload(), 1500);
+    const result = await importStoreData(pendingFile);
+    setPendingFile(null);
+    if (result.success) {
+      setImportStatus("Import erfolgreich! Die App verwendet die neuen Daten nach dem naechsten Seitenwechsel.");
     } else {
-      setImportStatus("Import fehlgeschlagen.");
+      setImportStatus(result.error ?? "Import fehlgeschlagen.");
     }
   };
 
@@ -152,9 +165,12 @@ export default function SettingsPage() {
               <p className="mb-2 text-xs text-text-muted">
                 Exportiere alle deine Daten als JSON-Datei. So kannst du ein Backup erstellen oder die Daten auf ein anderes Geraet uebertragen.
               </p>
-              <Button size="sm" onClick={exportStoreData}>
+              <Button size="sm" onClick={handleExport}>
                 Daten exportieren
               </Button>
+              {exportError && (
+                <p className="mt-2 text-xs text-kicker-red">{exportError}</p>
+              )}
             </div>
             <div className="border-t border-border pt-3">
               <p className="mb-2 text-xs text-text-muted">
@@ -164,7 +180,7 @@ export default function SettingsPage() {
                 ref={fileInputRef}
                 type="file"
                 accept=".json"
-                onChange={handleImport}
+                onChange={handleFileSelected}
                 className="hidden"
               />
               <Button
@@ -197,6 +213,19 @@ export default function SettingsPage() {
           </p>
         </Card>
       </motion.div>
+
+      <ConfirmDialog
+        open={confirmImportOpen}
+        onClose={() => {
+          setConfirmImportOpen(false);
+          setPendingFile(null);
+        }}
+        onConfirm={handleImportConfirmed}
+        title="Daten importieren?"
+        message="Achtung: Der Import ersetzt deine aktuellen Daten. Moechtest du fortfahren?"
+        confirmLabel="Importieren"
+        cancelLabel="Abbrechen"
+      />
     </div>
   );
 }

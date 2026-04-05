@@ -19,6 +19,7 @@ export interface CoachingSlice {
   addEvaluation: (evaluation: Evaluation) => void;
   deleteEvaluation: (id: string) => void;
   addCoachingNote: (note: CoachingNote) => void;
+  updateCoachingNote: (id: string, updates: Partial<CoachingNote>) => void;
   deleteCoachingNote: (id: string) => void;
   addPlayerTechnique: (pt: PlayerTechnique) => void;
   updatePlayerTechnique: (
@@ -72,6 +73,12 @@ export const createCoachingSlice: StateCreator<
     })),
   addCoachingNote: (note) =>
     set((s) => ({ coachingNotes: [...s.coachingNotes, note] })),
+  updateCoachingNote: (id, updates) =>
+    set((s) => ({
+      coachingNotes: s.coachingNotes.map((n) =>
+        n.id === id ? { ...n, ...updates } : n,
+      ),
+    })),
   deleteCoachingNote: (id) =>
     set((s) => ({
       coachingNotes: s.coachingNotes.filter((n) => n.id !== id),

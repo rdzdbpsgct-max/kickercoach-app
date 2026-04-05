@@ -1,5 +1,7 @@
 import type { Difficulty, Category } from "./models/CoachCard";
 import type { DrillPhase } from "./models/Drill";
+import type { Position } from "./models/Player";
+import type { TechniqueStatus } from "./models/PlayerTechnique";
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
   beginner: "Einsteiger",
@@ -59,6 +61,28 @@ export const PHASE_COLORS: Record<DrillPhase, string> = {
   technique: "bg-kicker-blue/15 text-kicker-blue",
   game: "bg-kicker-green/15 text-kicker-green",
   cooldown: "bg-accent-dim text-accent",
+};
+
+export const POSITION_LABELS: Record<Position, string> = {
+  offense: "Sturm",
+  defense: "Abwehr",
+  both: "Beides",
+};
+
+export const TECHNIQUE_STATUS_LABELS: Record<TechniqueStatus, string> = {
+  not_started: "Nicht begonnen",
+  learning: "Lernend",
+  developing: "Aufbauend",
+  proficient: "Sicher",
+  mastered: "Gemeistert",
+};
+
+export const TECHNIQUE_STATUS_COLORS: Record<TechniqueStatus, string> = {
+  not_started: "bg-border",
+  learning: "bg-kicker-orange",
+  developing: "bg-kicker-blue",
+  proficient: "bg-kicker-green",
+  mastered: "bg-accent",
 };
 
 export const MAX_VISIBLE_TAGS = 3;

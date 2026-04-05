@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { CoachingNote } from "../../domain/models/CoachingNote";
 import { useAppStore } from "../../store";
-import { Badge, Card, EmptyState, ConfirmDialog } from "../../components/ui";
+import { Badge, Card, EmptyState, ConfirmDialog, Textarea, Button, Select } from "../../components/ui";
 
 const CATEGORY_LABELS: Record<string, string> = {
   tactical: "Taktisch",
@@ -15,6 +15,18 @@ const CATEGORY_COLORS: Record<string, "blue" | "orange" | "green" | "accent"> = 
   technical: "orange",
   mental: "accent",
   communication: "green",
+};
+
+const PRIORITY_LABELS: Record<string, string> = {
+  low: "Niedrig",
+  medium: "Mittel",
+  high: "Hoch",
+};
+
+const PRIORITY_COLORS: Record<string, "green" | "orange" | "red"> = {
+  low: "green",
+  medium: "orange",
+  high: "red",
 };
 
 const FILTER_OPTIONS: (CoachingNote["category"] | "all")[] = [
@@ -31,12 +43,43 @@ interface NotesFeedProps {
 
 export function NotesFeed({ notes }: NotesFeedProps) {
   const deleteCoachingNote = useAppStore((s) => s.deleteCoachingNote);
+  const updateCoachingNote = useAppStore((s) => s.updateCoachingNote);
   const [filter, setFilter] = useState<CoachingNote["category"] | "all">("all");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+
+  // Edit state
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
+  const [editCategory, setEditCategory] = useState<CoachingNote["category"]>("technical");
 
   const filtered =
     filter === "all" ? notes : notes.filter((n) => n.category === filter);
   const sorted = [...filtered].sort((a, b) => b.date.localeCompare(a.date));
+
+  function startEdit(note: CoachingNote) {
+    setEditingId(note.id);
+    setEditText(note.text);
+    setEditCategory(note.category);
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditText("");
+  }
+
+  function saveEdit() {
+    if (editingId && editText.trim()) {
+      updateCoachingNote(editingId, {
+        text: editText.trim(),
+        category: editCategory,
+      });
+      cancelEdit();
+    }
+  }
+
+  function toggleResolved(note: CoachingNote) {
+    updateCoachingNote(note.id, { resolved: !note.resolved });
+  }
 
   if (notes.length === 0) {
     return (
@@ -71,27 +114,116 @@ export function NotesFeed({ notes }: NotesFeedProps) {
       </div>
 
       {/* Notes */}
-      {sorted.map((note) => (
-        <Card key={note.id}>
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <Badge color={CATEGORY_COLORS[note.category]}>
-                  {CATEGORY_LABELS[note.category]}
-                </Badge>
-                <span className="text-[10px] text-text-dim">{note.date}</span>
+      {sorted.map((note) => {
+        const isEditing = editingId === note.id;
+
+        return (
+          <Card key={note.id} className={note.resolved ? "opacity-60" : ""}>
+            {isEditing ? (
+              /* Edit Mode */
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <Select
+                    value={editCategory}
+                    onChange={(e) =>
+                      setEditCategory(e.target.value as CoachingNote["category"])
+                    }
+                    className="!w-36"
+                  >
+                    <option value="tactical">Taktisch</option>
+                    <option value="technical">Technisch</option>
+                    <option value="mental">Mental</option>
+                    <option value="communication">Kommunikation</option>
+                  </Select>
+                  <span className="text-[10px] text-text-dim">{note.date}</span>
+                </div>
+                <Textarea
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                  rows={3}
+                  className="!min-h-[60px]"
+                />
+                <div className="flex justify-end gap-2">
+                  <Button size="sm" variant="secondary" onClick={cancelEdit}>
+                    Abbrechen
+                  </Button>
+                  <Button size="sm" onClick={saveEdit} disabled={!editText.trim()}>
+                    Speichern
+                  </Button>
+                </div>
               </div>
-              <p className="mt-1 text-xs text-text-muted">{note.text}</p>
-            </div>
-            <button
-              onClick={() => setDeleteId(note.id)}
-              className="text-[10px] text-text-dim hover:text-kicker-red transition-colors"
-            >
-              &#10005;
-            </button>
-          </div>
-        </Card>
-      ))}
+            ) : (
+              /* View Mode */
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge color={CATEGORY_COLORS[note.category]}>
+                      {CATEGORY_LABELS[note.category]}
+                    </Badge>
+                    {note.priority && (
+                      <Badge color={PRIORITY_COLORS[note.priority]}>
+                        {PRIORITY_LABELS[note.priority]}
+                      </Badge>
+                    )}
+                    {note.resolved && (
+                      <Badge color="green">
+                        &#10003; Erledigt
+                      </Badge>
+                    )}
+                    <span className="text-[10px] text-text-dim">{note.date}</span>
+                  </div>
+                  <p
+                    className={`mt-1 text-xs text-text-muted ${
+                      note.resolved ? "line-through" : ""
+                    }`}
+                  >
+                    {note.text}
+                  </p>
+                  {note.tags && note.tags.length > 0 && (
+                    <div className="mt-1.5 flex flex-wrap gap-1">
+                      {note.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center rounded-full bg-surface-alt px-2 py-0.5 text-[10px] text-text-dim"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    onClick={() => toggleResolved(note)}
+                    className={`text-[12px] transition-colors ${
+                      note.resolved
+                        ? "text-kicker-green hover:text-text-dim"
+                        : "text-text-dim hover:text-kicker-green"
+                    }`}
+                    title={note.resolved ? "Als offen markieren" : "Als erledigt markieren"}
+                  >
+                    &#10003;
+                  </button>
+                  <button
+                    onClick={() => startEdit(note)}
+                    className="text-[11px] text-text-dim hover:text-accent transition-colors"
+                    title="Bearbeiten"
+                  >
+                    &#9998;
+                  </button>
+                  <button
+                    onClick={() => setDeleteId(note.id)}
+                    className="text-[10px] text-text-dim hover:text-kicker-red transition-colors"
+                    title="L&ouml;schen"
+                  >
+                    &#10005;
+                  </button>
+                </div>
+              </div>
+            )}
+          </Card>
+        );
+      })}
 
       <ConfirmDialog
         open={deleteId !== null}

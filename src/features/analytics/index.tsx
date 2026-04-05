@@ -2,25 +2,12 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useAppStore } from "../../store";
 import { Select, Card, Badge } from "../../components/ui";
+import { TECHNIQUE_STATUS_LABELS, TECHNIQUE_STATUS_COLORS } from "../../domain/constants";
+import type { TechniqueStatus } from "../../domain/models/PlayerTechnique";
 import { TrainingFrequencyChart } from "./TrainingFrequencyChart";
 import { SkillProgressChart } from "./SkillProgressChart";
 import { DrillStatsChart } from "./DrillStatsChart";
 import { PlayerComparison } from "./PlayerComparison";
-
-const TECHNIQUE_STATUS_LABELS: Record<string, string> = {
-  not_started: "Nicht begonnen",
-  learning: "Lernend",
-  developing: "Entwickelnd",
-  proficient: "Sicher",
-  mastered: "Gemeistert",
-};
-const TECHNIQUE_STATUS_COLORS: Record<string, string> = {
-  not_started: "bg-border",
-  learning: "bg-kicker-orange",
-  developing: "bg-kicker-blue",
-  proficient: "bg-kicker-green",
-  mastered: "bg-accent",
-};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -184,8 +171,8 @@ export default function AnalyticsMode() {
               <div className="flex flex-col gap-1">
                 {Object.entries(techniqueStats).filter(([, v]) => v > 0).map(([status, count]) => (
                   <div key={status} className="flex items-center gap-2 text-xs">
-                    <div className={`h-2.5 w-2.5 rounded-full ${TECHNIQUE_STATUS_COLORS[status]}`} />
-                    <span className="text-text-muted">{TECHNIQUE_STATUS_LABELS[status]}</span>
+                    <div className={`h-2.5 w-2.5 rounded-full ${TECHNIQUE_STATUS_COLORS[status as TechniqueStatus]}`} />
+                    <span className="text-text-muted">{TECHNIQUE_STATUS_LABELS[status as TechniqueStatus]}</span>
                     <span className="ml-auto font-medium text-text">{count}</span>
                   </div>
                 ))}

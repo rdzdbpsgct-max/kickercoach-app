@@ -6,7 +6,7 @@ import { calculateSessionDuration } from "../../domain/logic/session";
 import { PHASE_LABELS } from "../../domain/constants";
 import { Button, FormField, Input, Select, Textarea } from "../../components/ui";
 import { useAppStore } from "../../store";
-import type { Session } from "../../store";
+import type { Session, DrillResult } from "../../store";
 
 const CATEGORIES: Category[] = [
   "Torschuss",
@@ -20,6 +20,12 @@ const CATEGORIES: Category[] = [
 
 const STAR_LABELS = ["", "Schlecht", "Mässig", "OK", "Gut", "Super"];
 
+export interface PlanSessionContext {
+  planId: string;
+  weekIndex: number;
+  sessionIndex: number;
+}
+
 interface SessionBuilderProps {
   drills: Drill[];
   onSave: (session: Session) => void;
@@ -27,6 +33,8 @@ interface SessionBuilderProps {
   editSession?: Session | null;
   initialPlayerIds?: string[];
   quickStartTemplateId?: string | null;
+  planSessionContext?: PlanSessionContext | null;
+  drillResults?: Record<string, { rating: number; notes?: string }>;
 }
 
 export default function SessionBuilder({
@@ -36,15 +44,21 @@ export default function SessionBuilder({
   editSession,
   initialPlayerIds,
   quickStartTemplateId,
+  planSessionContext,
+  drillResults,
 }: SessionBuilderProps) {
   const players = useAppStore((s) => s.players);
   const teams = useAppStore((s) => s.teams);
+  const trainingPlans = useAppStore((s) => s.trainingPlans);
   const sessionTemplates = useAppStore((s) => s.sessionTemplates);
   const saveSessionAsTemplate = useAppStore((s) => s.saveSessionAsTemplate);
   const deleteSessionTemplate = useAppStore((s) => s.deleteSessionTemplate);
   const [templateSaved, setTemplateSaved] = useState(false);
 
   const [name, setName] = useState(editSession?.name ?? "");
+  const [sessionDate, setSessionDate] = useState(
+    editSession?.date ?? new Date().toISOString().slice(0, 10),
+  );
   const [selectedDrillIds, setSelectedDrillIds] = useState<string[]>(
     editSession?.drillIds ?? [],
   );
@@ -70,6 +84,26 @@ export default function SessionBuilder({
     }
   }, [quickStartTemplateId]);
 
+  // Auto-load plan session template
+  useEffect(() => {
+    if (planSessionContext) {
+      const plan = trainingPlans.find((p) => p.id === planSessionContext.planId);
+      if (plan) {
+        const week = plan.weeks[planSessionContext.weekIndex];
+        const tmpl = week?.sessionTemplates[planSessionContext.sessionIndex];
+        if (tmpl) {
+          setName(tmpl.name || `${plan.name} - Woche ${planSessionContext.weekIndex + 1}`);
+          setSelectedDrillIds(tmpl.drillIds);
+          setFocusAreas(tmpl.focusAreas ?? []);
+          // Pre-select plan players
+          if (plan.playerIds.length > 0) {
+            setSelectedPlayerIds(plan.playerIds);
+          }
+        }
+      }
+    }
+  }, [planSessionContext, trainingPlans]);
+
   const totalDuration = calculateSessionDuration(selectedDrillIds, drills);
 
   const toggleDrill = (id: string) => {
@@ -93,15 +127,32 @@ export default function SessionBuilder({
   const handleSave = () => {
     if (!name.trim() || selectedDrillIds.length === 0) return;
 
+    // Convert drill results from TrainMode into DrillResult[] for the session
+    const sessionDrillResults: DrillResult[] | undefined =
+      drillResults && Object.keys(drillResults).length > 0
+        ? selectedDrillIds.map((drillId) => {
+            const result = drillResults[drillId];
+            return {
+              drillId,
+              completed: !!result,
+              blocksCompleted: result ? (drills.find((d) => d.id === drillId)?.blocks.length ?? 0) : 0,
+              successRate: result ? result.rating * 20 : undefined, // Convert 1-5 to 0-100
+              notes: result?.notes,
+            };
+          }).filter((r) => r.completed)
+        : editSession?.drillResults;
+
     const session: Session = {
       id: editSession?.id ?? crypto.randomUUID(),
       name: name.trim(),
-      date: new Date().toISOString().slice(0, 10),
+      date: sessionDate,
       drillIds: selectedDrillIds,
+      drillResults: sessionDrillResults,
       notes: notes.trim(),
       totalDuration,
       playerIds: selectedPlayerIds,
       teamId: selectedTeamId,
+      planId: planSessionContext?.planId,
       focusAreas,
       rating,
     };
@@ -142,6 +193,13 @@ export default function SessionBuilder({
         </div>
       </div>
 
+      {/* Plan session context info */}
+      {planSessionContext && (
+        <div className="rounded-lg border border-accent/30 bg-accent-dim px-3 py-2 text-xs text-accent-hover">
+          Session aus Trainingsplan &mdash; Woche {planSessionContext.weekIndex + 1}, Session {planSessionContext.sessionIndex + 1}
+        </div>
+      )}
+
       {/* Load from template */}
       {sessionTemplates.length > 0 && !editSession && (
         <div className="flex flex-col gap-1">
@@ -174,14 +232,23 @@ export default function SessionBuilder({
         </div>
       )}
 
-      {/* Name */}
-      <FormField label="Session-Name">
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="z.B. Morgen-Training, Schuss-Drill..."
-        />
-      </FormField>
+      {/* Name & Date */}
+      <div className="grid grid-cols-[1fr_auto] gap-3">
+        <FormField label="Session-Name">
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="z.B. Morgen-Training, Schuss-Drill..."
+          />
+        </FormField>
+        <FormField label="Datum">
+          <Input
+            type="date"
+            value={sessionDate}
+            onChange={(e) => setSessionDate(e.target.value)}
+          />
+        </FormField>
+      </div>
 
       {/* Player selection */}
       {players.length > 0 && (

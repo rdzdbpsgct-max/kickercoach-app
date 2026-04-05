@@ -1,5 +1,4 @@
 export { useAppStore } from "./useAppStore";
-export { useUIStore } from "./useUIStore";
 export type { AppState } from "./types";
 export type { Player, Position, SkillRatings } from "../domain/models/Player";
 export type {

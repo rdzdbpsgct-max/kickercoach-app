@@ -9,7 +9,24 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      manifest: false,
+      manifest: {
+        name: "KickerCoach – by SpielerGeist",
+        short_name: "KickerCoach",
+        description: "Dein digitales Trainings-Ökosystem für Tischkicker",
+        theme_color: "#00e676",
+        background_color: "#0a0c10",
+        display: "standalone",
+        orientation: "portrait",
+        start_url: "/",
+        icons: [
+          {
+            src: "favicon.svg",
+            sizes: "any",
+            type: "image/svg+xml",
+            purpose: "any maskable",
+          },
+        ],
+      },
       workbox: {
         globPatterns: ["**/*.{js,css,html,svg,json}"],
         runtimeCaching: [

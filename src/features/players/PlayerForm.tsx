@@ -35,6 +35,7 @@ export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
   const [skillRatings, setSkillRatings] = useState<SkillRatings>(
     player?.skillRatings ?? { ...DEFAULT_SKILL_RATINGS },
   );
+  const [isActive, setIsActive] = useState(player?.isActive ?? true);
   const [avatarColor, setAvatarColor] = useState(
     player?.avatarColor ?? AVATAR_COLORS[0],
   );
@@ -59,6 +60,7 @@ export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
       name: name.trim(),
       nickname: nickname.trim() || undefined,
       preferredPosition: position,
+      isActive,
       level,
       notes,
       skillRatings,
@@ -107,6 +109,20 @@ export function PlayerForm({ player, onSave, onCancel }: PlayerFormProps) {
           </Select>
         </FormField>
       </div>
+
+      <FormField label="Status">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={isActive}
+            onChange={(e) => setIsActive(e.target.checked)}
+            className="h-4 w-4 rounded border-border text-accent focus:ring-accent/30"
+          />
+          <span className="text-sm text-text">
+            {isActive ? "Aktiv" : "Inaktiv"}
+          </span>
+        </label>
+      </FormField>
 
       <FormField label="Farbe">
         <div className="flex gap-2">

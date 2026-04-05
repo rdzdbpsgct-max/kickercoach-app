@@ -72,7 +72,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Smooth theme transitions */
-[data-theme] * {
+body,
+[data-theme] .rounded-xl,
+[data-theme] .rounded-2xl,
+[data-theme] button,
+[data-theme] input,
+[data-theme] select,
+[data-theme] textarea,
+[data-theme] nav,
+[data-theme] header {
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAppStore } from "../../store";
-import { Badge, Card, Button } from "../../components/ui";
+import { Badge, Card, Button, StarRating } from "../../components/ui";
 import { getWeakCategories } from "../../domain/logic/recommendations";
 
 const staggerContainer = {
@@ -22,16 +22,6 @@ const fadeUp = {
     transition: { duration: 0.4, ease: "easeOut" as const },
   },
 };
-
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <span className="text-xs text-kicker-orange">
-      {Array.from({ length: 5 }, (_, i) =>
-        i < rating ? "\u2605" : "\u2606",
-      ).join("")}
-    </span>
-  );
-}
 
 export default function HomePage() {
   const sessions = useAppStore((s) => s.sessions);

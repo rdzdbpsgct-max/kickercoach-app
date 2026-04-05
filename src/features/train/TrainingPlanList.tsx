@@ -7,16 +7,40 @@ import { useAppStore } from "../../store";
 interface TrainingPlanListProps {
   onEdit: (plan: TrainingPlan) => void;
   onNew: () => void;
+  onStartSession?: (planId: string, weekIndex: number, sessionIndex: number) => void;
 }
 
-export default function TrainingPlanList({ onEdit, onNew }: TrainingPlanListProps) {
+export default function TrainingPlanList({ onEdit, onNew, onStartSession }: TrainingPlanListProps) {
   const trainingPlans = useAppStore((s) => s.trainingPlans);
   const players = useAppStore((s) => s.players);
   const deleteTrainingPlan = useAppStore((s) => s.deleteTrainingPlan);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
 
   const getPlayerName = (id: string) =>
     players.find((p) => p.id === id)?.name ?? "?";
+
+  /** Build a stable key for a session template within a plan: "weekIdx-sessionIdx" */
+  const sessionKey = (weekIdx: number, sessionIdx: number) =>
+    `${weekIdx}-${sessionIdx}`;
+
+  /** Check whether a session template has been completed (its key exists in completedSessionIds) */
+  const isSessionCompleted = (plan: TrainingPlan, weekIdx: number, sessionIdx: number) => {
+    const key = sessionKey(weekIdx, sessionIdx);
+    return (plan.completedSessionIds ?? []).some((id) => id.startsWith(`plan:${key}:`) || id === key);
+  };
+
+  /** Count completed sessions for a given week */
+  const weekCompletedCount = (plan: TrainingPlan, weekIdx: number) =>
+    plan.weeks[weekIdx].sessionTemplates.filter((_tmpl, si) => isSessionCompleted(plan, weekIdx, si)).length;
+
+  /** Total session templates across the plan */
+  const totalSessions = (plan: TrainingPlan) =>
+    plan.weeks.reduce((sum, w) => sum + w.sessionTemplates.length, 0);
+
+  /** Total completed across the plan */
+  const totalCompleted = (plan: TrainingPlan) =>
+    plan.weeks.reduce((sum, _w, wi) => sum + weekCompletedCount(plan, wi), 0);
 
   if (trainingPlans.length === 0) {
     return (
@@ -38,38 +62,165 @@ export default function TrainingPlanList({ onEdit, onNew }: TrainingPlanListProp
           <Button size="sm" onClick={onNew}>+ Neuer Plan</Button>
         </div>
       </div>
-      {trainingPlans.map((plan) => (
-        <Card key={plan.id} interactive onClick={() => onEdit(plan)}>
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <span className="text-sm font-semibold text-text">{plan.name}</span>
-              <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-text-dim">
-                <Badge color="blue">{plan.weeks.length} Wochen</Badge>
-                <Badge color="orange">
-                  {plan.weeks.reduce((sum, w) => sum + w.sessionTemplates.length, 0)} Sessions
-                </Badge>
-                {plan.playerIds.length > 0 && (
-                  <span>
-                    {plan.playerIds.map((id) => getPlayerName(id)).join(", ")}
-                  </span>
+      {trainingPlans.map((plan) => {
+        const isExpanded = expandedPlanId === plan.id;
+        const completed = totalCompleted(plan);
+        const total = totalSessions(plan);
+        const progressPct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+        return (
+          <Card key={plan.id}>
+            {/* Plan header */}
+            <div
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => setExpandedPlanId(isExpanded ? null : plan.id)}
+            >
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-text">{plan.name}</span>
+                  {completed === total && total > 0 && (
+                    <span className="text-kicker-green text-sm" title="Alle Sessions abgeschlossen">&#10003;</span>
+                  )}
+                </div>
+                <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-text-dim">
+                  <Badge color="blue">{plan.weeks.length} Wochen</Badge>
+                  <Badge color="orange">
+                    {total} Sessions
+                  </Badge>
+                  {total > 0 && (
+                    <Badge color={completed === total ? "green" : "secondary"}>
+                      {completed}/{total} erledigt
+                    </Badge>
+                  )}
+                  {plan.playerIds.length > 0 && (
+                    <span>
+                      {plan.playerIds.map((id) => getPlayerName(id)).join(", ")}
+                    </span>
+                  )}
+                </div>
+                {/* Overall progress bar */}
+                {total > 0 && (
+                  <div className="mt-1.5 h-1.5 w-full rounded-full bg-border overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-accent transition-all duration-300"
+                      style={{ width: `${progressPct}%` }}
+                    />
+                  </div>
+                )}
+                {plan.goal && (
+                  <p className="mt-1 text-xs text-text-dim line-clamp-1">{plan.goal}</p>
                 )}
               </div>
-              {plan.goal && (
-                <p className="mt-1 text-xs text-text-dim line-clamp-1">{plan.goal}</p>
-              )}
+              <div className="flex items-center gap-2 ml-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit(plan);
+                  }}
+                  className="rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-accent/50 hover:text-accent transition-all"
+                  title="Bearbeiten"
+                >
+                  &#9998;
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteId(plan.id);
+                  }}
+                  className="rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-kicker-red/50 hover:text-kicker-red transition-all"
+                >
+                  &#10005;
+                </button>
+                <span className="text-xs text-text-dim">{isExpanded ? "\u25B2" : "\u25BC"}</span>
+              </div>
             </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setDeleteId(plan.id);
-              }}
-              className="ml-3 rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-kicker-red/50 hover:text-kicker-red transition-all"
-            >
-              &#10005;
-            </button>
-          </div>
-        </Card>
-      ))}
+
+            {/* Expanded: week & session details */}
+            {isExpanded && (
+              <div className="mt-3 flex flex-col gap-3 border-t border-border pt-3">
+                {plan.weeks.map((week, wi) => {
+                  const weekDone = weekCompletedCount(plan, wi);
+                  const weekTotal = week.sessionTemplates.length;
+                  return (
+                    <div key={wi}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-xs font-semibold text-text">
+                          Woche {week.weekNumber}
+                        </span>
+                        <span className="text-[11px] text-text-dim">
+                          {weekDone}/{weekTotal} Sessions abgeschlossen
+                        </span>
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        {week.sessionTemplates.map((tmpl, si) => {
+                          const done = isSessionCompleted(plan, wi, si);
+                          return (
+                            <div
+                              key={si}
+                              className={`flex items-center justify-between rounded-lg border px-3 py-2 transition-all ${
+                                done
+                                  ? "border-kicker-green/30 bg-kicker-green/5"
+                                  : "border-border"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                {done && (
+                                  <span className="text-kicker-green text-sm shrink-0">&#10003;</span>
+                                )}
+                                <div className="min-w-0">
+                                  <span className={`text-sm font-medium ${done ? "text-text-muted line-through" : "text-text"}`}>
+                                    {tmpl.name || `Session ${si + 1}`}
+                                  </span>
+                                  <div className="flex flex-wrap gap-1 mt-0.5">
+                                    {tmpl.focusAreas.map((area) => (
+                                      <span
+                                        key={area}
+                                        className="rounded-full border border-border px-1.5 py-0.5 text-[10px] text-text-dim"
+                                      >
+                                        {area}
+                                      </span>
+                                    ))}
+                                    {tmpl.drillIds.length > 0 && (
+                                      <span className="text-[10px] text-text-dim">
+                                        {tmpl.drillIds.length} Drills
+                                      </span>
+                                    )}
+                                    {tmpl.estimatedDuration && (
+                                      <span className="text-[10px] text-text-dim">
+                                        ~{tmpl.estimatedDuration} Min.
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              {!done && onStartSession && (
+                                <Button
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    onStartSession(plan.id, wi, si);
+                                  }}
+                                >
+                                  &#9654; Starten
+                                </Button>
+                              )}
+                              {done && (
+                                <span className="text-[11px] text-kicker-green font-medium shrink-0">
+                                  Erledigt
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </Card>
+        );
+      })}
 
       <ConfirmDialog
         open={deleteId !== null}

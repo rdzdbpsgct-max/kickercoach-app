@@ -1,13 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, Badge } from "../ui";
-import { DIFFICULTY_LABELS } from "../../domain/constants";
+import { DIFFICULTY_LABELS, POSITION_LABELS } from "../../domain/constants";
 import type { Player } from "../../domain/models/Player";
-
-const POSITION_LABELS: Record<string, string> = {
-  offense: "Sturm",
-  defense: "Abwehr",
-  both: "Beides",
-};
 
 interface PlayerCardProps {
   player: Player;

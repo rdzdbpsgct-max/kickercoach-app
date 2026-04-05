@@ -9,17 +9,10 @@ import { NotesFeed } from "./NotesFeed";
 import { ProgressView } from "./ProgressView";
 import { PlayerTechniques } from "./PlayerTechniques";
 import { printCurrentPage } from "../../utils/print";
-import { DIFFICULTY_LABELS } from "../../domain/constants";
+import { DIFFICULTY_LABELS, POSITION_LABELS } from "../../domain/constants";
 import { useAppStore } from "../../store";
 import type { Player } from "../../domain/models/Player";
 import type { Goal } from "../../domain/models/Goal";
-
-
-const POSITION_LABELS: Record<string, string> = {
-  offense: "Sturm",
-  defense: "Abwehr",
-  both: "Beides",
-};
 
 const sectionVariants = {
   initial: { opacity: 0, y: 16 },

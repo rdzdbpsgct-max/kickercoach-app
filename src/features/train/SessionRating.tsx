@@ -33,8 +33,8 @@ export default function SessionRating({
   const participatingPlayers = players.filter((p) => playerIds.includes(p.id));
 
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
-  const [ratings, setRatings] = useState<Record<Category, number>>(
-    Object.fromEntries(CATEGORIES.map((c) => [c, 3])) as Record<Category, number>,
+  const [ratings, setRatings] = useState<Record<Category, number | null>>(
+    Object.fromEntries(CATEGORIES.map((c) => [c, null])) as Record<Category, number | null>,
   );
   const [notes, setNotes] = useState("");
 
@@ -45,10 +45,13 @@ export default function SessionRating({
   const currentPlayer = participatingPlayers[currentPlayerIndex];
 
   const handleSave = () => {
-    const skillRatings: SkillRating[] = CATEGORIES.map((cat) => ({
-      category: cat,
-      rating: ratings[cat],
-    }));
+    // Only include categories where the user explicitly set a rating
+    const skillRatings: SkillRating[] = CATEGORIES
+      .filter((cat) => ratings[cat] !== null)
+      .map((cat) => ({
+        category: cat,
+        rating: ratings[cat] as number,
+      }));
 
     const evaluation: Evaluation = {
       id: crypto.randomUUID(),
@@ -64,7 +67,7 @@ export default function SessionRating({
     if (currentPlayerIndex < participatingPlayers.length - 1) {
       setCurrentPlayerIndex(currentPlayerIndex + 1);
       setRatings(
-        Object.fromEntries(CATEGORIES.map((c) => [c, 3])) as Record<Category, number>,
+        Object.fromEntries(CATEGORIES.map((c) => [c, null])) as Record<Category, number | null>,
       );
       setNotes("");
     } else {
@@ -99,30 +102,39 @@ export default function SessionRating({
       <Card>
         <h3 className="mb-3 text-sm font-semibold text-text">Skill-Bewertung</h3>
         <div className="flex flex-col gap-2.5">
-          {CATEGORIES.map((cat) => (
-            <div key={cat} className="flex items-center gap-3">
-              <span className="w-28 text-xs font-medium text-text-muted truncate">
-                {cat}
-              </span>
-              <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((level) => (
-                  <button
-                    key={level}
-                    onClick={() =>
-                      setRatings((prev) => ({ ...prev, [cat]: level }))
-                    }
-                    className={`h-11 w-11 rounded-lg text-sm font-semibold transition-all ${
-                      level <= ratings[cat]
-                        ? "bg-accent text-white"
-                        : "bg-border/30 text-text-dim hover:bg-border/50"
-                    }`}
-                  >
-                    {level}
-                  </button>
-                ))}
+          {CATEGORIES.map((cat) => {
+            const current = ratings[cat];
+            return (
+              <div key={cat} className="flex items-center gap-3">
+                <span className="w-28 text-xs font-medium text-text-muted truncate">
+                  {cat}
+                </span>
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((level) => (
+                    <button
+                      key={level}
+                      onClick={() =>
+                        setRatings((prev) => ({
+                          ...prev,
+                          [cat]: prev[cat] === level ? null : level,
+                        }))
+                      }
+                      className={`h-11 w-11 rounded-lg text-sm font-semibold transition-all ${
+                        current !== null && level <= current
+                          ? "bg-accent text-white"
+                          : "bg-border/30 text-text-dim hover:bg-border/50"
+                      }`}
+                    >
+                      {level}
+                    </button>
+                  ))}
+                </div>
+                {current === null && (
+                  <span className="text-[10px] text-text-dim italic">nicht bewertet</span>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </Card>
 

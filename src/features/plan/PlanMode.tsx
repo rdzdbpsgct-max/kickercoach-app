@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import type { MatchPlan } from "../../domain/models/MatchPlan";
+import { MatchPlanSchema } from "../../domain/schemas/matchPlan";
 import { useAppStore } from "../../store";
 import { Button } from "../../components/ui";
 import MatchPlanEditor from "./MatchPlanEditor";
@@ -45,6 +46,7 @@ export default function PlanMode() {
   const updateMatchPlan = useAppStore((s) => s.updateMatchPlan);
   const deleteMatchPlan = useAppStore((s) => s.deleteMatchPlan);
   const [editingPlan, setEditingPlan] = useState<MatchPlan | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleNew = () => {
@@ -80,25 +82,25 @@ export default function PlanMode() {
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setImportError(null);
 
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
         const data = JSON.parse(event.target?.result as string);
-        if (
-          !data ||
-          typeof data !== "object" ||
-          typeof data.opponent !== "string" ||
-          typeof data.date !== "string"
-        ) {
-          alert("Ungueltige Matchplan-Datei. Bitte eine gueltige JSON-Datei waehlen.");
+        const result = MatchPlanSchema.safeParse(data);
+        if (!result.success) {
+          setImportError(
+            "Ungueltige Matchplan-Datei. Bitte eine gueltige JSON-Datei waehlen.",
+          );
           return;
         }
-        const plan = data as MatchPlan;
-        plan.id = crypto.randomUUID();
+        const plan: MatchPlan = { ...result.data, id: crypto.randomUUID() };
         addMatchPlan(plan);
       } catch {
-        alert("Die Datei konnte nicht gelesen werden. Bitte eine gueltige JSON-Datei waehlen.");
+        setImportError(
+          "Die Datei konnte nicht gelesen werden. Bitte eine gueltige JSON-Datei waehlen.",
+        );
       }
     };
     reader.readAsText(file);
@@ -146,6 +148,22 @@ export default function PlanMode() {
           <Button onClick={handleNew}>+ Neuer Plan</Button>
         </div>
       </motion.div>
+
+      {importError && (
+        <motion.div
+          variants={itemVariants}
+          className="rounded-lg bg-red-100 px-4 py-3 text-sm text-red-800 dark:bg-red-900/30 dark:text-red-300"
+          role="alert"
+        >
+          {importError}
+          <button
+            className="ml-2 font-medium underline"
+            onClick={() => setImportError(null)}
+          >
+            Schliessen
+          </button>
+        </motion.div>
+      )}
 
       <motion.div variants={itemVariants}>
         <MatchPlanList

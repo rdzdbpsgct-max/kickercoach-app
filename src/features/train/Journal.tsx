@@ -1,30 +1,22 @@
 import { useState, useMemo } from "react";
 import { formatTime } from "../../domain/logic/time";
 import { calculateSessionStats } from "../../domain/logic/session";
-import { Card, Badge, Button, EmptyState, ConfirmDialog, SearchBar } from "../../components/ui";
+import { Card, Badge, Button, EmptyState, ConfirmDialog, SearchBar, StarRating } from "../../components/ui";
 import { printCurrentPage } from "../../utils/print";
 import { useAppStore } from "../../store";
 import type { Session } from "../../store";
+import type { Drill } from "../../domain/models/Drill";
 
 interface JournalProps {
   sessions: Session[];
+  drills?: Drill[];
   onSelect: (session: Session) => void;
   onDelete: (id: string) => void;
 }
 
-function StarRating({ rating }: { rating?: number }) {
-  if (!rating) return null;
-  return (
-    <span className="text-xs text-kicker-orange">
-      {Array.from({ length: 5 }, (_, i) =>
-        i < rating ? "\u2605" : "\u2606",
-      ).join("")}
-    </span>
-  );
-}
-
 export default function Journal({
   sessions,
+  drills,
   onSelect,
   onDelete,
 }: JournalProps) {
@@ -32,9 +24,13 @@ export default function Journal({
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [filterPlayerId, setFilterPlayerId] = useState<string | "">("");
+  const [expandedSessionId, setExpandedSessionId] = useState<string | null>(null);
 
   const getPlayerName = (id: string) =>
     players.find((p) => p.id === id)?.name ?? "?";
+
+  const getDrillName = (drillId: string) =>
+    drills?.find((d) => d.id === drillId)?.name ?? drillId.substring(0, 12);
 
   const filteredSessions = useMemo(() => {
     let result = sessions;
@@ -53,6 +49,8 @@ export default function Journal({
   }, [sessions, search, filterPlayerId]);
 
   const stats = calculateSessionStats(filteredSessions);
+
+  const ratingToStars = (successRate: number) => Math.round(successRate / 20);
 
   return (
     <div className="flex flex-col gap-4">
@@ -151,7 +149,7 @@ export default function Journal({
                     <span className="text-sm font-semibold text-text">
                       {session.name}
                     </span>
-                    <StarRating rating={session.rating} />
+                    {session.rating != null && <StarRating rating={session.rating} />}
                   </div>
                   <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-text-dim">
                     <span>
@@ -185,6 +183,16 @@ export default function Journal({
                       <span className="font-medium text-kicker-green">
                         {session.drillResults.filter((r) => r.completed).length}/{session.drillResults.length} abgeschlossen
                       </span>
+                      {session.drillResults.some((r) => r.successRate != null) && (
+                        <span className="ml-1 text-kicker-orange">
+                          Avg: {Math.round(
+                            session.drillResults
+                              .filter((r) => r.successRate != null)
+                              .reduce((sum, r) => sum + (r.successRate ?? 0), 0) /
+                            session.drillResults.filter((r) => r.successRate != null).length
+                          )}%
+                        </span>
+                      )}
                     </div>
                   )}
                   {session.retrospective && (
@@ -198,14 +206,64 @@ export default function Journal({
                     </div>
                   )}
                 </button>
-                <button
-                  onClick={() => setDeleteId(session.id)}
-                  aria-label="Session loeschen"
-                  className="ml-3 rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-kicker-red/50 hover:text-kicker-red transition-all"
-                >
-                  &#10005;
-                </button>
+                <div className="flex flex-col items-end gap-1 ml-3">
+                  {session.drillResults && session.drillResults.length > 0 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedSessionId(
+                          expandedSessionId === session.id ? null : session.id,
+                        );
+                      }}
+                      className="rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-accent/50 hover:text-accent transition-all"
+                      title="Drill-Ergebnisse anzeigen"
+                    >
+                      {expandedSessionId === session.id ? "Weniger" : "Details"}
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setDeleteId(session.id)}
+                    aria-label="Session loeschen"
+                    className="rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-kicker-red/50 hover:text-kicker-red transition-all"
+                  >
+                    &#10005;
+                  </button>
+                </div>
               </div>
+
+              {/* Expanded drill results */}
+              {expandedSessionId === session.id && session.drillResults && session.drillResults.length > 0 && (
+                <div className="mt-3 border-t border-border pt-3 flex flex-col gap-2">
+                  <div className="text-[11px] font-semibold text-text-dim uppercase tracking-wider">
+                    Drill-Ergebnisse
+                  </div>
+                  {session.drillResults.map((result) => (
+                    <div
+                      key={result.drillId}
+                      className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-xs"
+                    >
+                      <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                        <span className="font-medium text-text truncate">
+                          {getDrillName(result.drillId)}
+                        </span>
+                        {result.notes && (
+                          <span className="text-text-dim line-clamp-1">{result.notes}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 ml-2 shrink-0">
+                        {result.successRate != null && (
+                          <StarRating rating={ratingToStars(result.successRate)} />
+                        )}
+                        {result.completed ? (
+                          <span className="text-kicker-green font-medium">&#10003;</span>
+                        ) : (
+                          <span className="text-text-dim">&#8212;</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Card>
           ))}
         </div>
