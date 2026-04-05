@@ -94,7 +94,7 @@ export default function BoardMode() {
       </motion.div>
 
       <motion.div
-        className="flex-1 min-h-0"
+        className="flex flex-1 min-h-0"
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.35, delay: 0.12 }}
