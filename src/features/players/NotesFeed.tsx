@@ -21,7 +21,7 @@ interface NotesFeedProps {
 }
 
 export function NotesFeed({ notes }: NotesFeedProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["players", "common"]);
   const deleteCoachingNote = useAppStore((s) => s.deleteCoachingNote);
   const updateCoachingNote = useAppStore((s) => s.updateCoachingNote);
   const [filter, setFilter] = useState<CoachingNote["category"] | "all">("all");
@@ -65,8 +65,8 @@ export function NotesFeed({ notes }: NotesFeedProps) {
     return (
       <EmptyState
         icon="&#128221;"
-        title="Keine Notizen"
-        description="Nutze die Schnellnotiz oben, um Beobachtungen festzuhalten."
+        title={t("notes.emptyTitle")}
+        description={t("notes.emptyDescription")}
       />
     );
   }
@@ -85,11 +85,11 @@ export function NotesFeed({ notes }: NotesFeedProps) {
                 : "border border-border text-text-muted hover:border-accent/50"
             }`}
           >
-            {opt === "all" ? "Alle" : t(`constants.noteCategory.${opt}`)}
+            {opt === "all" ? t("notes.filterAll") : t(`constants.noteCategory.${opt}`, { ns: "common" })}
           </button>
         ))}
         <span className="ml-auto text-[10px] text-text-dim self-center">
-          {filtered.length} Notizen
+          {t("notes.notesCount", { count: filtered.length })}
         </span>
       </div>
 
@@ -110,10 +110,10 @@ export function NotesFeed({ notes }: NotesFeedProps) {
                     }
                     className="!w-36"
                   >
-                    <option value="tactical">Taktisch</option>
-                    <option value="technical">Technisch</option>
-                    <option value="mental">Mental</option>
-                    <option value="communication">Kommunikation</option>
+                    <option value="tactical">{t("notes.editCategoryTactical")}</option>
+                    <option value="technical">{t("notes.editCategoryTechnical")}</option>
+                    <option value="mental">{t("notes.editCategoryMental")}</option>
+                    <option value="communication">{t("notes.editCategoryCommunication")}</option>
                   </Select>
                   <span className="text-[10px] text-text-dim">{note.date}</span>
                 </div>
@@ -125,10 +125,10 @@ export function NotesFeed({ notes }: NotesFeedProps) {
                 />
                 <div className="flex justify-end gap-2">
                   <Button size="sm" variant="secondary" onClick={cancelEdit}>
-                    Abbrechen
+                    {t("notes.cancel")}
                   </Button>
                   <Button size="sm" onClick={saveEdit} disabled={!editText.trim()}>
-                    Speichern
+                    {t("notes.save")}
                   </Button>
                 </div>
               </div>
@@ -138,16 +138,16 @@ export function NotesFeed({ notes }: NotesFeedProps) {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <Badge color={NOTE_CATEGORY_COLORS[note.category]}>
-                      {t(`constants.noteCategory.${note.category}`)}
+                      {t(`constants.noteCategory.${note.category}`, { ns: "common" })}
                     </Badge>
                     {note.priority && (
                       <Badge color={NOTE_PRIORITY_COLORS[note.priority]}>
-                        {t(`constants.notePriority.${note.priority}`)}
+                        {t(`constants.notePriority.${note.priority}`, { ns: "common" })}
                       </Badge>
                     )}
                     {note.resolved && (
                       <Badge color="green">
-                        &#10003; Erledigt
+                        {t("notes.resolved")}
                       </Badge>
                     )}
                     <span className="text-[10px] text-text-dim">{note.date}</span>
@@ -180,21 +180,21 @@ export function NotesFeed({ notes }: NotesFeedProps) {
                         ? "text-kicker-green hover:text-text-dim"
                         : "text-text-dim hover:text-kicker-green"
                     }`}
-                    title={note.resolved ? "Als offen markieren" : "Als erledigt markieren"}
+                    title={note.resolved ? t("notes.markOpenTitle") : t("notes.markResolvedTitle")}
                   >
                     &#10003;
                   </button>
                   <button
                     onClick={() => startEdit(note)}
                     className="text-[11px] text-text-dim hover:text-accent transition-colors"
-                    title="Bearbeiten"
+                    title={t("notes.editTitle")}
                   >
                     &#9998;
                   </button>
                   <button
                     onClick={() => setDeleteId(note.id)}
                     className="text-[10px] text-text-dim hover:text-kicker-red transition-colors"
-                    title="L&ouml;schen"
+                    title={t("notes.deleteTitle")}
                   >
                     &#10005;
                   </button>
@@ -211,8 +211,8 @@ export function NotesFeed({ notes }: NotesFeedProps) {
         onConfirm={() => {
           if (deleteId) deleteCoachingNote(deleteId);
         }}
-        title="Notiz l&ouml;schen"
-        message="M&ouml;chtest du diese Notiz wirklich l&ouml;schen?"
+        title={t("notes.confirmDeleteTitle")}
+        message={t("notes.confirmDeleteMessage")}
       />
     </div>
   );

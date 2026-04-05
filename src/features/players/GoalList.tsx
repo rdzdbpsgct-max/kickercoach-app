@@ -1,14 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Badge, Card, Button, EmptyState, ConfirmDialog } from "../../components/ui";
+import { useTranslation } from "react-i18next";
 import type { Goal } from "../../domain/models/Goal";
-
-const STATUS_LABELS: Record<string, string> = {
-  active: "Aktiv",
-  achieved: "Erreicht",
-  paused: "Pausiert",
-  abandoned: "Aufgegeben",
-};
 
 const STATUS_COLORS: Record<string, "green" | "blue" | "orange"> = {
   active: "green",
@@ -43,15 +37,16 @@ interface GoalListProps {
 }
 
 export function GoalList({ goals, onAdd, onEdit, onDelete, onToggleStatus }: GoalListProps) {
+  const { t } = useTranslation("players");
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   if (goals.length === 0) {
     return (
       <EmptyState
         icon="&#127919;"
-        title="Keine Ziele"
-        description="Lege ein erstes Trainingsziel f&uuml;r diesen Spieler an."
-        action={{ label: "Ziel anlegen", onClick: onAdd }}
+        title={t("goals.emptyTitle")}
+        description={t("goals.emptyDescription")}
+        action={{ label: t("goals.emptyAction"), onClick: onAdd }}
       />
     );
   }
@@ -60,13 +55,23 @@ export function GoalList({ goals, onAdd, onEdit, onDelete, onToggleStatus }: Goa
   const other = goals.filter((g) => g.status !== "active");
   const sorted = [...active, ...other];
 
+  const statusKey = (status: string) => {
+    const map: Record<string, string> = {
+      active: "statusActive",
+      achieved: "statusAchieved",
+      paused: "statusPaused",
+      abandoned: "statusAbandoned",
+    };
+    return map[status] ?? "statusActive";
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium text-text-dim">
-          {goals.length} Ziele ({active.length} aktiv)
+          {t("goals.count", { total: goals.length, active: active.length })}
         </span>
-        <Button size="sm" onClick={onAdd}>+ Ziel</Button>
+        <Button size="sm" onClick={onAdd}>{t("goals.addGoal")}</Button>
       </div>
 
       {sorted.map((goal) => (
@@ -76,7 +81,7 @@ export function GoalList({ goals, onAdd, onEdit, onDelete, onToggleStatus }: Goa
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-text">{goal.title}</span>
                 <Badge color={STATUS_COLORS[goal.status]}>
-                  {STATUS_LABELS[goal.status]}
+                  {t(`goals.${statusKey(goal.status)}`)}
                 </Badge>
                 <Badge color="accent">{goal.category}</Badge>
               </div>
@@ -91,7 +96,7 @@ export function GoalList({ goals, onAdd, onEdit, onDelete, onToggleStatus }: Goa
               )}
               {goal.targetDate && (
                 <p className="mt-0.5 text-[10px] text-text-dim">
-                  Ziel: {goal.targetDate}
+                  {t("goals.targetDate", { date: goal.targetDate })}
                 </p>
               )}
               {goal.status === "active" && (
@@ -100,7 +105,7 @@ export function GoalList({ goals, onAdd, onEdit, onDelete, onToggleStatus }: Goa
                   state={{ initialPlayerId: goal.playerId }}
                   className="mt-1 inline-block text-[11px] text-accent hover:text-accent-hover transition-colors"
                 >
-                  Passende Drills anzeigen &rarr;
+                  {t("goals.showDrills")}
                 </Link>
               )}
             </div>
@@ -108,21 +113,21 @@ export function GoalList({ goals, onAdd, onEdit, onDelete, onToggleStatus }: Goa
               <button
                 onClick={() => onToggleStatus(goal)}
                 className="min-h-[44px] min-w-[44px] rounded-lg border border-border px-3 py-2 text-sm text-text-muted hover:border-accent/50 transition-all"
-                title={goal.status === "active" ? "Als erreicht markieren" : "Reaktivieren"}
+                title={goal.status === "active" ? t("goals.markAchievedTitle") : t("goals.reactivateTitle")}
               >
                 {goal.status === "active" ? "\u2713" : "\u21BB"}
               </button>
               <button
                 onClick={() => onEdit(goal)}
                 className="min-h-[44px] min-w-[44px] rounded-lg border border-border px-3 py-2 text-sm text-text-muted hover:border-accent/50 transition-all"
-                title="Bearbeiten"
+                title={t("goals.editTitle")}
               >
                 &#9998;
               </button>
               <button
                 onClick={() => setDeleteId(goal.id)}
                 className="min-h-[44px] min-w-[44px] rounded-lg border border-border px-3 py-2 text-sm text-kicker-red hover:border-kicker-red/50 transition-all"
-                title="L&ouml;schen"
+                title={t("goals.deleteTitle")}
               >
                 &#10005;
               </button>
@@ -137,8 +142,8 @@ export function GoalList({ goals, onAdd, onEdit, onDelete, onToggleStatus }: Goa
         onConfirm={() => {
           if (deleteId) onDelete(deleteId);
         }}
-        title="Ziel l&ouml;schen"
-        message="M&ouml;chtest du dieses Ziel wirklich l&ouml;schen?"
+        title={t("goals.confirmDeleteTitle")}
+        message={t("goals.confirmDeleteMessage")}
       />
     </div>
   );

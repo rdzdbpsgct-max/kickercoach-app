@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { formatTime } from "../../domain/logic/time";
 import { calculateSessionStats } from "../../domain/logic/session";
 import { buildNameMap } from "../../domain/logic/drill";
@@ -22,6 +23,7 @@ export default function Journal({
   onSelect,
   onDelete,
 }: JournalProps) {
+  const { t } = useTranslation("train");
   const players = useAppStore((s) => s.players);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -59,14 +61,14 @@ export default function Journal({
       {sessions.length > 0 && (
         <div className="flex justify-end no-print">
           <Button variant="secondary" size="sm" onClick={printCurrentPage}>
-            Drucken
+            {t("journal.print")}
           </Button>
         </div>
       )}
       {/* Search & Filter */}
       {sessions.length > 0 && (
         <div className="flex flex-col gap-2">
-          <SearchBar value={search} onChange={setSearch} placeholder="Session suchen..." />
+          <SearchBar value={search} onChange={setSearch} placeholder={t("journal.searchPlaceholder")} />
           {players.length > 0 && (
             <div className="flex flex-wrap items-center gap-1.5">
               <button
@@ -77,7 +79,7 @@ export default function Journal({
                     : "border border-border text-text-muted hover:border-accent/50"
                 }`}
               >
-                Alle
+                {t("journal.allFilter")}
               </button>
               {players.map((p) => (
                 <button
@@ -93,7 +95,7 @@ export default function Journal({
                 </button>
               ))}
               <span className="ml-auto text-xs text-text-dim">
-                {filteredSessions.length} Sessions
+                {t("journal.sessionCount", { count: filteredSessions.length })}
               </span>
             </div>
           )}
@@ -107,25 +109,25 @@ export default function Journal({
             <div className="text-lg font-bold text-accent">
               {stats.totalSessions}
             </div>
-            <div className="text-[11px] text-text-dim">Sessions</div>
+            <div className="text-[11px] text-text-dim">{t("journal.statsSessions")}</div>
           </Card>
           <Card className="text-center">
             <div className="text-lg font-bold text-accent">
               {stats.totalMinutes}
             </div>
-            <div className="text-[11px] text-text-dim">Gesamt (min)</div>
+            <div className="text-[11px] text-text-dim">{t("journal.statsTotal")}</div>
           </Card>
           <Card className="text-center">
             <div className="text-lg font-bold text-accent">
               {stats.averageMinutes} min
             </div>
-            <div className="text-[11px] text-text-dim">Durchschnitt</div>
+            <div className="text-[11px] text-text-dim">{t("journal.statsAverage")}</div>
           </Card>
           <Card className="text-center">
             <div className="text-lg font-bold text-accent">
               {stats.longestSession} min
             </div>
-            <div className="text-[11px] text-text-dim">Laengste</div>
+            <div className="text-[11px] text-text-dim">{t("journal.statsLongest")}</div>
           </Card>
         </div>
       )}
@@ -134,8 +136,8 @@ export default function Journal({
       {filteredSessions.length === 0 ? (
         <EmptyState
           icon="&#128221;"
-          title={sessions.length === 0 ? "Noch keine Sessions" : "Keine Treffer"}
-          description={sessions.length === 0 ? "Noch keine Sessions aufgezeichnet." : "Versuche einen anderen Filter oder Suchbegriff."}
+          title={sessions.length === 0 ? t("journal.emptyTitle") : t("journal.noMatchTitle")}
+          description={sessions.length === 0 ? t("journal.emptyDescription") : t("journal.noMatchDescription")}
         />
       ) : (
         <div className="flex flex-col gap-2 overflow-auto">
@@ -156,7 +158,7 @@ export default function Journal({
                     <span>
                       {session.date} &middot;{" "}
                       {formatTime(session.totalDuration)} &middot;{" "}
-                      {session.drillIds.length} Drills
+                      {t("journal.drills", { count: session.drillIds.length })}
                     </span>
                     {session.playerIds.length > 0 && (
                       <span className="flex items-center gap-1">
@@ -180,9 +182,9 @@ export default function Journal({
                   )}
                   {session.drillResults && session.drillResults.length > 0 && (
                     <div className="mt-1 flex items-center gap-1 text-[10px] text-text-dim">
-                      <span>Ergebnisse:</span>
+                      <span>{t("journal.results")}</span>
                       <span className="font-medium text-kicker-green">
-                        {session.drillResults.filter((r) => r.completed).length}/{session.drillResults.length} abgeschlossen
+                        {t("journal.completedCount", { completed: session.drillResults.filter((r) => r.completed).length, total: session.drillResults.length })}
                       </span>
                       {session.drillResults.some((r) => r.successRate != null) && (
                         <span className="ml-1 text-kicker-orange">
@@ -198,7 +200,7 @@ export default function Journal({
                   )}
                   {session.retrospective && (
                     <div className="mt-1 text-[10px] text-accent">
-                      Retrospektive vorhanden
+                      {t("journal.retrospectivePresent")}
                     </div>
                   )}
                   {session.notes && (
@@ -217,14 +219,14 @@ export default function Journal({
                         );
                       }}
                       className="rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-accent/50 hover:text-accent transition-all"
-                      title="Drill-Ergebnisse anzeigen"
+                      title={t("journal.showDrillResults")}
                     >
-                      {expandedSessionId === session.id ? "Weniger" : "Details"}
+                      {expandedSessionId === session.id ? t("journal.detailsCollapse") : t("journal.detailsExpand")}
                     </button>
                   )}
                   <button
                     onClick={() => setDeleteId(session.id)}
-                    aria-label="Session loeschen"
+                    aria-label={t("journal.deleteSessionLabel")}
                     className="rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-kicker-red/50 hover:text-kicker-red transition-all"
                   >
                     &#10005;
@@ -236,7 +238,7 @@ export default function Journal({
               {expandedSessionId === session.id && session.drillResults && session.drillResults.length > 0 && (
                 <div className="mt-3 border-t border-border pt-3 flex flex-col gap-2">
                   <div className="text-[11px] font-semibold text-text-dim uppercase tracking-wider">
-                    Drill-Ergebnisse
+                    {t("journal.drillResultsTitle")}
                   </div>
                   {session.drillResults.map((result) => (
                     <div
@@ -276,8 +278,8 @@ export default function Journal({
         onConfirm={() => {
           if (deleteId) onDelete(deleteId);
         }}
-        title="Session loeschen"
-        message="Moechtest du diese Session wirklich loeschen?"
+        title={t("journal.deleteConfirmTitle")}
+        message={t("journal.deleteConfirmMessage")}
       />
     </div>
   );

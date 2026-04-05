@@ -37,7 +37,7 @@ export default function SessionBuilder({
   planSessionContext,
   drillResults,
 }: SessionBuilderProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["train", "common"]);
   const players = useAppStore((s) => s.players);
   const teams = useAppStore((s) => s.teams);
   const trainingPlans = useAppStore((s) => s.trainingPlans);
@@ -83,7 +83,7 @@ export default function SessionBuilder({
         const week = plan.weeks[planSessionContext.weekIndex];
         const tmpl = week?.sessionTemplates[planSessionContext.sessionIndex];
         if (tmpl) {
-          setName(tmpl.name || `${plan.name} - Woche ${planSessionContext.weekIndex + 1}`);
+          setName(tmpl.name || t("sessionBuilder.planWeekName", { planName: plan.name, week: planSessionContext.weekIndex + 1 }));
           setSelectedDrillIds(tmpl.drillIds);
           setFocusAreas(tmpl.focusAreas ?? []);
           // Pre-select plan players
@@ -93,7 +93,7 @@ export default function SessionBuilder({
         }
       }
     }
-  }, [planSessionContext, trainingPlans]);
+  }, [planSessionContext, trainingPlans, t]);
 
   const totalDuration = calculateSessionDuration(selectedDrillIds, drills);
 
@@ -153,10 +153,10 @@ export default function SessionBuilder({
   return (
     <div className="flex flex-1 flex-col gap-5 overflow-auto pb-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">Session erstellen</h2>
+        <h2 className="text-lg font-bold">{t("sessionBuilder.title")}</h2>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={onCancel}>
-            Abbrechen
+            {t("sessionBuilder.cancel")}
           </Button>
           {name.trim() && selectedDrillIds.length > 0 && (
             <Button
@@ -172,14 +172,14 @@ export default function SessionBuilder({
                 setTemplateSaved(true);
               }}
             >
-              {templateSaved ? "Vorlage gespeichert" : "Als Vorlage"}
+              {templateSaved ? t("sessionBuilder.templateSaved") : t("sessionBuilder.saveAsTemplate")}
             </Button>
           )}
           <Button
             onClick={handleSave}
             disabled={!name.trim() || selectedDrillIds.length === 0}
           >
-            Speichern
+            {t("sessionBuilder.save")}
           </Button>
         </div>
       </div>
@@ -187,33 +187,33 @@ export default function SessionBuilder({
       {/* Plan session context info */}
       {planSessionContext && (
         <div className="rounded-lg border border-accent/30 bg-accent-dim px-3 py-2 text-xs text-accent-hover">
-          Session aus Trainingsplan &mdash; Woche {planSessionContext.weekIndex + 1}, Session {planSessionContext.sessionIndex + 1}
+          {t("sessionBuilder.planContextInfo", { week: planSessionContext.weekIndex + 1, session: planSessionContext.sessionIndex + 1 })}
         </div>
       )}
 
       {/* Load from template */}
       {sessionTemplates.length > 0 && !editSession && (
         <div className="flex flex-col gap-1">
-          <label className="text-[11px] font-medium text-text-dim">Aus Vorlage laden</label>
+          <label className="text-[11px] font-medium text-text-dim">{t("sessionBuilder.loadFromTemplate")}</label>
           <div className="flex flex-wrap gap-1.5">
-            {sessionTemplates.map((t, idx) => (
-              <div key={t.id ?? idx} className="flex items-center gap-1">
+            {sessionTemplates.map((tmpl, idx) => (
+              <div key={tmpl.id ?? idx} className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => {
-                    setName(t.name);
-                    setSelectedDrillIds(t.drillIds);
-                    setFocusAreas(t.focusAreas ?? []);
+                    setName(tmpl.name);
+                    setSelectedDrillIds(tmpl.drillIds);
+                    setFocusAreas(tmpl.focusAreas ?? []);
                   }}
                   className="rounded-full border border-border px-3 py-1.5 text-xs text-text-muted hover:border-accent/50 min-h-[36px] transition-all"
                 >
-                  {t.name} ({t.drillIds.length})
+                  {tmpl.name} ({tmpl.drillIds.length})
                 </button>
                 <button
                   type="button"
-                  onClick={() => t.id && deleteSessionTemplate(t.id)}
+                  onClick={() => tmpl.id && deleteSessionTemplate(tmpl.id)}
                   className="rounded-full border border-border px-2 py-1.5 text-xs text-kicker-red hover:border-kicker-red/50 min-h-[36px] transition-all"
-                  title="Vorlage loeschen"
+                  title={t("sessionBuilder.deleteTemplateTitle")}
                 >
                   &#10005;
                 </button>
@@ -225,14 +225,14 @@ export default function SessionBuilder({
 
       {/* Name & Date */}
       <div className="grid grid-cols-[1fr_auto] gap-3">
-        <FormField label="Session-Name">
+        <FormField label={t("sessionBuilder.sessionNameLabel")}>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="z.B. Morgen-Training, Schuss-Drill..."
+            placeholder={t("sessionBuilder.sessionNamePlaceholder")}
           />
         </FormField>
-        <FormField label="Datum">
+        <FormField label={t("sessionBuilder.dateLabel")}>
           <Input
             type="date"
             value={sessionDate}
@@ -245,7 +245,7 @@ export default function SessionBuilder({
       {players.length > 0 && (
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-medium text-text-dim">
-            Spieler ({selectedPlayerIds.length} ausgew&auml;hlt)
+            {t("sessionBuilder.playersLabel", { count: selectedPlayerIds.length })}
           </label>
           <div className="flex flex-wrap gap-2">
             {players.map((player) => {
@@ -276,7 +276,7 @@ export default function SessionBuilder({
 
       {/* Team selection */}
       {teams.length > 0 && (
-        <FormField label="Team (optional)">
+        <FormField label={t("sessionBuilder.teamLabel")}>
           <Select
             value={selectedTeamId ?? ""}
             onChange={(e) => {
@@ -290,7 +290,7 @@ export default function SessionBuilder({
               }
             }}
           >
-            <option value="">Kein Team</option>
+            <option value="">{t("sessionBuilder.noTeam")}</option>
             {teams.map((team) => (
               <option key={team.id} value={team.id}>
                 {team.name}
@@ -304,10 +304,10 @@ export default function SessionBuilder({
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
           <label className="text-xs font-medium text-text-dim">
-            Drills auswaehlen
+            {t("sessionBuilder.selectDrillsLabel")}
           </label>
           <span className="text-xs text-text-dim">
-            {selectedDrillIds.length} ausgewaehlt &middot;{" "}
+            {t("sessionBuilder.selectedCount", { count: selectedDrillIds.length })} &middot;{" "}
             {formatTime(totalDuration)}
           </span>
         </div>
@@ -318,7 +318,7 @@ export default function SessionBuilder({
             return (
               <div key={phase ?? "other"}>
                 <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-text-dim">
-                  {phase ? t(`constants.phase.${phase}`) : "Sonstige"}
+                  {phase ? t(`constants.phase.${phase}`, { ns: "common" }) : t("sessionBuilder.phaseOther")}
                 </div>
                 <div className="flex flex-col gap-1.5">
                   {phaseDrills.map((drill) => {
@@ -355,7 +355,7 @@ export default function SessionBuilder({
       {/* Focus areas */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-medium text-text-dim">
-          Schwerpunkte
+          {t("sessionBuilder.focusAreasLabel")}
         </label>
         <div className="flex flex-wrap gap-1.5">
           {ALL_CATEGORIES.map((cat) => {
@@ -380,7 +380,7 @@ export default function SessionBuilder({
       {/* Rating */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-medium text-text-dim">
-          Bewertung {rating ? `\u2014 ${t(`constants.star.${rating}`)}` : ""}
+          {t("sessionBuilder.ratingLabel")} {rating ? `\u2014 ${t(`constants.star.${rating}`, { ns: "common" })}` : ""}
         </label>
         <StarRating
           rating={rating ?? 0}
@@ -390,11 +390,11 @@ export default function SessionBuilder({
       </div>
 
       {/* Notes */}
-      <FormField label="Notizen">
+      <FormField label={t("sessionBuilder.notesLabel")}>
         <Textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="Optionale Notizen zur Session..."
+          placeholder={t("sessionBuilder.notesPlaceholder")}
           rows={3}
         />
       </FormField>

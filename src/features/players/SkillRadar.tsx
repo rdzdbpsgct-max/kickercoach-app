@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { SkillRatings } from "../../domain/models/Player";
 import { CATEGORY_BAR_COLORS } from "../../domain/constants";
 import type { Category } from "../../domain/models/CoachCard";
@@ -19,12 +20,14 @@ interface SkillRadarProps {
 }
 
 export function SkillRadar({ ratings, editable = false, onChange }: SkillRadarProps) {
+  const { t } = useTranslation(["players", "common"]);
+
   return (
     <div className="flex flex-col gap-2.5">
       {CATEGORIES.map((cat) => (
         <div key={cat} className="flex items-center gap-3">
           <span className="w-28 text-xs font-medium text-text-muted truncate">
-            {cat}
+            {t(`constants.category.${cat}`, { ns: "common" })}
           </span>
           <div className="flex flex-1 gap-1">
             {[1, 2, 3, 4, 5].map((level) => (
@@ -37,7 +40,7 @@ export function SkillRadar({ ratings, editable = false, onChange }: SkillRadarPr
                     ? CATEGORY_BAR_COLORS[cat]
                     : "bg-border/30"
                 } ${editable ? "cursor-pointer hover:opacity-80" : "cursor-default"}`}
-                aria-label={`${cat}: ${level}`}
+                aria-label={`${t(`constants.category.${cat}`, { ns: "common" })}: ${level}`}
               />
             ))}
           </div>

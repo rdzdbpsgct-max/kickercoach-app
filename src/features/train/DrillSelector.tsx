@@ -87,7 +87,7 @@ export default function DrillSelector({
   recommendedDrillIds,
   recommendLabel,
 }: DrillSelectorProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["train", "common"]);
   const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | "Alle">("Alle");
   const [phaseFilter, setPhaseFilter] = useState<DrillPhase | "Alle">("Alle");
   const [categoryFilter, setCategoryFilter] = useState<Category | "Alle">("Alle");
@@ -149,32 +149,32 @@ export default function DrillSelector({
               <span className="text-sm font-semibold">{drill.name}</span>
               {drill.difficulty && (
                 <Badge color={DIFFICULTY_BADGE_COLORS[drill.difficulty]}>
-                  {t(`constants.difficulty.${drill.difficulty}`)}
+                  {t(`constants.difficulty.${drill.difficulty}`, { ns: "common" })}
                 </Badge>
               )}
               {drill.phase && (
                 <Badge color={PHASE_BADGE_COLORS[drill.phase]}>
-                  {t(`constants.phase.${drill.phase}`)}
+                  {t(`constants.phase.${drill.phase}`, { ns: "common" })}
                 </Badge>
               )}
               {drill.isCustom && (
-                <Badge color="accent">Eigener Drill</Badge>
+                <Badge color="accent">{t("drillSelector.customDrill")}</Badge>
               )}
             </div>
             <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-text-dim">
               <span>{drill.focusSkill}</span>
               <span>&middot;</span>
-              <span>{drill.blocks.length} Blocks</span>
+              <span>{t("drillSelector.blocks", { count: drill.blocks.length })}</span>
               {drill.position && (
                 <>
                   <span>&middot;</span>
-                  <span>{t(`constants.rodPosition.${drill.position}`)}</span>
+                  <span>{t(`constants.rodPosition.${drill.position}`, { ns: "common" })}</span>
                 </>
               )}
               {drill.playerCount && drill.playerCount > 1 && (
                 <>
                   <span>&middot;</span>
-                  <span>{drill.playerCount} Spieler</span>
+                  <span>{t("drillSelector.players", { count: drill.playerCount })}</span>
                 </>
               )}
             </div>
@@ -185,7 +185,7 @@ export default function DrillSelector({
             )}
             {drill.measurableGoal && (
               <div className="mt-0.5 text-[11px] text-accent">
-                Ziel: {drill.measurableGoal}
+                {t("drillSelector.goal", { goal: drill.measurableGoal })}
               </div>
             )}
           </div>
@@ -200,7 +200,7 @@ export default function DrillSelector({
                   onEditDrill(drill);
                 }}
                 className="rounded-lg border border-border px-2 py-1 text-[11px] text-text-muted hover:border-accent/50 transition-all"
-                title="Bearbeiten"
+                title={t("drillSelector.editTitle")}
               >
                 &#9998;
               </button>
@@ -212,7 +212,7 @@ export default function DrillSelector({
                   onDeleteDrill(drill.id);
                 }}
                 className="rounded-lg border border-border px-2 py-1 text-[11px] text-kicker-red hover:border-kicker-red/50 transition-all"
-                title="Loeschen"
+                title={t("drillSelector.deleteTitle")}
               >
                 &#10005;
               </button>
@@ -226,7 +226,7 @@ export default function DrillSelector({
   return (
     <div className="flex flex-col gap-3">
       {/* Search */}
-      <SearchBar value={search} onChange={setSearch} placeholder="Drill suchen..." />
+      <SearchBar value={search} onChange={setSearch} placeholder={t("drillSelector.searchPlaceholder")} />
 
       {/* Filters */}
       <div className="flex flex-col gap-2">
@@ -243,7 +243,7 @@ export default function DrillSelector({
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
-              {opt === "Alle" ? "Alle Stufen" : t(`constants.difficulty.${opt}`)}
+              {opt === "Alle" ? t("drillSelector.allLevels") : t(`constants.difficulty.${opt}`, { ns: "common" })}
             </button>
           ))}
         </div>
@@ -261,7 +261,7 @@ export default function DrillSelector({
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
-              {opt === "Alle" ? "Alle Phasen" : t(`constants.phase.${opt}`)}
+              {opt === "Alle" ? t("drillSelector.allPhases") : t(`constants.phase.${opt}`, { ns: "common" })}
             </button>
           ))}
         </div>
@@ -279,7 +279,7 @@ export default function DrillSelector({
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
-              {opt === "Alle" ? "Alle Kategorien" : opt}
+              {opt === "Alle" ? t("drillSelector.allCategories") : opt}
             </button>
           ))}
         </div>
@@ -297,15 +297,15 @@ export default function DrillSelector({
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
-              {opt === "Alle" ? "Alle Positionen" : t(`constants.rodPosition.${opt}`)}
+              {opt === "Alle" ? t("drillSelector.allPositions") : t(`constants.rodPosition.${opt}`, { ns: "common" })}
             </button>
           ))}
           <span className="ml-auto self-center text-xs text-text-dim">
-            {filtered.length} Drills
+            {t("drillSelector.drillCount", { count: filtered.length })}
           </span>
           {onNewDrill && (
             <Button size="sm" onClick={onNewDrill}>
-              + Neuer Drill
+              {t("drillSelector.newDrill")}
             </Button>
           )}
         </div>
@@ -323,12 +323,12 @@ export default function DrillSelector({
         {recommended.length > 0 && (
           <>
             <div className="text-xs font-semibold text-accent">
-              {recommendLabel ?? "Empfohlen"} ({recommended.length})
+              {recommendLabel ?? t("recommended")} ({recommended.length})
             </div>
             {recommended.map(renderDrill)}
             {rest.length > 0 && (
               <div className="mt-2 text-xs font-semibold text-text-dim">
-                Weitere Drills ({rest.length})
+                {t("drillSelector.moreDrills", { count: rest.length })}
               </div>
             )}
           </>

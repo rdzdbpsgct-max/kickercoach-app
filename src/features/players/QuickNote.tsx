@@ -2,14 +2,8 @@ import { useState } from "react";
 import type { CoachingNote } from "../../domain/models/CoachingNote";
 import { useAppStore } from "../../store";
 import { Button, Input, Select } from "../../components/ui";
+import { useTranslation } from "react-i18next";
 import { generateId } from "../../utils/id";
-
-const CATEGORIES = [
-  { value: "tactical", label: "Taktisch" },
-  { value: "technical", label: "Technisch" },
-  { value: "mental", label: "Mental" },
-  { value: "communication", label: "Kommunikation" },
-] as const;
 
 interface QuickNoteProps {
   playerId?: string;
@@ -18,6 +12,7 @@ interface QuickNoteProps {
 }
 
 export function QuickNote({ playerId, sessionId, matchPlanId }: QuickNoteProps) {
+  const { t } = useTranslation("players");
   const addCoachingNote = useAppStore((s) => s.addCoachingNote);
   const [text, setText] = useState("");
   const [category, setCategory] = useState<CoachingNote["category"]>("technical");
@@ -45,16 +40,15 @@ export function QuickNote({ playerId, sessionId, matchPlanId }: QuickNoteProps) 
         onChange={(e) => setCategory(e.target.value as CoachingNote["category"])}
         className="!w-32"
       >
-        {CATEGORIES.map((c) => (
-          <option key={c.value} value={c.value}>
-            {c.label}
-          </option>
-        ))}
+        <option value="tactical">{t("quickNote.categoryTactical")}</option>
+        <option value="technical">{t("quickNote.categoryTechnical")}</option>
+        <option value="mental">{t("quickNote.categoryMental")}</option>
+        <option value="communication">{t("quickNote.categoryCommunication")}</option>
       </Select>
       <Input
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Schnellnotiz..."
+        placeholder={t("quickNote.placeholder")}
         className="flex-1"
         onKeyDown={(e) => {
           if (e.key === "Enter") handleSave();

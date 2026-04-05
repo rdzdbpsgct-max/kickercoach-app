@@ -18,7 +18,7 @@ interface ProgressViewProps {
 }
 
 export function ProgressView({ evaluations, playerTechniques }: ProgressViewProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["players", "common"]);
   const sorted = useMemo(
     () => [...evaluations].sort((a, b) => a.date.localeCompare(b.date)),
     [evaluations],
@@ -45,7 +45,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
   if (evaluations.length === 0) {
     return (
       <p className="text-xs text-text-dim py-2">
-        Noch keine Bewertungen vorhanden.
+        {t("progress.noEvaluations")}
       </p>
     );
   }
@@ -61,7 +61,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
       {/* Technique status summary */}
       {playerTechniques && playerTechniques.length > 0 && (
         <Card className="mb-3">
-          <h3 className="mb-2 text-sm font-semibold text-text">Technik-Status</h3>
+          <h3 className="mb-2 text-sm font-semibold text-text">{t("progress.techniqueStatus")}</h3>
           <div className="flex flex-wrap gap-2">
             {(["mastered", "proficient", "developing", "learning", "not_started"] as TechniqueStatus[]).map((status) => {
               const count = playerTechniques.filter((pt) => pt.status === status).length;
@@ -69,7 +69,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
               return (
                 <div key={status} className="flex items-center gap-1 text-xs">
                   <span className={`h-2.5 w-2.5 rounded-full ${TECHNIQUE_STATUS_COLORS[status]}`} />
-                  <span className="text-text-muted">{t(`constants.techniqueStatus.${status}`)}</span>
+                  <span className="text-text-muted">{t(`constants.techniqueStatus.${status}`, { ns: "common" })}</span>
                   <span className="font-medium text-text">{count}</span>
                 </div>
               );
@@ -82,10 +82,10 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
       {summary && (
         <Card>
           <h3 className="text-xs font-semibold text-text-dim mb-2">
-            Fortschritt seit {summary.since}
+            {t("progress.progressSince", { date: summary.since })}
           </h3>
           {summary.changes.length === 0 ? (
-            <p className="text-xs text-text-dim">Keine Veraenderungen.</p>
+            <p className="text-xs text-text-dim">{t("progress.noChanges")}</p>
           ) : (
             <div className="flex flex-wrap gap-2">
               {summary.changes.map(({ category, diff }) => (
@@ -125,7 +125,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
                   viewBox={`0 0 ${chartW} ${chartH}`}
                   className="w-full h-16"
                   role="img"
-                  aria-label={`${cat} Verlauf`}
+                  aria-label={t("progress.chartAriaLabel", { category: cat })}
                 >
                   {/* Grid lines */}
                   {[1, 2, 3, 4, 5].map((level) => {
@@ -179,7 +179,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
 
       {/* Timeline */}
       <div className="flex flex-col gap-1.5">
-        <h3 className="text-xs font-semibold text-text-dim">Bewertungs-Verlauf</h3>
+        <h3 className="text-xs font-semibold text-text-dim">{t("progress.evaluationHistory")}</h3>
         {[...sorted].reverse().map((ev) => (
           <Card key={ev.id} className="py-2">
             <div className="flex items-center justify-between">
@@ -187,7 +187,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
                 <span className="text-xs font-medium text-text">{ev.date}</span>
                 {ev.type && (
                   <Badge color={EVALUATION_TYPE_COLORS[ev.type]}>
-                    {t(`constants.evaluationType.${ev.type}`)}
+                    {t(`constants.evaluationType.${ev.type}`, { ns: "common" })}
                   </Badge>
                 )}
                 {ev.overallRating != null && (
@@ -211,7 +211,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
             {ev.techniqueRatings && ev.techniqueRatings.length > 0 && (
               <div className="mt-2 border-t border-border pt-2">
                 <span className="text-[10px] font-semibold text-text-dim">
-                  Technik-Bewertungen
+                  {t("progress.techniqueRatings")}
                 </span>
                 <div className="mt-1 flex flex-col gap-1">
                   {ev.techniqueRatings.map((tr, idx) => (
@@ -222,7 +222,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
                       <StarRating size="md" rating={tr.rating} />
                       {tr.successRate != null && (
                         <span className="text-text-dim">
-                          {tr.successRate}% Erfolg
+                          {t("progress.successRate", { rate: tr.successRate })}
                         </span>
                       )}
                       {tr.comment && (

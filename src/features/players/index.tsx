@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import { useNavigate, useParams, useLocation, Outlet } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAppStore } from "../../store";
+import { useTranslation } from "react-i18next";
 import { ConfirmDialog, Tabs } from "../../components/ui";
 import { PlayerList } from "./PlayerList";
 import { PlayerDetail } from "./PlayerDetail";
@@ -13,11 +14,6 @@ import type { Team } from "../../domain/models/Team";
 
 type Tab = "players" | "teams";
 
-const TABS: { value: Tab; label: string; icon: string }[] = [
-  { value: "players", label: "Spieler", icon: "\u{1F464}" },
-  { value: "teams", label: "Teams", icon: "\u{1F91D}" },
-];
-
 const fadeIn = {
   initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0 },
@@ -25,6 +21,7 @@ const fadeIn = {
 };
 
 export default function PlayersMode() {
+  const { t } = useTranslation("players");
   const navigate = useNavigate();
   const params = useParams();
   const location = useLocation();
@@ -38,6 +35,11 @@ export default function PlayersMode() {
   // Derive current view from URL
   const pathname = location.pathname;
   const playerId = params.playerId;
+
+  const TABS: { value: Tab; label: string; icon: string }[] = [
+    { value: "players", label: t("tabs.players"), icon: "\u{1F464}" },
+    { value: "teams", label: t("tabs.teams"), icon: "\u{1F91D}" },
+  ];
 
   const view = useMemo(() => {
     if (pathname === "/players/new") return "form" as const;
@@ -191,8 +193,8 @@ export default function PlayersMode() {
           open={deleteTarget !== null}
           onClose={() => setDeleteTarget(null)}
           onConfirm={confirmDelete}
-          title="Spieler l&ouml;schen"
-          message="M&ouml;chtest du diesen Spieler wirklich l&ouml;schen? Diese Aktion kann nicht r&uuml;ckg&auml;ngig gemacht werden."
+          title={t("detail.confirmDeleteTitle")}
+          message={t("detail.confirmDeleteMessage")}
         />
         <Outlet />
       </>
@@ -226,8 +228,8 @@ export default function PlayersMode() {
           open={deleteTarget !== null}
           onClose={() => setDeleteTarget(null)}
           onConfirm={confirmDelete}
-          title="Spieler l&ouml;schen"
-          message="M&ouml;chtest du diesen Spieler wirklich l&ouml;schen? Diese Aktion kann nicht r&uuml;ckg&auml;ngig gemacht werden."
+          title={t("detail.confirmDeleteTitle")}
+          message={t("detail.confirmDeleteMessage")}
         />
       )}
       <Outlet />

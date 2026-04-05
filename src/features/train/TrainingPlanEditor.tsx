@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import type { TrainingPlan, TrainingWeek, SessionTemplate } from "../../domain/models/TrainingPlan";
 import type { Category } from "../../domain/models/CoachCard";
 import type { Drill } from "../../domain/models/Drill";
@@ -24,6 +25,7 @@ interface TrainingPlanEditorProps {
 }
 
 export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingPlanEditorProps) {
+  const { t } = useTranslation("train");
   const players = useAppStore((s) => s.players);
   const customDrills = useAppStore((s) => s.customDrills);
 
@@ -105,7 +107,7 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
-    if (!name.trim()) newErrors.name = "Name ist erforderlich";
+    if (!name.trim()) newErrors.name = t("trainingPlanEditor.validation.nameRequired");
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -125,26 +127,26 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-5 overflow-auto pb-6">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">
-          {plan ? "Plan bearbeiten" : "Neuer Trainingsplan"}
+          {plan ? t("trainingPlanEditor.editTitle") : t("trainingPlanEditor.newTitle")}
         </h2>
         <div className="flex gap-2">
-          <Button type="button" variant="secondary" onClick={onCancel}>Abbrechen</Button>
-          <Button type="submit">Speichern</Button>
+          <Button type="button" variant="secondary" onClick={onCancel}>{t("trainingPlanEditor.cancel")}</Button>
+          <Button type="submit">{t("trainingPlanEditor.save")}</Button>
         </div>
       </div>
 
-      <FormField label="Planname" required error={errors.name}>
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="z.B. 4-Wochen Schuss-Fokus" error={errors.name} />
+      <FormField label={t("trainingPlanEditor.planNameLabel")} required error={errors.name}>
+        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("trainingPlanEditor.planNamePlaceholder")} error={errors.name} />
       </FormField>
 
-      <FormField label="Ziel">
-        <Textarea value={goal} onChange={(e) => setGoal(e.target.value)} placeholder="Was soll der Plan erreichen?" rows={2} />
+      <FormField label={t("trainingPlanEditor.goalLabel")}>
+        <Textarea value={goal} onChange={(e) => setGoal(e.target.value)} placeholder={t("trainingPlanEditor.goalPlaceholder")} rows={2} />
       </FormField>
 
       {/* Player selection */}
       {players.length > 0 && (
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium text-text-dim">Spieler</label>
+          <label className="text-xs font-medium text-text-dim">{t("trainingPlanEditor.playersLabel")}</label>
           <div className="flex flex-wrap gap-2">
             {players.map((player) => {
               const isSelected = selectedPlayerIds.includes(player.id);
@@ -176,17 +178,17 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
       {/* Weeks */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-medium text-text-dim">Wochen ({weeks.length})</label>
-          <Button type="button" variant="secondary" size="sm" onClick={addWeek}>+ Woche</Button>
+          <label className="text-xs font-medium text-text-dim">{t("trainingPlanEditor.weeksLabel", { count: weeks.length })}</label>
+          <Button type="button" variant="secondary" size="sm" onClick={addWeek}>{t("trainingPlanEditor.addWeek")}</Button>
         </div>
 
         {weeks.map((week, wi) => (
           <Card key={wi}>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-text">Woche {week.weekNumber}</h3>
+              <h3 className="text-sm font-semibold text-text">{t("trainingPlanEditor.weekTitle", { number: week.weekNumber })}</h3>
               <div className="flex gap-1.5">
                 <Button type="button" variant="ghost" size="sm" onClick={() => addSession(wi)}>
-                  + Session
+                  {t("trainingPlanEditor.addSession")}
                 </Button>
                 {weeks.length > 1 && (
                   <button
@@ -207,7 +209,7 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
                     <Input
                       value={session.name}
                       onChange={(e) => updateSession(wi, si, { name: e.target.value })}
-                      placeholder={`Session ${si + 1}`}
+                      placeholder={t("trainingPlanEditor.sessionPlaceholder", { number: si + 1 })}
                       className="flex-1"
                     />
                     <Input
@@ -219,7 +221,7 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
                       }
                       className="!w-20 text-center"
                     />
-                    <span className="text-[10px] text-text-dim">Min.</span>
+                    <span className="text-[10px] text-text-dim">{t("trainingPlanEditor.minutes")}</span>
                     {week.sessionTemplates.length > 1 && (
                       <button
                         type="button"
@@ -247,7 +249,7 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
                     ))}
                   </div>
                   <div className="mt-2 flex flex-col gap-1">
-                    <label className="text-[11px] font-medium text-text-dim">Drills</label>
+                    <label className="text-[11px] font-medium text-text-dim">{t("trainingPlanEditor.drillsLabel")}</label>
                     <div className="flex flex-wrap gap-1">
                       {availableDrills.map((drill) => (
                         <button
@@ -271,7 +273,7 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
                       ))}
                     </div>
                     {session.drillIds.length > 0 && (
-                      <span className="text-[10px] text-text-dim">{session.drillIds.length} Drills gewaehlt</span>
+                      <span className="text-[10px] text-text-dim">{t("trainingPlanEditor.drillsSelected", { count: session.drillIds.length })}</span>
                     )}
                   </div>
                 </div>

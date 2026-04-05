@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppStore } from "../../store";
 import { Card, Button, EmptyState, ConfirmDialog } from "../../components/ui";
+import { useTranslation } from "react-i18next";
 import type { Team } from "../../domain/models/Team";
 
 interface TeamListProps {
@@ -10,6 +11,7 @@ interface TeamListProps {
 }
 
 export function TeamList({ onAdd, onEdit }: TeamListProps) {
+  const { t } = useTranslation("players");
   const teams = useAppStore((s) => s.teams);
   const players = useAppStore((s) => s.players);
   const deleteTeam = useAppStore((s) => s.deleteTeam);
@@ -21,9 +23,9 @@ export function TeamList({ onAdd, onEdit }: TeamListProps) {
     return (
       <EmptyState
         icon="&#129309;"
-        title="Noch keine Teams"
-        description="Erstelle ein Doppel-Team aus zwei Spielern."
-        action={{ label: "Team erstellen", onClick: onAdd }}
+        title={t("teams.emptyTitle")}
+        description={t("teams.emptyDescription")}
+        action={{ label: t("teams.emptyAction"), onClick: onAdd }}
       />
     );
   }
@@ -32,10 +34,10 @@ export function TeamList({ onAdd, onEdit }: TeamListProps) {
     <div className="flex flex-col gap-4 overflow-auto pb-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-text">
-          Teams ({teams.length})
+          {t("teams.title", { count: teams.length })}
         </h2>
         <Button size="sm" onClick={onAdd}>
-          + Team erstellen
+          {t("teams.addTeam")}
         </Button>
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -66,7 +68,7 @@ export function TeamList({ onAdd, onEdit }: TeamListProps) {
                     </div>
                   ) : (
                     <span key={i} className="text-xs text-text-dim">
-                      (geloescht)
+                      {t("teams.playerDeleted")}
                     </span>
                   ),
                 )}
@@ -84,7 +86,7 @@ export function TeamList({ onAdd, onEdit }: TeamListProps) {
                   }}
                   className="text-xs text-text-dim hover:text-red-400 transition-colors"
                 >
-                  Loeschen
+                  {t("teams.delete")}
                 </button>
               </div>
             </Card>
@@ -100,8 +102,8 @@ export function TeamList({ onAdd, onEdit }: TeamListProps) {
             setDeleteTarget(null);
           }
         }}
-        title="Team loeschen"
-        message="Moechtest du dieses Team wirklich loeschen?"
+        title={t("teams.confirmDeleteTitle")}
+        message={t("teams.confirmDeleteMessage")}
       />
     </div>
   );

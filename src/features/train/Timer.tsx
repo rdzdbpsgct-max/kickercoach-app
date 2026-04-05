@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { formatTime } from "../../domain/logic/time";
 import type { BlockType } from "../../domain/models/Drill";
 
@@ -19,6 +20,7 @@ export default function Timer({
   repetitions,
   completedReps,
 }: TimerProps) {
+  const { t } = useTranslation("train");
   const isRepetition = blockType === "repetitions";
 
   const colorClass =
@@ -43,7 +45,7 @@ export default function Timer({
           >
             {completedReps ?? 0} / {repetitions ?? 0}
           </div>
-          <div className="text-sm text-text-dim">Wiederholungen</div>
+          <div className="text-sm text-text-dim">{t("timer.repetitions")}</div>
         </div>
       ) : (
         /* Timer countdown display */
@@ -58,14 +60,14 @@ export default function Timer({
       )}
       <div className="flex items-center gap-2 text-sm text-text-muted">
         {isFinished ? (
-          <span className="text-kicker-green font-medium">Fertig!</span>
+          <span className="text-kicker-green font-medium">{t("timer.finished")}</span>
         ) : isRunning ? (
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 animate-pulse rounded-full bg-kicker-green" />
-            {isRepetition ? "Zaehle..." : "Laeuft"}
+            {isRepetition ? t("timer.counting") : t("timer.running")}
           </span>
         ) : (
-          <span>Pausiert</span>
+          <span>{t("timer.paused")}</span>
         )}
       </div>
     </motion.div>

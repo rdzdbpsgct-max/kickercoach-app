@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import type { TrainingPlan } from "../../domain/models/TrainingPlan";
 import { Card, Button, Badge, EmptyState, ConfirmDialog } from "../../components/ui";
 import { printCurrentPage } from "../../utils/print";
@@ -12,6 +13,7 @@ interface TrainingPlanListProps {
 }
 
 export default function TrainingPlanList({ onEdit, onNew, onStartSession }: TrainingPlanListProps) {
+  const { t } = useTranslation("train");
   const trainingPlans = useAppStore((s) => s.trainingPlans);
   const players = useAppStore((s) => s.players);
   const deleteTrainingPlan = useAppStore((s) => s.deleteTrainingPlan);
@@ -45,9 +47,9 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
     return (
       <EmptyState
         icon="&#128197;"
-        title="Keine Trainingspl&auml;ne"
-        description="Erstelle einen mehrw&ouml;chigen Trainingsplan mit Session-Vorlagen."
-        action={{ label: "Plan erstellen", onClick: onNew }}
+        title={t("trainingPlanList.emptyTitle")}
+        description={t("trainingPlanList.emptyDescription")}
+        action={{ label: t("trainingPlanList.emptyAction"), onClick: onNew }}
       />
     );
   }
@@ -55,10 +57,10 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
   return (
     <div className="flex flex-col gap-3 overflow-auto pb-4">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-text-dim">{trainingPlans.length} Pl&auml;ne</span>
+        <span className="text-xs text-text-dim">{t("trainingPlanList.planCount", { count: trainingPlans.length })}</span>
         <div className="flex gap-2">
-          <Button size="sm" variant="secondary" onClick={printCurrentPage} className="no-print">Drucken</Button>
-          <Button size="sm" onClick={onNew}>+ Neuer Plan</Button>
+          <Button size="sm" variant="secondary" onClick={printCurrentPage} className="no-print">{t("trainingPlanList.print")}</Button>
+          <Button size="sm" onClick={onNew}>{t("trainingPlanList.newPlan")}</Button>
         </div>
       </div>
       {trainingPlans.map((plan) => {
@@ -77,17 +79,17 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-text">{plan.name}</span>
                   {completed === total && total > 0 && (
-                    <span className="text-kicker-green text-sm" title="Alle Sessions abgeschlossen">&#10003;</span>
+                    <span className="text-kicker-green text-sm" title={t("trainingPlanList.allSessionsDone")}>&#10003;</span>
                   )}
                 </div>
                 <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-text-dim">
-                  <Badge color="blue">{plan.weeks.length} Wochen</Badge>
+                  <Badge color="blue">{t("trainingPlanList.weeks", { count: plan.weeks.length })}</Badge>
                   <Badge color="orange">
-                    {total} Sessions
+                    {t("trainingPlanList.sessions", { count: total })}
                   </Badge>
                   {total > 0 && (
                     <Badge color={completed === total ? "green" : "secondary"}>
-                      {completed}/{total} erledigt
+                      {t("trainingPlanList.completedOf", { completed, total })}
                     </Badge>
                   )}
                   {plan.playerIds.length > 0 && (
@@ -116,7 +118,7 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
                     onEdit(plan);
                   }}
                   className="rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-accent/50 hover:text-accent transition-all"
-                  title="Bearbeiten"
+                  title={t("trainingPlanList.editTitle")}
                 >
                   &#9998;
                 </button>
@@ -143,10 +145,10 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
                     <div key={wi}>
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="text-xs font-semibold text-text">
-                          Woche {week.weekNumber}
+                          {t("trainingPlanList.weekLabel", { number: week.weekNumber })}
                         </span>
                         <span className="text-[11px] text-text-dim">
-                          {weekDone}/{weekTotal} Sessions abgeschlossen
+                          {t("trainingPlanList.sessionsCompleted", { completed: weekDone, total: weekTotal })}
                         </span>
                       </div>
                       <div className="flex flex-col gap-1.5">
@@ -180,12 +182,12 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
                                     ))}
                                     {tmpl.drillIds.length > 0 && (
                                       <span className="text-[10px] text-text-dim">
-                                        {tmpl.drillIds.length} Drills
+                                        {t("journal.drills", { count: tmpl.drillIds.length })}
                                       </span>
                                     )}
                                     {tmpl.estimatedDuration && (
                                       <span className="text-[10px] text-text-dim">
-                                        ~{tmpl.estimatedDuration} Min.
+                                        ~{tmpl.estimatedDuration} {t("trainingPlanEditor.minutes")}
                                       </span>
                                     )}
                                   </div>
@@ -199,12 +201,12 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
                                     onStartSession(plan.id, wi, si);
                                   }}
                                 >
-                                  &#9654; Starten
+                                  &#9654; {t("trainingPlanList.startSession")}
                                 </Button>
                               )}
                               {done && (
                                 <span className="text-[11px] text-kicker-green font-medium shrink-0">
-                                  Erledigt
+                                  {t("trainingPlanList.done")}
                                 </span>
                               )}
                             </div>
@@ -226,8 +228,8 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
         onConfirm={() => {
           if (deleteId) deleteTrainingPlan(deleteId);
         }}
-        title="Trainingsplan l&ouml;schen"
-        message="M&ouml;chtest du diesen Trainingsplan wirklich l&ouml;schen?"
+        title={t("trainingPlanList.deleteTitle")}
+        message={t("trainingPlanList.deleteMessage")}
       />
     </div>
   );

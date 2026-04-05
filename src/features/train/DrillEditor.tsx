@@ -7,17 +7,6 @@ import { Button, FormField, Input, Textarea, Select } from "../../components/ui"
 import { useAppStore } from "../../store";
 import { generateId } from "../../utils/id";
 
-const DrillFormSchema = z.object({
-  name: z.string().min(1, "Name ist erforderlich"),
-  focusSkill: z.string().min(1, "Fokus-Skill ist erforderlich"),
-  blocks: z.array(z.object({
-    type: z.enum(["work", "rest", "repetitions"]),
-    durationSeconds: z.number().min(0),
-    repetitions: z.number().min(1).optional(),
-    note: z.string(),
-  })).min(1, "Mindestens ein Block erforderlich"),
-});
-
 const EMPTY_BLOCK: TrainingBlock = { type: "work", durationSeconds: 30, note: "" };
 
 interface DrillEditorProps {
@@ -27,7 +16,7 @@ interface DrillEditorProps {
 }
 
 export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["train", "common"]);
   const saveDrillAsTemplate = useAppStore((s) => s.saveDrillAsTemplate);
   const [templateSaved, setTemplateSaved] = useState(false);
   const [name, setName] = useState(drill?.name ?? "");
@@ -42,6 +31,17 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
     drill?.blocks ?? [{ ...EMPTY_BLOCK }],
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const DrillFormSchema = z.object({
+    name: z.string().min(1, t("drillEditor.validation.nameRequired")),
+    focusSkill: z.string().min(1, t("drillEditor.validation.focusSkillRequired")),
+    blocks: z.array(z.object({
+      type: z.enum(["work", "rest", "repetitions"]),
+      durationSeconds: z.number().min(0),
+      repetitions: z.number().min(1).optional(),
+      note: z.string(),
+    })).min(1, t("drillEditor.validation.blocksRequired")),
+  });
 
   const addBlock = () => setBlocks([...blocks, { ...EMPTY_BLOCK }]);
 
@@ -91,11 +91,11 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-5 overflow-auto pb-6">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">
-          {drill ? "Drill bearbeiten" : "Neuer Drill"}
+          {drill ? t("drillEditor.editTitle") : t("drillEditor.newTitle")}
         </h2>
         <div className="flex gap-2">
           <Button type="button" variant="secondary" onClick={onCancel}>
-            Abbrechen
+            {t("drillEditor.cancel")}
           </Button>
           {drill && (
             <Button
@@ -113,43 +113,43 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
                 setTemplateSaved(true);
               }}
             >
-              {templateSaved ? "Vorlage gespeichert" : "Als Vorlage"}
+              {templateSaved ? t("drillEditor.templateSaved") : t("drillEditor.saveAsTemplate")}
             </Button>
           )}
-          <Button type="submit">Speichern</Button>
+          <Button type="submit">{t("drillEditor.save")}</Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField label="Name" required error={errors.name}>
+        <FormField label={t("drillEditor.nameLabel")} required error={errors.name}>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Drill-Name"
+            placeholder={t("drillEditor.namePlaceholder")}
             error={errors.name}
           />
         </FormField>
-        <FormField label="Fokus-Skill" required error={errors.focusSkill}>
+        <FormField label={t("drillEditor.focusSkillLabel")} required error={errors.focusSkill}>
           <Input
             value={focusSkill}
             onChange={(e) => setFocusSkill(e.target.value)}
-            placeholder="z.B. Pull-Shot, Tic-Tac..."
+            placeholder={t("drillEditor.focusSkillPlaceholder")}
             error={errors.focusSkill}
           />
         </FormField>
       </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <FormField label="Schwierigkeit">
+        <FormField label={t("drillEditor.difficultyLabel")}>
           <Select value={difficulty} onChange={(e) => setDifficulty(e.target.value as Difficulty)}>
-            <option value="beginner">Anfaenger</option>
-            <option value="intermediate">Fortgeschritten</option>
-            <option value="advanced">Profi</option>
+            <option value="beginner">{t("drillEditor.beginner")}</option>
+            <option value="intermediate">{t("drillEditor.intermediate")}</option>
+            <option value="advanced">{t("drillEditor.advanced")}</option>
           </Select>
         </FormField>
-        <FormField label="Kategorie">
+        <FormField label={t("drillEditor.categoryLabel")}>
           <Select value={category} onChange={(e) => setCategory(e.target.value as Category | "")}>
-            <option value="">Keine</option>
+            <option value="">{t("drillEditor.none")}</option>
             <option value="Torschuss">Torschuss</option>
             <option value="Passspiel">Passspiel</option>
             <option value="Ballkontrolle">Ballkontrolle</option>
@@ -159,38 +159,38 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
             <option value="Mental">Mental</option>
           </Select>
         </FormField>
-        <FormField label="Phase">
+        <FormField label={t("drillEditor.phaseLabel")}>
           <Select value={phase} onChange={(e) => setPhase(e.target.value as DrillPhase | "")}>
-            <option value="">Keine</option>
+            <option value="">{t("drillEditor.none")}</option>
             {(["warmup", "technique", "game", "cooldown"] as DrillPhase[]).map((k) => (
-              <option key={k} value={k}>{t(`constants.phase.${k}`)}</option>
+              <option key={k} value={k}>{t(`constants.phase.${k}`, { ns: "common" })}</option>
             ))}
           </Select>
         </FormField>
-        <FormField label="Position">
+        <FormField label={t("drillEditor.positionLabel")}>
           <Select value={position} onChange={(e) => setPosition(e.target.value as RodPosition | "")}>
-            <option value="">Keine</option>
+            <option value="">{t("drillEditor.none")}</option>
             {(["keeper", "defense", "midfield", "offense"] as RodPosition[]).map((k) => (
-              <option key={k} value={k}>{t(`constants.rodPosition.${k}`)}</option>
+              <option key={k} value={k}>{t(`constants.rodPosition.${k}`, { ns: "common" })}</option>
             ))}
           </Select>
         </FormField>
       </div>
 
-      <FormField label="Beschreibung">
+      <FormField label={t("drillEditor.descriptionLabel")}>
         <Textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Optionale Beschreibung..."
+          placeholder={t("drillEditor.descriptionPlaceholder")}
           rows={2}
         />
       </FormField>
 
-      <FormField label="Messbares Ziel">
+      <FormField label={t("drillEditor.measurableGoalLabel")}>
         <Input
           value={measurableGoal}
           onChange={(e) => setMeasurableGoal(e.target.value)}
-          placeholder="z.B. 8 von 10 Schuessen im Tor"
+          placeholder={t("drillEditor.measurableGoalPlaceholder")}
         />
       </FormField>
 
@@ -198,10 +198,10 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <label className="text-xs font-medium text-text-dim">
-            Bloecke ({blocks.length})
+            {t("drillEditor.blocksLabel", { count: blocks.length })}
           </label>
           <Button type="button" variant="secondary" size="sm" onClick={addBlock}>
-            + Block
+            {t("drillEditor.addBlock")}
           </Button>
         </div>
         {blocks.map((block, i) => (
@@ -223,9 +223,9 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
               }}
               className="!w-32"
             >
-              <option value="work">Training</option>
-              <option value="rest">Pause</option>
-              <option value="repetitions">Wiederholungen</option>
+              <option value="work">{t("drillEditor.blockTypeWork")}</option>
+              <option value="rest">{t("drillEditor.blockTypeRest")}</option>
+              <option value="repetitions">{t("drillEditor.blockTypeRepetitions")}</option>
             </Select>
             {block.type === "repetitions" ? (
               <div className="flex items-center gap-1">
@@ -238,7 +238,7 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
                   }
                   className="!w-20 text-center"
                 />
-                <span className="text-xs text-text-dim">Wdh.</span>
+                <span className="text-xs text-text-dim">{t("drillEditor.reps")}</span>
               </div>
             ) : (
               <div className="flex items-center gap-1">
@@ -251,13 +251,13 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
                   }
                   className="!w-20 text-center"
                 />
-                <span className="text-xs text-text-dim">Sek.</span>
+                <span className="text-xs text-text-dim">{t("drillEditor.seconds")}</span>
               </div>
             )}
             <Input
               value={block.note}
               onChange={(e) => updateBlock(i, { note: e.target.value })}
-              placeholder="Notiz..."
+              placeholder={t("drillEditor.notePlaceholder")}
               className="min-w-0 flex-1"
             />
             {blocks.length > 1 && (

@@ -2,18 +2,10 @@ import { useState } from "react";
 import { z } from "zod";
 import { Button, FormField, Input, Textarea, Select } from "../../components/ui";
 import { CategorySchema } from "../../domain/schemas/coachCard";
+import { useTranslation } from "react-i18next";
 import type { Category } from "../../domain/models/CoachCard";
 import type { Goal } from "../../domain/models/Goal";
 import { generateId } from "../../utils/id";
-
-const GoalFormSchema = z.object({
-  title: z.string().min(1, "Titel ist erforderlich"),
-  description: z.string().optional(),
-  category: CategorySchema,
-  targetDate: z.string().optional(),
-  targetValue: z.union([z.number().min(0, "Wert muss >= 0 sein"), z.undefined()]),
-  currentValue: z.union([z.number().min(0, "Wert muss >= 0 sein"), z.undefined()]),
-});
 
 interface GoalFormProps {
   playerId: string;
@@ -23,6 +15,17 @@ interface GoalFormProps {
 }
 
 export function GoalForm({ playerId, goal, onSave, onCancel }: GoalFormProps) {
+  const { t } = useTranslation(["players", "common"]);
+
+  const GoalFormSchema = z.object({
+    title: z.string().min(1, t("goalForm.goalRequired")),
+    description: z.string().optional(),
+    category: CategorySchema,
+    targetDate: z.string().optional(),
+    targetValue: z.union([z.number().min(0, t("goalForm.targetValueError")), z.undefined()]),
+    currentValue: z.union([z.number().min(0, t("goalForm.currentValueError")), z.undefined()]),
+  });
+
   const [title, setTitle] = useState(goal?.title ?? "");
   const [description, setDescription] = useState(goal?.description ?? "");
   const [category, setCategory] = useState<Category>(goal?.category ?? "Torschuss");
@@ -74,28 +77,28 @@ export function GoalForm({ playerId, goal, onSave, onCancel }: GoalFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <FormField label="Ziel" required error={errors.title}>
+      <FormField label={t("goalForm.goalLabel")} required error={errors.title}>
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="z.B. Pull-Shot-Quote auf 70% steigern"
+          placeholder={t("goalForm.goalPlaceholder")}
           error={errors.title}
         />
       </FormField>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField label="Kategorie">
+        <FormField label={t("goalForm.categoryLabel")}>
           <Select value={category} onChange={(e) => setCategory(e.target.value as Category)}>
-            <option value="Torschuss">Torschuss</option>
-            <option value="Passspiel">Passspiel</option>
-            <option value="Ballkontrolle">Ballkontrolle</option>
-            <option value="Defensive">Defensive</option>
-            <option value="Taktik">Taktik</option>
-            <option value="Offensive">Offensive</option>
-            <option value="Mental">Mental</option>
+            <option value="Torschuss">{t("constants.category.Torschuss", { ns: "common" })}</option>
+            <option value="Passspiel">{t("constants.category.Passspiel", { ns: "common" })}</option>
+            <option value="Ballkontrolle">{t("constants.category.Ballkontrolle", { ns: "common" })}</option>
+            <option value="Defensive">{t("constants.category.Defensive", { ns: "common" })}</option>
+            <option value="Taktik">{t("constants.category.Taktik", { ns: "common" })}</option>
+            <option value="Offensive">{t("constants.category.Offensive", { ns: "common" })}</option>
+            <option value="Mental">{t("constants.category.Mental", { ns: "common" })}</option>
           </Select>
         </FormField>
-        <FormField label="Zieldatum">
+        <FormField label={t("goalForm.targetDateLabel")}>
           <Input
             type="date"
             value={targetDate}
@@ -105,41 +108,41 @@ export function GoalForm({ playerId, goal, onSave, onCancel }: GoalFormProps) {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField label="Zielwert (optional)">
+        <FormField label={t("goalForm.targetValueLabel")}>
           <Input
             type="number"
             value={targetValue}
             onChange={(e) => setTargetValue(e.target.value)}
-            placeholder="z.B. 80 (fuer 80%)"
+            placeholder={t("goalForm.targetValuePlaceholder")}
             min="0"
           />
         </FormField>
-        <FormField label="Aktueller Wert (optional)">
+        <FormField label={t("goalForm.currentValueLabel")}>
           <Input
             type="number"
             value={currentValue}
             onChange={(e) => setCurrentValue(e.target.value)}
-            placeholder="z.B. 45"
+            placeholder={t("goalForm.currentValuePlaceholder")}
             min="0"
           />
         </FormField>
       </div>
 
-      <FormField label="Beschreibung">
+      <FormField label={t("goalForm.descriptionLabel")}>
         <Textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Details zum Ziel..."
+          placeholder={t("goalForm.descriptionPlaceholder")}
           rows={2}
         />
       </FormField>
 
       <div className="flex justify-end gap-2">
         <Button type="button" variant="secondary" size="sm" onClick={onCancel}>
-          Abbrechen
+          {t("goalForm.cancel")}
         </Button>
         <Button type="submit" size="sm">
-          {goal ? "Speichern" : "Ziel anlegen"}
+          {goal ? t("goalForm.save") : t("goalForm.create")}
         </Button>
       </div>
     </form>

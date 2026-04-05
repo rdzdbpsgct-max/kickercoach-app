@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import type { Drill } from "../../domain/models/Drill";
 import { advanceBlock, previousBlock } from "../../domain/logic/drill";
 import { useTimer } from "../../hooks/useTimer";
@@ -27,6 +28,7 @@ export default function DrillTimerView({
   onSaveResult,
   onSkipResult,
 }: DrillTimerViewProps) {
+  const { t } = useTranslation("train");
   const [blockIndex, setBlockIndex] = useState(0);
   const [completedReps, setCompletedReps] = useState(0);
   const [showResultCapture, setShowResultCapture] = useState(false);
@@ -168,7 +170,7 @@ export default function DrillTimerView({
             onClick={onBack}
             className="mb-1 text-xs text-text-dim hover:text-accent transition-colors"
           >
-            &larr; Zurück zur Auswahl
+            &larr; {t("drillTimerView.backToSelection")}
           </button>
           <h1 className="text-xl font-bold">{drill.name}</h1>
           <p className="text-sm text-text-muted">{drill.focusSkill}</p>
@@ -183,7 +185,7 @@ export default function DrillTimerView({
             onChange={(e) => setAutoAdvance(e.target.checked)}
             className="accent-accent"
           />
-          Auto-Advance
+          {t("drillTimerView.autoAdvance")}
         </label>
       </div>
 
@@ -200,7 +202,7 @@ export default function DrillTimerView({
             >
               <div className="text-sm font-medium text-text-muted">
                 {currentBlock.note ||
-                  (currentBlock.type === "work" ? "Training" : "Pause")}
+                  (currentBlock.type === "work" ? t("drillTimerView.blockTypeWork") : t("drillTimerView.blockTypeRest"))}
               </div>
 
               <Timer
@@ -222,7 +224,7 @@ export default function DrillTimerView({
                   onClick={handlePrev}
                   disabled={blockIndex === 0}
                 >
-                  Zurück
+                  {t("drillTimerView.prev")}
                 </Button>
                 {currentBlock.type === "repetitions" ? (
                   <>
@@ -244,10 +246,10 @@ export default function DrillTimerView({
                 ) : (
                   <Button size="lg" onClick={timer.toggle}>
                     {timer.isFinished
-                      ? "Reset"
+                      ? t("drillTimerView.reset")
                       : timer.isRunning
-                        ? "Pause"
-                        : "Start"}
+                        ? t("drillTimerView.pause")
+                        : t("drillTimerView.start")}
                   </Button>
                 )}
                 <Button
@@ -255,7 +257,7 @@ export default function DrillTimerView({
                   onClick={handleNext}
                   disabled={blockIndex === drill.blocks.length - 1}
                 >
-                  Weiter
+                  {t("drillTimerView.next")}
                 </Button>
               </div>
 
@@ -263,14 +265,14 @@ export default function DrillTimerView({
                 onClick={handleReset}
                 className="text-xs text-text-dim hover:text-text transition-colors"
               >
-                Reset (R)
+                {t("drillTimerView.resetShortcut")}
               </button>
 
               <div className="flex gap-4 text-[11px] text-text-dim">
-                <span>Space: Start/Pause</span>
-                <span>&larr;/P: Prev</span>
-                <span>&rarr;/N: Next</span>
-                <span>R: Reset</span>
+                <span>{t("drillTimerView.shortcutSpace")}</span>
+                <span>{t("drillTimerView.shortcutPrev")}</span>
+                <span>{t("drillTimerView.shortcutNext")}</span>
+                <span>{t("drillTimerView.shortcutReset")}</span>
               </div>
             </motion.div>
           )}

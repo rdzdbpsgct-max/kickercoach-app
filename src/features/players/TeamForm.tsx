@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAppStore } from "../../store";
 import { Button, Card, FormField, Input, Textarea } from "../../components/ui";
+import { useTranslation } from "react-i18next";
 import type { Team } from "../../domain/models/Team";
 import { generateId } from "../../utils/id";
 
@@ -11,6 +12,7 @@ interface TeamFormProps {
 }
 
 export function TeamForm({ team, onSave, onCancel }: TeamFormProps) {
+  const { t } = useTranslation("players");
   const players = useAppStore((s) => s.players);
 
   const [name, setName] = useState(team?.name ?? "");
@@ -41,29 +43,29 @@ export function TeamForm({ team, onSave, onCancel }: TeamFormProps) {
     <div className="flex flex-col gap-4 overflow-auto pb-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-text">
-          {team ? "Team bearbeiten" : "Neues Team"}
+          {team ? t("teamForm.editTitle") : t("teamForm.createTitle")}
         </h2>
         <button
           onClick={onCancel}
           className="text-xs text-text-dim hover:text-accent transition-colors"
         >
-          &larr; Abbrechen
+          {t("teamForm.cancel")}
         </button>
       </div>
 
       <Card className="flex flex-col gap-4">
-        <FormField label="Teamname">
+        <FormField label={t("teamForm.teamNameLabel")}>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="z.B. Dream Team"
+            placeholder={t("teamForm.teamNamePlaceholder")}
           />
         </FormField>
 
-        <FormField label="Spieler 1">
+        <FormField label={t("teamForm.player1Label")}>
           {players.length < 2 ? (
             <p className="text-xs text-text-dim">
-              Mindestens 2 Spieler erforderlich. Lege zuerst Spieler an.
+              {t("teamForm.minPlayersRequired")}
             </p>
           ) : (
             <div className="flex flex-wrap gap-2">
@@ -93,10 +95,10 @@ export function TeamForm({ team, onSave, onCancel }: TeamFormProps) {
           )}
         </FormField>
 
-        <FormField label="Spieler 2">
+        <FormField label={t("teamForm.player2Label")}>
           {players.length < 2 ? (
             <p className="text-xs text-text-dim">
-              Mindestens 2 Spieler erforderlich.
+              {t("teamForm.minPlayersShort")}
             </p>
           ) : (
             <div className="flex flex-wrap gap-2">
@@ -149,21 +151,21 @@ export function TeamForm({ team, onSave, onCancel }: TeamFormProps) {
           </div>
         )}
 
-        <FormField label="Notizen (optional)">
+        <FormField label={t("teamForm.notesLabel")}>
           <Textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Spielstil, Staerken des Teams..."
+            placeholder={t("teamForm.notesPlaceholder")}
             rows={3}
           />
         </FormField>
 
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={onCancel}>
-            Abbrechen
+            {t("teamForm.cancelButton")}
           </Button>
           <Button onClick={handleSubmit} disabled={!canSave}>
-            {team ? "Speichern" : "Team erstellen"}
+            {team ? t("teamForm.save") : t("teamForm.create")}
           </Button>
         </div>
       </Card>

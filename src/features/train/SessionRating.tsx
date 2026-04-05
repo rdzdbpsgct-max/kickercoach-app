@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { Category } from "../../domain/models/CoachCard";
 import type { Evaluation, SkillRating } from "../../domain/models/Evaluation";
 import { useAppStore } from "../../store";
@@ -19,6 +20,7 @@ export default function SessionRating({
   onComplete,
   onSkip,
 }: SessionRatingProps) {
+  const { t } = useTranslation("train");
   const players = useAppStore((s) => s.players);
   const addEvaluation = useAppStore((s) => s.addEvaluation);
 
@@ -70,9 +72,9 @@ export default function SessionRating({
   return (
     <div className="flex flex-1 flex-col gap-5 overflow-auto pb-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">Spieler bewerten</h2>
+        <h2 className="text-lg font-bold">{t("sessionRating.title")}</h2>
         <Button variant="ghost" size="sm" onClick={onSkip}>
-          &Uuml;berspringen
+          {t("sessionRating.skip")}
         </Button>
       </div>
 
@@ -86,13 +88,13 @@ export default function SessionRating({
         <div>
           <span className="text-sm font-semibold text-text">{currentPlayer.name}</span>
           <span className="ml-2 text-xs text-text-dim">
-            ({currentPlayerIndex + 1}/{participatingPlayers.length})
+            {t("sessionRating.playerProgress", { current: currentPlayerIndex + 1, total: participatingPlayers.length })}
           </span>
         </div>
       </div>
 
       <Card>
-        <h3 className="mb-3 text-sm font-semibold text-text">Skill-Bewertung</h3>
+        <h3 className="mb-3 text-sm font-semibold text-text">{t("sessionRating.skillRatingTitle")}</h3>
         <div className="flex flex-col gap-2.5">
           {ALL_CATEGORIES.map((cat) => {
             const current = ratings[cat];
@@ -122,7 +124,7 @@ export default function SessionRating({
                   ))}
                 </div>
                 {current === null && (
-                  <span className="text-[10px] text-text-dim italic">nicht bewertet</span>
+                  <span className="text-[10px] text-text-dim italic">{t("sessionRating.notRated")}</span>
                 )}
               </div>
             );
@@ -130,11 +132,11 @@ export default function SessionRating({
         </div>
       </Card>
 
-      <FormField label="Notizen">
+      <FormField label={t("sessionRating.notesLabel")}>
         <Textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="Beobachtungen, Fortschritte..."
+          placeholder={t("sessionRating.notesPlaceholder")}
           rows={2}
         />
       </FormField>
@@ -142,8 +144,8 @@ export default function SessionRating({
       <div className="flex justify-end gap-2">
         <Button onClick={handleSave}>
           {currentPlayerIndex < participatingPlayers.length - 1
-            ? "Weiter"
-            : "Abschliessen"}
+            ? t("sessionRating.next")
+            : t("sessionRating.finish")}
         </Button>
       </div>
     </div>
