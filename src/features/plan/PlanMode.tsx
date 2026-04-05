@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import type { MatchPlan } from "../../domain/models/MatchPlan";
 import { MatchPlanSchema } from "../../domain/schemas/matchPlan";
 import { useAppStore } from "../../store";
@@ -42,6 +43,7 @@ const itemVariants = {
 };
 
 export default function PlanMode() {
+  const { t } = useTranslation("plan");
   const matchPlans = useAppStore((s) => s.matchPlans);
   const addMatchPlan = useAppStore((s) => s.addMatchPlan);
   const updateMatchPlan = useAppStore((s) => s.updateMatchPlan);
@@ -91,17 +93,13 @@ export default function PlanMode() {
         const data = JSON.parse(event.target?.result as string);
         const result = MatchPlanSchema.safeParse(data);
         if (!result.success) {
-          setImportError(
-            "Ungueltige Matchplan-Datei. Bitte eine gueltige JSON-Datei waehlen.",
-          );
+          setImportError(t("importError.invalidFile"));
           return;
         }
         const plan: MatchPlan = { ...result.data, id: generateId() };
         addMatchPlan(plan);
       } catch {
-        setImportError(
-          "Die Datei konnte nicht gelesen werden. Bitte eine gueltige JSON-Datei waehlen.",
-        );
+        setImportError(t("importError.readError"));
       }
     };
     reader.readAsText(file);
@@ -131,7 +129,7 @@ export default function PlanMode() {
         variants={itemVariants}
         className="flex items-center justify-between"
       >
-        <h1 className="text-xl font-bold">Matchplan</h1>
+        <h1 className="text-xl font-bold">{t("title")}</h1>
         <div className="flex gap-2">
           <input
             ref={fileInputRef}
@@ -144,9 +142,9 @@ export default function PlanMode() {
             variant="secondary"
             onClick={() => fileInputRef.current?.click()}
           >
-            Import
+            {t("import")}
           </Button>
-          <Button onClick={handleNew}>+ Neuer Plan</Button>
+          <Button onClick={handleNew}>{t("newPlan")}</Button>
         </div>
       </motion.div>
 
@@ -161,7 +159,7 @@ export default function PlanMode() {
             className="ml-2 font-medium underline"
             onClick={() => setImportError(null)}
           >
-            Schliessen
+            {t("actions.close", { ns: "common" })}
           </button>
         </motion.div>
       )}

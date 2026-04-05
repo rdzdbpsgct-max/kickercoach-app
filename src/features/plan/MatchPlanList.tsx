@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import type { MatchPlan } from "../../domain/models/MatchPlan";
 import { Card, Button, EmptyState, ConfirmDialog, SearchBar } from "../../components/ui";
 
@@ -16,6 +17,7 @@ export default function MatchPlanList({
   onDelete,
   onExport,
 }: MatchPlanListProps) {
+  const { t } = useTranslation("plan");
   const navigate = useNavigate();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -34,15 +36,15 @@ export default function MatchPlanList({
     return (
       <EmptyState
         icon="&#128203;"
-        title="Noch keine Matchplaene"
-        description="Noch keine Matchplaene erstellt."
+        title={t("list.emptyTitle")}
+        description={t("list.emptyDescription")}
       />
     );
   }
 
   return (
     <div className="flex flex-col gap-2 overflow-auto">
-      <SearchBar value={search} onChange={setSearch} placeholder="Gegner suchen..." />
+      <SearchBar value={search} onChange={setSearch} placeholder={t("list.searchPlaceholder")} />
       {filtered.map((plan) => (
         <Card key={plan.id} interactive>
           <div className="flex items-center justify-between">
@@ -51,11 +53,11 @@ export default function MatchPlanList({
               className="flex-1 text-left"
             >
               <div className="text-sm font-semibold text-text">
-                vs. {plan.opponent || "Unbenannt"}
+                vs. {plan.opponent || t("list.unnamed")}
               </div>
               <div className="mt-0.5 text-xs text-text-dim">
-                {plan.date || "Kein Datum"}{" "}
-                &middot; {plan.timeoutStrategies.length} Strategien
+                {plan.date || t("list.noDate")}{" "}
+                &middot; {t("list.strategies", { count: plan.timeoutStrategies.length })}
               </div>
             </button>
             <div className="flex gap-1.5">
@@ -63,22 +65,22 @@ export default function MatchPlanList({
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/board")}
-                title="Taktikboard oeffnen"
+                title={t("list.tacticsTooltip")}
               >
-                Taktik
+                {t("list.tactics")}
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => onExport(plan)}
-                title="JSON exportieren"
+                title={t("list.exportTooltip")}
               >
-                Export
+                {t("list.export")}
               </Button>
               <button
                 onClick={() => setDeleteId(plan.id)}
                 className="rounded-lg border border-border px-2.5 py-1 text-xs text-text-dim hover:border-kicker-red/50 hover:text-kicker-red transition-all"
-                title="Loeschen"
+                title={t("list.deleteTooltip")}
               >
                 &#10005;
               </button>
@@ -93,8 +95,8 @@ export default function MatchPlanList({
         onConfirm={() => {
           if (deleteId) onDelete(deleteId);
         }}
-        title="Matchplan loeschen"
-        message="Moechtest du diesen Matchplan wirklich loeschen?"
+        title={t("list.deleteTitle")}
+        message={t("list.deleteMessage")}
       />
     </div>
   );

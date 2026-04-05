@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import type { MatchPlan, MatchSet, StrategyTemplate } from "../../domain/models/MatchPlan";
 import { useAppStore } from "../../store";
 import { Button, Badge, Card, FormField, Input, Textarea, Select } from "../../components/ui";
@@ -17,6 +18,7 @@ export default function MatchPlanEditor({
   onSave,
   onCancel,
 }: MatchPlanEditorProps) {
+  const { t } = useTranslation(["plan", "common"]);
   const [newStrategy, setNewStrategy] = useState("");
   const [templates, setTemplates] = useState<StrategyTemplate[]>([]);
   const players = useAppStore((s) => s.players);
@@ -96,28 +98,28 @@ export default function MatchPlanEditor({
   return (
     <div className="flex flex-1 flex-col gap-5 overflow-auto pb-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">Matchplan bearbeiten</h2>
+        <h2 className="text-lg font-bold">{t("plan:editor.title")}</h2>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={onCancel}>
-            Abbrechen
+            {t("common:actions.cancel")}
           </Button>
           <Button variant="secondary" onClick={printCurrentPage}>
-            Drucken
+            {t("plan:editor.print")}
           </Button>
-          <Button onClick={onSave}>Speichern</Button>
+          <Button onClick={onSave}>{t("common:actions.save")}</Button>
         </div>
       </div>
 
       {/* Basic info */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField label="Gegner">
+        <FormField label={t("plan:editor.opponent")}>
           <Input
             value={plan.opponent}
             onChange={(e) => update("opponent", e.target.value)}
-            placeholder="Gegner-Team"
+            placeholder={t("plan:editor.opponentPlaceholder")}
           />
         </FormField>
-        <FormField label="Datum">
+        <FormField label={t("plan:editor.date")}>
           <Input
             type="date"
             value={plan.date}
@@ -127,23 +129,23 @@ export default function MatchPlanEditor({
       </div>
 
       {/* Analysis */}
-      <FormField label="Gegneranalyse">
+      <FormField label={t("plan:editor.analysis")}>
         <Textarea
           value={plan.analysis}
           onChange={(e) => update("analysis", e.target.value)}
-          placeholder="Staerken, Schwaechen, typische Spielmuster..."
+          placeholder={t("plan:editor.analysisPlaceholder")}
           rows={4}
         />
       </FormField>
 
       {/* Strategy Templates */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField label="Offensive Strategie">
+        <FormField label={t("plan:editor.offensiveStrategy")}>
           <Select
             value={plan.offensiveStrategy ?? ""}
             onChange={(e) => update("offensiveStrategy", e.target.value)}
           >
-            <option value="">Keine Vorlage</option>
+            <option value="">{t("plan:editor.noTemplate")}</option>
             {offensiveTemplates.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.name}
@@ -170,12 +172,12 @@ export default function MatchPlanEditor({
           )}
         </FormField>
 
-        <FormField label="Defensive Strategie">
+        <FormField label={t("plan:editor.defensiveStrategy")}>
           <Select
             value={plan.defensiveStrategy ?? ""}
             onChange={(e) => update("defensiveStrategy", e.target.value)}
           >
-            <option value="">Keine Vorlage</option>
+            <option value="">{t("plan:editor.noTemplate")}</option>
             {defensiveTemplates.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.name}
@@ -204,17 +206,17 @@ export default function MatchPlanEditor({
       </div>
 
       {/* Gameplan */}
-      <FormField label="Gameplan">
+      <FormField label={t("plan:editor.gameplan")}>
         <Textarea
           value={plan.gameplan}
           onChange={(e) => update("gameplan", e.target.value)}
-          placeholder="Taktische Ausrichtung, Schuss-Strategie, defensive Aufstellung..."
+          placeholder={t("plan:editor.gameplanPlaceholder")}
           rows={4}
         />
       </FormField>
 
       {/* Timeout Strategies */}
-      <FormField label="Timeout-Strategien">
+      <FormField label={t("plan:editor.timeoutStrategies")}>
         <div className="flex flex-col gap-2">
           {plan.timeoutStrategies.map((strategy, i) => (
             <div
@@ -235,7 +237,7 @@ export default function MatchPlanEditor({
               value={newStrategy}
               onChange={(e) => setNewStrategy(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addStrategy()}
-              placeholder="Neue Strategie hinzufuegen..."
+              placeholder={t("plan:editor.addStrategyPlaceholder")}
             />
             <Button variant="secondary" onClick={addStrategy}>
               +
@@ -246,7 +248,7 @@ export default function MatchPlanEditor({
 
       {/* Player Selection */}
       {players.length > 0 && (
-        <FormField label="Spieler">
+        <FormField label={t("plan:editor.players")}>
           <div className="flex flex-wrap gap-2">
             {players.map((p) => (
               <button
@@ -272,12 +274,12 @@ export default function MatchPlanEditor({
       )}
 
       {/* Set Recording */}
-      <FormField label="Ergebnis erfassen">
+      <FormField label={t("plan:editor.recordResult")}>
         <div className="flex flex-col gap-2">
           {(plan.sets ?? []).map((set, i) => (
             <Card key={i} className="flex items-center gap-3">
               <span className="text-xs font-medium text-text-dim w-12">
-                Satz {set.setNumber}
+                {t("plan:editor.set", { number: set.setNumber })}
               </span>
               <Input
                 type="number"
@@ -303,15 +305,15 @@ export default function MatchPlanEditor({
             </Card>
           ))}
           <Button variant="secondary" size="sm" onClick={addSet}>
-            + Satz hinzufuegen
+            {t("plan:editor.addSet")}
           </Button>
           {plan.result && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-text-dim">Ergebnis:</span>
+              <span className="text-xs text-text-dim">{t("plan:editor.resultLabel")}</span>
               <Badge
                 color={plan.result === "win" ? "green" : plan.result === "loss" ? "red" : "orange"}
               >
-                {plan.result === "win" ? "Sieg" : plan.result === "loss" ? "Niederlage" : "Unentschieden"}
+                {plan.result === "win" ? t("plan:editor.resultWin") : plan.result === "loss" ? t("plan:editor.resultLoss") : t("plan:editor.resultDraw")}
               </Badge>
             </div>
           )}
@@ -319,11 +321,11 @@ export default function MatchPlanEditor({
       </FormField>
 
       {/* Notes */}
-      <FormField label="Notizen">
+      <FormField label={t("plan:editor.notes")}>
         <Textarea
           value={plan.notes}
           onChange={(e) => update("notes", e.target.value)}
-          placeholder="Sonstige Notizen..."
+          placeholder={t("plan:editor.notesPlaceholder")}
           rows={3}
         />
       </FormField>

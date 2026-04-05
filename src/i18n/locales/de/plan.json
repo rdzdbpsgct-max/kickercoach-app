@@ -1,0 +1,50 @@
+{
+  "title": "Matchplan",
+  "newPlan": "+ Neuer Plan",
+  "import": "Import",
+  "importError": {
+    "invalidFile": "Ungueltige Matchplan-Datei. Bitte eine gueltige JSON-Datei waehlen.",
+    "readError": "Die Datei konnte nicht gelesen werden. Bitte eine gueltige JSON-Datei waehlen."
+  },
+  "editor": {
+    "title": "Matchplan bearbeiten",
+    "print": "Drucken",
+    "opponent": "Gegner",
+    "opponentPlaceholder": "Gegner-Team",
+    "date": "Datum",
+    "analysis": "Gegneranalyse",
+    "analysisPlaceholder": "Staerken, Schwaechen, typische Spielmuster...",
+    "offensiveStrategy": "Offensive Strategie",
+    "defensiveStrategy": "Defensive Strategie",
+    "noTemplate": "Keine Vorlage",
+    "gameplan": "Gameplan",
+    "gameplanPlaceholder": "Taktische Ausrichtung, Schuss-Strategie, defensive Aufstellung...",
+    "timeoutStrategies": "Timeout-Strategien",
+    "addStrategyPlaceholder": "Neue Strategie hinzufuegen...",
+    "players": "Spieler",
+    "recordResult": "Ergebnis erfassen",
+    "set": "Satz {{number}}",
+    "addSet": "+ Satz hinzufuegen",
+    "resultLabel": "Ergebnis:",
+    "resultWin": "Sieg",
+    "resultLoss": "Niederlage",
+    "resultDraw": "Unentschieden",
+    "notes": "Notizen",
+    "notesPlaceholder": "Sonstige Notizen..."
+  },
+  "list": {
+    "emptyTitle": "Noch keine Matchplaene",
+    "emptyDescription": "Noch keine Matchplaene erstellt.",
+    "searchPlaceholder": "Gegner suchen...",
+    "unnamed": "Unbenannt",
+    "noDate": "Kein Datum",
+    "strategies": "{{count}} Strategien",
+    "tactics": "Taktik",
+    "tacticsTooltip": "Taktikboard oeffnen",
+    "export": "Export",
+    "exportTooltip": "JSON exportieren",
+    "deleteTooltip": "Loeschen",
+    "deleteTitle": "Matchplan loeschen",
+    "deleteMessage": "Moechtest du diesen Matchplan wirklich loeschen?"
+  }
+}
