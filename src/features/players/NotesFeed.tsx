@@ -3,11 +3,10 @@ import type { CoachingNote } from "../../domain/models/CoachingNote";
 import { useAppStore } from "../../store";
 import { Badge, Card, EmptyState, ConfirmDialog, Textarea, Button, Select } from "../../components/ui";
 import {
-  NOTE_CATEGORY_LABELS,
   NOTE_CATEGORY_COLORS,
-  NOTE_PRIORITY_LABELS,
   NOTE_PRIORITY_COLORS,
 } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 
 const FILTER_OPTIONS: (CoachingNote["category"] | "all")[] = [
   "all",
@@ -22,6 +21,7 @@ interface NotesFeedProps {
 }
 
 export function NotesFeed({ notes }: NotesFeedProps) {
+  const { t } = useTranslation();
   const deleteCoachingNote = useAppStore((s) => s.deleteCoachingNote);
   const updateCoachingNote = useAppStore((s) => s.updateCoachingNote);
   const [filter, setFilter] = useState<CoachingNote["category"] | "all">("all");
@@ -85,7 +85,7 @@ export function NotesFeed({ notes }: NotesFeedProps) {
                 : "border border-border text-text-muted hover:border-accent/50"
             }`}
           >
-            {opt === "all" ? "Alle" : NOTE_CATEGORY_LABELS[opt]}
+            {opt === "all" ? "Alle" : t(`constants.noteCategory.${opt}`)}
           </button>
         ))}
         <span className="ml-auto text-[10px] text-text-dim self-center">
@@ -138,11 +138,11 @@ export function NotesFeed({ notes }: NotesFeedProps) {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <Badge color={NOTE_CATEGORY_COLORS[note.category]}>
-                      {NOTE_CATEGORY_LABELS[note.category]}
+                      {t(`constants.noteCategory.${note.category}`)}
                     </Badge>
                     {note.priority && (
                       <Badge color={NOTE_PRIORITY_COLORS[note.priority]}>
-                        {NOTE_PRIORITY_LABELS[note.priority]}
+                        {t(`constants.notePriority.${note.priority}`)}
                       </Badge>
                     )}
                     {note.resolved && (

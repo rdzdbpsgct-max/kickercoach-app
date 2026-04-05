@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Card, Badge, StarRating } from "../ui";
 import { formatTime } from "../../domain/logic/time";
-import { MOOD_LABELS, MOOD_COLORS } from "../../domain/constants";
+import { MOOD_COLORS } from "../../domain/constants";
 import type { Session } from "../../domain/models/Session";
 
 interface SessionCardProps {
@@ -17,6 +18,7 @@ export function SessionCard({
   playerNames,
   compact = false,
 }: SessionCardProps) {
+  const { t } = useTranslation();
   const getPlayerName = (id: string) => playerNames?.[id] ?? "?";
 
   if (compact) {
@@ -59,7 +61,7 @@ export function SessionCard({
           {session.rating && <StarRating rating={session.rating} />}
           {session.mood && (
             <Badge color={MOOD_COLORS[session.mood]}>
-              {MOOD_LABELS[session.mood]}
+              {t(`constants.mood.${session.mood}`)}
             </Badge>
           )}
         </div>

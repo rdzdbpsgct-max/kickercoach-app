@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import type { Drill, DrillPhase, RodPosition } from "../../domain/models/Drill";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
-import { DIFFICULTY_LABELS, PHASE_LABELS } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import { Badge, Card, Button, SearchBar } from "../../components/ui";
 
 const DIFFICULTY_BADGE_COLORS = {
@@ -33,13 +33,6 @@ const PHASE_OPTIONS: (DrillPhase | "Alle")[] = [
   "game",
   "cooldown",
 ];
-
-const POSITION_LABELS: Record<RodPosition, string> = {
-  keeper: "Torwart",
-  defense: "Abwehr",
-  midfield: "Mittelfeld",
-  offense: "Sturm",
-};
 
 const CATEGORY_OPTIONS: (Category | "Alle")[] = [
   "Alle",
@@ -94,6 +87,7 @@ export default function DrillSelector({
   recommendedDrillIds,
   recommendLabel,
 }: DrillSelectorProps) {
+  const { t } = useTranslation();
   const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | "Alle">("Alle");
   const [phaseFilter, setPhaseFilter] = useState<DrillPhase | "Alle">("Alle");
   const [categoryFilter, setCategoryFilter] = useState<Category | "Alle">("Alle");
@@ -155,12 +149,12 @@ export default function DrillSelector({
               <span className="text-sm font-semibold">{drill.name}</span>
               {drill.difficulty && (
                 <Badge color={DIFFICULTY_BADGE_COLORS[drill.difficulty]}>
-                  {DIFFICULTY_LABELS[drill.difficulty]}
+                  {t(`constants.difficulty.${drill.difficulty}`)}
                 </Badge>
               )}
               {drill.phase && (
                 <Badge color={PHASE_BADGE_COLORS[drill.phase]}>
-                  {PHASE_LABELS[drill.phase]}
+                  {t(`constants.phase.${drill.phase}`)}
                 </Badge>
               )}
               {drill.isCustom && (
@@ -174,7 +168,7 @@ export default function DrillSelector({
               {drill.position && (
                 <>
                   <span>&middot;</span>
-                  <span>{POSITION_LABELS[drill.position]}</span>
+                  <span>{t(`constants.rodPosition.${drill.position}`)}</span>
                 </>
               )}
               {drill.playerCount && drill.playerCount > 1 && (
@@ -249,7 +243,7 @@ export default function DrillSelector({
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
-              {opt === "Alle" ? "Alle Stufen" : DIFFICULTY_LABELS[opt]}
+              {opt === "Alle" ? "Alle Stufen" : t(`constants.difficulty.${opt}`)}
             </button>
           ))}
         </div>
@@ -267,7 +261,7 @@ export default function DrillSelector({
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
-              {opt === "Alle" ? "Alle Phasen" : PHASE_LABELS[opt]}
+              {opt === "Alle" ? "Alle Phasen" : t(`constants.phase.${opt}`)}
             </button>
           ))}
         </div>
@@ -303,7 +297,7 @@ export default function DrillSelector({
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
-              {opt === "Alle" ? "Alle Positionen" : POSITION_LABELS[opt]}
+              {opt === "Alle" ? "Alle Positionen" : t(`constants.rodPosition.${opt}`)}
             </button>
           ))}
           <span className="ml-auto self-center text-xs text-text-dim">

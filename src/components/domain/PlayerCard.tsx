@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Card, Badge } from "../ui";
-import { DIFFICULTY_LABELS, POSITION_LABELS } from "../../domain/constants";
 import type { Player } from "../../domain/models/Player";
 
 interface PlayerCardProps {
@@ -16,6 +16,8 @@ export function PlayerCard({
   showSessionCount,
   compact = false,
 }: PlayerCardProps) {
+  const { t } = useTranslation();
+
   if (compact) {
     return (
       <motion.div
@@ -71,9 +73,9 @@ export function PlayerCard({
           <p className="font-semibold text-text truncate">{player.name}</p>
           <div className="mt-1 flex flex-wrap items-center gap-1.5">
             <Badge color="blue">
-              {POSITION_LABELS[player.preferredPosition]}
+              {t(`constants.position.${player.preferredPosition}`)}
             </Badge>
-            <Badge color="orange">{DIFFICULTY_LABELS[player.level]}</Badge>
+            <Badge color="orange">{t(`constants.difficulty.${player.level}`)}</Badge>
           </div>
         </div>
         {showSessionCount != null && showSessionCount > 0 && (

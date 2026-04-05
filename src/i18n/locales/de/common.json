@@ -96,6 +96,12 @@
       "medium": "Mittel",
       "high": "Hoch"
     },
+    "rodPosition": {
+      "keeper": "Torwart",
+      "defense": "Abwehr",
+      "midfield": "Mittelfeld",
+      "offense": "Sturm"
+    },
     "category": {
       "Torschuss": "Torschuss",
       "Passspiel": "Passspiel",

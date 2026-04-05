@@ -1,10 +1,9 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Card, Badge } from "../ui";
 import type { CoachingNote } from "../../domain/models/CoachingNote";
 import {
-  NOTE_CATEGORY_LABELS,
   NOTE_CATEGORY_COLORS,
-  NOTE_PRIORITY_LABELS,
   NOTE_PRIORITY_COLORS,
 } from "../../domain/constants";
 
@@ -15,6 +14,8 @@ interface NoteCardProps {
 }
 
 export function NoteCard({ note, playerName, onClick }: NoteCardProps) {
+  const { t } = useTranslation();
+
   return (
     <Card interactive={!!onClick} onClick={onClick}>
       <motion.div
@@ -25,11 +26,11 @@ export function NoteCard({ note, playerName, onClick }: NoteCardProps) {
       >
         <div className="flex flex-wrap items-center gap-2">
           <Badge color={NOTE_CATEGORY_COLORS[note.category]}>
-            {NOTE_CATEGORY_LABELS[note.category]}
+            {t(`constants.noteCategory.${note.category}`)}
           </Badge>
           {note.priority && (
             <Badge color={NOTE_PRIORITY_COLORS[note.priority]}>
-              {NOTE_PRIORITY_LABELS[note.priority]}
+              {t(`constants.notePriority.${note.priority}`)}
             </Badge>
           )}
           <span className="text-[10px] text-text-dim">{note.date}</span>

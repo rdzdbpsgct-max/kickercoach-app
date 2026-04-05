@@ -1,16 +1,9 @@
 import type { Difficulty, Category } from "./models/CoachCard";
 import type { DrillPhase } from "./models/Drill";
-import type { Position } from "./models/Player";
 import type { TechniqueStatus } from "./models/PlayerTechnique";
 import type { NotePriority } from "./models/CoachingNote";
 import type { EvaluationType } from "./models/Evaluation";
 import type { Mood } from "./models/Session";
-
-export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
-  beginner: "Einsteiger",
-  intermediate: "Fortgeschritten",
-  advanced: "Profi",
-};
 
 export const DIFFICULTY_COLORS: Record<Difficulty, string> = {
   beginner: "bg-kicker-green/15 text-kicker-green",
@@ -52,32 +45,11 @@ export const STORAGE_KEYS = {
   boardScenes: "kickercoach-board-scenes",
 } as const;
 
-export const PHASE_LABELS: Record<DrillPhase, string> = {
-  warmup: "Aufwaermen",
-  technique: "Technik",
-  game: "Spielform",
-  cooldown: "Cool-Down",
-};
-
 export const PHASE_COLORS: Record<DrillPhase, string> = {
   warmup: "bg-kicker-orange/15 text-kicker-orange",
   technique: "bg-kicker-blue/15 text-kicker-blue",
   game: "bg-kicker-green/15 text-kicker-green",
   cooldown: "bg-accent-dim text-accent",
-};
-
-export const POSITION_LABELS: Record<Position, string> = {
-  offense: "Sturm",
-  defense: "Abwehr",
-  both: "Beides",
-};
-
-export const TECHNIQUE_STATUS_LABELS: Record<TechniqueStatus, string> = {
-  not_started: "Nicht begonnen",
-  learning: "Lernend",
-  developing: "Aufbauend",
-  proficient: "Sicher",
-  mastered: "Gemeistert",
 };
 
 export const TECHNIQUE_STATUS_COLORS: Record<TechniqueStatus, string> = {
@@ -100,29 +72,13 @@ export const ALL_CATEGORIES: Category[] = [
   "Mental",
 ];
 
-export const STAR_LABELS = ["", "Schlecht", "Mässig", "OK", "Gut", "Super"];
-
 /** Multiplier to convert a 1–5 star rating to a 0–100 success rate. */
 export const STAR_RATING_SCALE = 20;
-
-export const EVALUATION_TYPE_LABELS: Record<EvaluationType, string> = {
-  session: "Training",
-  match: "Spiel",
-  general: "Allgemein",
-};
 
 export const EVALUATION_TYPE_COLORS: Record<EvaluationType, "blue" | "orange" | "green"> = {
   session: "blue",
   match: "orange",
   general: "green",
-};
-
-export const MOOD_LABELS: Record<Mood, string> = {
-  great: "Super",
-  good: "Gut",
-  ok: "OK",
-  tired: "Muede",
-  frustrated: "Frustriert",
 };
 
 export const MOOD_COLORS: Record<Mood, "green" | "blue" | "orange" | "red"> = {
@@ -143,24 +99,11 @@ export const SKILL_COLORS: Record<Category, string> = {
   Mental: "#ec4899",
 };
 
-export const NOTE_CATEGORY_LABELS: Record<string, string> = {
-  tactical: "Taktik",
-  technical: "Technik",
-  mental: "Mental",
-  communication: "Kommunikation",
-};
-
 export const NOTE_CATEGORY_COLORS: Record<string, "orange" | "blue" | "accent" | "green"> = {
   tactical: "orange",
   technical: "blue",
   mental: "accent",
   communication: "green",
-};
-
-export const NOTE_PRIORITY_LABELS: Record<NotePriority, string> = {
-  low: "Niedrig",
-  medium: "Mittel",
-  high: "Hoch",
 };
 
 export const NOTE_PRIORITY_COLORS: Record<NotePriority, "green" | "orange" | "red"> = {

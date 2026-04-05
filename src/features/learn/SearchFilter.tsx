@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
-import { DIFFICULTY_LABELS } from "../../domain/constants";
 import { SearchBar, Button } from "../../components/ui";
 
 const CATEGORIES: (Category | "Alle")[] = [
@@ -21,10 +21,7 @@ const DIFFICULTIES: (Difficulty | "Alle")[] = [
   "advanced",
 ];
 
-const DIFFICULTY_FILTER_LABELS: Record<string, string> = {
-  Alle: "Alle Stufen",
-  ...DIFFICULTY_LABELS,
-};
+// DIFFICULTY_FILTER_LABELS now handled inline via t()
 
 interface SearchFilterProps {
   searchQuery: string;
@@ -49,6 +46,8 @@ export default function SearchFilter({
   onToggleFavorites,
   resultCount,
 }: SearchFilterProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-3">
       {/* Search */}
@@ -108,7 +107,7 @@ export default function SearchFilter({
               layout
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             >
-              {DIFFICULTY_FILTER_LABELS[diff]}
+              {diff === "Alle" ? "Alle Stufen" : t(`constants.difficulty.${diff}`)}
             </motion.button>
           ))}
         </div>

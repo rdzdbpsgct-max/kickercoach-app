@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Card, Badge } from "../ui";
-import { DIFFICULTY_LABELS, PHASE_LABELS } from "../../domain/constants";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
-import type { Drill, DrillPhase, RodPosition } from "../../domain/models/Drill";
+import type { Drill, DrillPhase } from "../../domain/models/Drill";
 import type { Difficulty } from "../../domain/models/CoachCard";
 
 const DIFFICULTY_BADGE_COLORS: Record<Difficulty, "green" | "orange" | "red"> = {
@@ -16,13 +16,6 @@ const PHASE_BADGE_COLORS: Record<DrillPhase, "blue" | "orange" | "green" | "acce
   technique: "blue",
   game: "green",
   cooldown: "accent",
-};
-
-const POSITION_LABELS: Record<RodPosition, string> = {
-  keeper: "Torwart",
-  defense: "Abwehr",
-  midfield: "Mittelfeld",
-  offense: "Sturm",
 };
 
 interface DrillCardProps {
@@ -42,6 +35,8 @@ export function DrillCard({
   onDelete,
   compact = false,
 }: DrillCardProps) {
+  const { t } = useTranslation();
+
   if (compact) {
     return (
       <motion.div
@@ -60,7 +55,7 @@ export function DrillCard({
             </span>
             {drill.difficulty && (
               <Badge color={DIFFICULTY_BADGE_COLORS[drill.difficulty]}>
-                {DIFFICULTY_LABELS[drill.difficulty]}
+                {t(`constants.difficulty.${drill.difficulty}`)}
               </Badge>
             )}
           </div>
@@ -90,12 +85,12 @@ export function DrillCard({
             <span className="text-sm font-semibold">{drill.name}</span>
             {drill.difficulty && (
               <Badge color={DIFFICULTY_BADGE_COLORS[drill.difficulty]}>
-                {DIFFICULTY_LABELS[drill.difficulty]}
+                {t(`constants.difficulty.${drill.difficulty}`)}
               </Badge>
             )}
             {drill.phase && (
               <Badge color={PHASE_BADGE_COLORS[drill.phase]}>
-                {PHASE_LABELS[drill.phase]}
+                {t(`constants.phase.${drill.phase}`)}
               </Badge>
             )}
             {drill.isCustom && (
@@ -109,7 +104,7 @@ export function DrillCard({
             {drill.position && (
               <>
                 <span>&middot;</span>
-                <span>{POSITION_LABELS[drill.position]}</span>
+                <span>{t(`constants.rodPosition.${drill.position}`)}</span>
               </>
             )}
             {drill.playerCount && drill.playerCount > 1 && (

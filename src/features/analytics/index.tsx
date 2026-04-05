@@ -2,7 +2,8 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useAppStore } from "../../store";
 import { Select, Card, Badge } from "../../components/ui";
-import { TECHNIQUE_STATUS_LABELS, TECHNIQUE_STATUS_COLORS } from "../../domain/constants";
+import { TECHNIQUE_STATUS_COLORS } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import type { TechniqueStatus } from "../../domain/models/PlayerTechnique";
 import { TrainingFrequencyChart } from "./TrainingFrequencyChart";
 import { SkillProgressChart } from "./SkillProgressChart";
@@ -38,6 +39,7 @@ const statCardVariants = {
 };
 
 export default function AnalyticsMode() {
+  const { t } = useTranslation();
   const players = useAppStore((s) => s.players);
   const sessions = useAppStore((s) => s.sessions);
   const matches = useAppStore((s) => s.matches);
@@ -172,7 +174,7 @@ export default function AnalyticsMode() {
                 {Object.entries(techniqueStats).filter(([, v]) => v > 0).map(([status, count]) => (
                   <div key={status} className="flex items-center gap-2 text-xs">
                     <div className={`h-2.5 w-2.5 rounded-full ${TECHNIQUE_STATUS_COLORS[status as TechniqueStatus]}`} />
-                    <span className="text-text-muted">{TECHNIQUE_STATUS_LABELS[status as TechniqueStatus]}</span>
+                    <span className="text-text-muted">{t(`constants.techniqueStatus.${status}`)}</span>
                     <span className="ml-auto font-medium text-text">{count}</span>
                   </div>
                 ))}

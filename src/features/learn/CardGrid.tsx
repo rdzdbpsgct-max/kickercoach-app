@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import type { CoachCard } from "../../domain/models/CoachCard";
 import {
-  DIFFICULTY_LABELS,
   MAX_VISIBLE_TAGS,
 } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import { Card, Badge, EmptyState } from "../../components/ui";
 
 const DIFFICULTY_BADGE_COLORS = {
@@ -52,6 +52,8 @@ export default function CardGrid({
   favorites,
   onSelect,
 }: CardGridProps) {
+  const { t } = useTranslation();
+
   if (cards.length === 0) {
     return (
       <motion.div
@@ -101,7 +103,7 @@ export default function CardGrid({
                 {card.category}
               </Badge>
               <Badge color={DIFFICULTY_BADGE_COLORS[card.difficulty]}>
-                {DIFFICULTY_LABELS[card.difficulty]}
+                {t(`constants.difficulty.${card.difficulty}`)}
               </Badge>
             </div>
 

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import type { Drill } from "../../domain/models/Drill";
-import { STAR_LABELS } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import { Button, Textarea, StarRating } from "../../components/ui";
 
 interface DrillResultCaptureProps {
@@ -15,6 +15,7 @@ export default function DrillResultCapture({
   onSave,
   onSkip,
 }: DrillResultCaptureProps) {
+  const { t } = useTranslation();
   const [rating, setRating] = useState(0);
   const [notes, setNotes] = useState("");
 
@@ -46,7 +47,7 @@ export default function DrillResultCapture({
           <label className="text-xs font-medium text-text-dim">Qualität</label>
           <StarRating rating={rating} size="lg" onChange={setRating} />
           <div className="text-[11px] text-text-dim">
-            {rating === 0 ? "Wähle eine Bewertung" : STAR_LABELS[rating]}
+            {rating === 0 ? "Wähle eine Bewertung" : t(`constants.star.${rating}`)}
           </div>
         </div>
 

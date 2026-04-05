@@ -6,12 +6,11 @@ import type { PlayerTechnique } from "../../domain/models/PlayerTechnique";
 import type { TechniqueStatus } from "../../domain/models/PlayerTechnique";
 import {
   ALL_CATEGORIES,
-  TECHNIQUE_STATUS_LABELS,
   TECHNIQUE_STATUS_COLORS,
   SKILL_COLORS,
-  EVALUATION_TYPE_LABELS,
   EVALUATION_TYPE_COLORS,
 } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 
 interface ProgressViewProps {
   evaluations: Evaluation[];
@@ -19,6 +18,7 @@ interface ProgressViewProps {
 }
 
 export function ProgressView({ evaluations, playerTechniques }: ProgressViewProps) {
+  const { t } = useTranslation();
   const sorted = useMemo(
     () => [...evaluations].sort((a, b) => a.date.localeCompare(b.date)),
     [evaluations],
@@ -69,7 +69,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
               return (
                 <div key={status} className="flex items-center gap-1 text-xs">
                   <span className={`h-2.5 w-2.5 rounded-full ${TECHNIQUE_STATUS_COLORS[status]}`} />
-                  <span className="text-text-muted">{TECHNIQUE_STATUS_LABELS[status]}</span>
+                  <span className="text-text-muted">{t(`constants.techniqueStatus.${status}`)}</span>
                   <span className="font-medium text-text">{count}</span>
                 </div>
               );
@@ -187,7 +187,7 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
                 <span className="text-xs font-medium text-text">{ev.date}</span>
                 {ev.type && (
                   <Badge color={EVALUATION_TYPE_COLORS[ev.type]}>
-                    {EVALUATION_TYPE_LABELS[ev.type]}
+                    {t(`constants.evaluationType.${ev.type}`)}
                   </Badge>
                 )}
                 {ev.overallRating != null && (

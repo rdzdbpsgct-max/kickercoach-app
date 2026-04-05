@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useAppStore } from "../../store";
 import { Card, Badge } from "../../components/ui";
-import { TECHNIQUE_STATUS_LABELS } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import type { TechniqueStatus, PlayerTechnique } from "../../domain/models/PlayerTechnique";
 import type { Technique } from "../../domain/models/Technique";
 import { generateId } from "../../utils/id";
@@ -27,6 +27,7 @@ interface PlayerTechniquesProps {
 }
 
 export function PlayerTechniques({ playerId }: PlayerTechniquesProps) {
+  const { t } = useTranslation();
   const techniques = useAppStore((s) => s.techniques);
   const allPlayerTechniques = useAppStore((s) => s.playerTechniques);
   const playerTechniques = useMemo(
@@ -97,7 +98,7 @@ export function PlayerTechniques({ playerId }: PlayerTechniquesProps) {
                   )}
                 </div>
                 <Badge color={STATUS_BADGE_COLORS[status]}>
-                  {TECHNIQUE_STATUS_LABELS[status]}
+                  {t(`constants.techniqueStatus.${status}`)}
                 </Badge>
               </button>
             ))}

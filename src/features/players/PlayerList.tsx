@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Badge, Card, Button, EmptyState, SearchBar } from "../../components/ui";
-import { DIFFICULTY_LABELS, POSITION_LABELS } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import type { Player } from "../../domain/models/Player";
 
 const listContainer = {
@@ -24,6 +24,7 @@ interface PlayerListProps {
 }
 
 export function PlayerList({ players, onSelect, onAdd }: PlayerListProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [showInactive, setShowInactive] = useState(false);
 
@@ -120,8 +121,8 @@ export function PlayerList({ players, onSelect, onAdd }: PlayerListProps) {
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-text truncate">{player.name}</p>
                   <div className="mt-1 flex gap-1.5 flex-wrap">
-                    <Badge color="blue">{POSITION_LABELS[player.preferredPosition]}</Badge>
-                    <Badge color="orange">{DIFFICULTY_LABELS[player.level]}</Badge>
+                    <Badge color="blue">{t(`constants.position.${player.preferredPosition}`)}</Badge>
+                    <Badge color="orange">{t(`constants.difficulty.${player.level}`)}</Badge>
                     {inactive && <Badge color="red">Inaktiv</Badge>}
                   </div>
                 </div>

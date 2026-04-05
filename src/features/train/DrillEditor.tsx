@@ -2,7 +2,7 @@ import { useState } from "react";
 import { z } from "zod";
 import type { Drill, TrainingBlock, BlockType, DrillPhase, RodPosition } from "../../domain/models/Drill";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
-import { PHASE_LABELS } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import { Button, FormField, Input, Textarea, Select } from "../../components/ui";
 import { useAppStore } from "../../store";
 import { generateId } from "../../utils/id";
@@ -27,6 +27,7 @@ interface DrillEditorProps {
 }
 
 export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProps) {
+  const { t } = useTranslation();
   const saveDrillAsTemplate = useAppStore((s) => s.saveDrillAsTemplate);
   const [templateSaved, setTemplateSaved] = useState(false);
   const [name, setName] = useState(drill?.name ?? "");
@@ -161,18 +162,17 @@ export default function DrillEditor({ drill, onSave, onCancel }: DrillEditorProp
         <FormField label="Phase">
           <Select value={phase} onChange={(e) => setPhase(e.target.value as DrillPhase | "")}>
             <option value="">Keine</option>
-            {(Object.entries(PHASE_LABELS) as [DrillPhase, string][]).map(([k, v]) => (
-              <option key={k} value={k}>{v}</option>
+            {(["warmup", "technique", "game", "cooldown"] as DrillPhase[]).map((k) => (
+              <option key={k} value={k}>{t(`constants.phase.${k}`)}</option>
             ))}
           </Select>
         </FormField>
         <FormField label="Position">
           <Select value={position} onChange={(e) => setPosition(e.target.value as RodPosition | "")}>
             <option value="">Keine</option>
-            <option value="keeper">Torwart</option>
-            <option value="defense">Abwehr</option>
-            <option value="midfield">Mittelfeld</option>
-            <option value="offense">Sturm</option>
+            {(["keeper", "defense", "midfield", "offense"] as RodPosition[]).map((k) => (
+              <option key={k} value={k}>{t(`constants.rodPosition.${k}`)}</option>
+            ))}
           </Select>
         </FormField>
       </div>

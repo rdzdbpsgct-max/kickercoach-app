@@ -9,7 +9,7 @@ import { NotesFeed } from "./NotesFeed";
 import { ProgressView } from "./ProgressView";
 import { PlayerTechniques } from "./PlayerTechniques";
 import { printCurrentPage } from "../../utils/print";
-import { DIFFICULTY_LABELS, POSITION_LABELS } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import { useAppStore } from "../../store";
 import type { Player } from "../../domain/models/Player";
 import type { Goal } from "../../domain/models/Goal";
@@ -36,6 +36,7 @@ interface PlayerDetailProps {
 }
 
 export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining }: PlayerDetailProps) {
+  const { t } = useTranslation();
   const allGoals = useAppStore((s) => s.goals);
   const addGoal = useAppStore((s) => s.addGoal);
   const updateGoal = useAppStore((s) => s.updateGoal);
@@ -120,8 +121,8 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
             )}
           </h1>
           <div className="mt-1 flex gap-2">
-            <Badge color="blue">{POSITION_LABELS[player.preferredPosition]}</Badge>
-            <Badge color="orange">{DIFFICULTY_LABELS[player.level]}</Badge>
+            <Badge color="blue">{t(`constants.position.${player.preferredPosition}`)}</Badge>
+            <Badge color="orange">{t(`constants.difficulty.${player.level}`)}</Badge>
           </div>
         </div>
       </motion.div>

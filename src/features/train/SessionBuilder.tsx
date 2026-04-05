@@ -3,7 +3,8 @@ import type { Drill, DrillPhase } from "../../domain/models/Drill";
 import type { Category } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
 import { calculateSessionDuration } from "../../domain/logic/session";
-import { PHASE_LABELS, ALL_CATEGORIES, STAR_LABELS, STAR_RATING_SCALE } from "../../domain/constants";
+import { ALL_CATEGORIES, STAR_RATING_SCALE } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import { Button, FormField, Input, Select, Textarea, StarRating } from "../../components/ui";
 import { useAppStore } from "../../store";
 import type { Session, DrillResult } from "../../store";
@@ -36,6 +37,7 @@ export default function SessionBuilder({
   planSessionContext,
   drillResults,
 }: SessionBuilderProps) {
+  const { t } = useTranslation();
   const players = useAppStore((s) => s.players);
   const teams = useAppStore((s) => s.teams);
   const trainingPlans = useAppStore((s) => s.trainingPlans);
@@ -316,7 +318,7 @@ export default function SessionBuilder({
             return (
               <div key={phase ?? "other"}>
                 <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-text-dim">
-                  {phase ? PHASE_LABELS[phase] : "Sonstige"}
+                  {phase ? t(`constants.phase.${phase}`) : "Sonstige"}
                 </div>
                 <div className="flex flex-col gap-1.5">
                   {phaseDrills.map((drill) => {
@@ -378,7 +380,7 @@ export default function SessionBuilder({
       {/* Rating */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-medium text-text-dim">
-          Bewertung {rating ? `\u2014 ${STAR_LABELS[rating]}` : ""}
+          Bewertung {rating ? `\u2014 ${t(`constants.star.${rating}`)}` : ""}
         </label>
         <StarRating
           rating={rating ?? 0}

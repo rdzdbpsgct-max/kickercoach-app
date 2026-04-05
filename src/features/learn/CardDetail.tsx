@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import type { CoachCard } from "../../domain/models/CoachCard";
 import type { Drill } from "../../domain/models/Drill";
 import {
-  DIFFICULTY_LABELS,
   DIFFICULTY_TEXT_COLORS,
 } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import { Button, Badge } from "../../components/ui";
 
 interface CardDetailProps {
@@ -35,6 +35,7 @@ export default function CardDetail({
   allCards = [],
   onNavigateToCard,
 }: CardDetailProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [matchingDrills, setMatchingDrills] = useState<Drill[]>([]);
 
@@ -87,7 +88,7 @@ export default function CardDetail({
               <span
                 className={`font-medium ${DIFFICULTY_TEXT_COLORS[card.difficulty]}`}
               >
-                {DIFFICULTY_LABELS[card.difficulty]}
+                {t(`constants.difficulty.${card.difficulty}`)}
               </span>
               <span className="text-text-dim">&middot;</span>
               <span className="text-text-muted">{card.category}</span>
@@ -233,7 +234,7 @@ export default function CardDetail({
                 <span>&#9201;&#65039;</span> {drill.name}
                 {drill.difficulty && (
                   <Badge color={drill.difficulty === "beginner" ? "green" : drill.difficulty === "intermediate" ? "orange" : "red"}>
-                    {DIFFICULTY_LABELS[drill.difficulty]}
+                    {t(`constants.difficulty.${drill.difficulty}`)}
                   </Badge>
                 )}
               </Button>
