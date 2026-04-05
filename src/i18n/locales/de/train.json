@@ -1,7 +1,7 @@
 {
   "title": "Training",
   "plans": "Pläne",
-  "journal": "Tagebuch",
+  "journalButton": "Tagebuch",
   "quickStart": "Schnellstart",
   "newSession": "+ Session",
   "back": "Zurück",

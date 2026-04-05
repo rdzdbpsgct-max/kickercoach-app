@@ -372,7 +372,7 @@ export default function TrainMode() {
             {t("plans")}
           </Button>
           <Button variant="secondary" onClick={() => setView("journal")}>
-            {t("journal")}
+            {t("journalButton")}
           </Button>
           <Button
             variant="secondary"
