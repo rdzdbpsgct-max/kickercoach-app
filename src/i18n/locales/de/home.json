@@ -1,0 +1,54 @@
+{
+  "title": "Coaching-Hub",
+  "streak": "{{count}} Tage Streak",
+  "quickActions": {
+    "training": "+ Training",
+    "player": "+ Spieler",
+    "matchplan": "+ Matchplan",
+    "techniques": "Techniken"
+  },
+  "onboarding": {
+    "title": "Willkommen bei KickerCoach!",
+    "description": "Deine digitale Coaching-App fuer Tischfussball. Starte jetzt mit deinem ersten Spieler oder einer Trainingseinheit.",
+    "addPlayer": "Ersten Spieler anlegen",
+    "startTraining": "Erstes Training starten",
+    "exploreTechniques": "Techniken entdecken"
+  },
+  "stats": {
+    "title": "Trainings-Statistik",
+    "thisWeek": "Diese Woche",
+    "total": "Gesamt",
+    "hours": "Stunden"
+  },
+  "lastSession": {
+    "title": "Letzte Session",
+    "retrospectiveAvailable": "Retrospektive vorhanden"
+  },
+  "goals": {
+    "title": "Offene Ziele ({{count}})",
+    "more": "+{{count}} weitere Ziele"
+  },
+  "players": {
+    "title": "Spieler ({{count}})",
+    "focus": "Fokus: {{categories}}",
+    "sessions": "{{count}} Sessions"
+  },
+  "notes": {
+    "title": "Letzte Coaching-Notizen"
+  },
+  "plans": {
+    "title": "Trainingsplaene",
+    "count_one": "{{count}} Plan",
+    "count_other": "{{count}} Plaene",
+    "link": "Zu den Plaenen"
+  },
+  "features": {
+    "learn": "Lernen",
+    "learnStat": "48 Karten",
+    "train": "Training",
+    "board": "Taktik",
+    "boardStat": "Board",
+    "analytics": "Analyse",
+    "analyticsStat": "Stats"
+  }
+}

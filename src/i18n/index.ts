@@ -3,9 +3,10 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 
 import commonDe from "./locales/de/common.json";
+import homeDe from "./locales/de/home.json";
 
 const resources = {
-  de: { common: commonDe },
+  de: { common: commonDe, home: homeDe },
 };
 
 i18n

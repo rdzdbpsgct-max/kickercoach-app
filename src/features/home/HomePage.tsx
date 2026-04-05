@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { useAppStore } from "../../store";
 import { Badge, Card, Button, StarRating } from "../../components/ui";
 import { getWeakCategories } from "../../domain/logic/recommendations";
@@ -24,6 +25,7 @@ const fadeUp = {
 };
 
 export default function HomePage() {
+  const { t } = useTranslation(["home", "common"]);
   const sessions = useAppStore((s) => s.sessions);
   const players = useAppStore((s) => s.players);
   const goals = useAppStore((s) => s.goals);
@@ -112,7 +114,7 @@ export default function HomePage() {
         transition={{ duration: 0.4 }}
       >
         <div>
-          <h1 className="text-xl font-bold gradient-text">Coaching-Hub</h1>
+          <h1 className="text-xl font-bold gradient-text">{t("title")}</h1>
           <p className="text-xs text-text-dim">
             {new Date().toLocaleDateString("de-DE", {
               weekday: "long",
@@ -125,7 +127,7 @@ export default function HomePage() {
           <div className="flex items-center gap-1.5 rounded-full bg-kicker-orange/15 px-3 py-1">
             <span className="text-sm">&#128293;</span>
             <span className="text-xs font-bold text-kicker-orange">
-              {stats.streak} Tage Streak
+              {t("streak", { count: stats.streak })}
             </span>
           </div>
         )}
@@ -139,16 +141,16 @@ export default function HomePage() {
         transition={{ duration: 0.3, delay: 0.15 }}
       >
         <Link to="/train">
-          <Button size="sm" className="bg-accent text-bg font-bold">+ Training</Button>
+          <Button size="sm" className="bg-accent text-bg font-bold">{t("quickActions.training")}</Button>
         </Link>
         <Link to="/players">
-          <Button size="sm" variant="secondary">+ Spieler</Button>
+          <Button size="sm" variant="secondary">{t("quickActions.player")}</Button>
         </Link>
         <Link to="/plan">
-          <Button size="sm" variant="secondary">+ Matchplan</Button>
+          <Button size="sm" variant="secondary">{t("quickActions.matchplan")}</Button>
         </Link>
         <Link to="/learn">
-          <Button size="sm" variant="secondary">Techniken</Button>
+          <Button size="sm" variant="secondary">{t("quickActions.techniques")}</Button>
         </Link>
       </motion.div>
 
@@ -161,20 +163,20 @@ export default function HomePage() {
         >
           <Card className="text-center py-8 relative overflow-hidden border-2 border-transparent" style={{ borderImage: "linear-gradient(135deg, var(--color-accent), var(--color-kicker-orange)) 1" }}>
             <h2 className="text-lg font-bold text-text mb-2">
-              Willkommen bei KickerCoach!
+              {t("onboarding.title")}
             </h2>
             <p className="text-sm text-text-muted mb-6 max-w-md mx-auto">
-              Deine digitale Coaching-App fuer Tischfussball. Starte jetzt mit deinem ersten Spieler oder einer Trainingseinheit.
+              {t("onboarding.description")}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link to="/players">
-                <Button className="bg-accent text-bg font-bold">Ersten Spieler anlegen</Button>
+                <Button className="bg-accent text-bg font-bold">{t("onboarding.addPlayer")}</Button>
               </Link>
               <Link to="/train">
-                <Button variant="secondary">Erstes Training starten</Button>
+                <Button variant="secondary">{t("onboarding.startTraining")}</Button>
               </Link>
               <Link to="/learn">
-                <Button variant="secondary">Techniken entdecken</Button>
+                <Button variant="secondary">{t("onboarding.exploreTechniques")}</Button>
               </Link>
             </div>
           </Card>
@@ -192,25 +194,25 @@ export default function HomePage() {
           {/* Stats row */}
           <motion.div variants={fadeUp}>
             <Card>
-              <h3 className="mb-2 text-xs font-semibold text-text-dim">Trainings-Statistik</h3>
+              <h3 className="mb-2 text-xs font-semibold text-text-dim">{t("stats.title")}</h3>
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div>
                   <div className="text-lg font-bold text-accent">
                     {stats.sessionsThisWeek}
                   </div>
-                  <div className="text-[10px] text-text-dim">Diese Woche</div>
+                  <div className="text-[10px] text-text-dim">{t("stats.thisWeek")}</div>
                 </div>
                 <div>
                   <div className="text-lg font-bold text-accent">
                     {stats.totalSessions}
                   </div>
-                  <div className="text-[10px] text-text-dim">Gesamt</div>
+                  <div className="text-[10px] text-text-dim">{t("stats.total")}</div>
                 </div>
                 <div>
                   <div className="text-lg font-bold text-accent">
                     {stats.totalHours}h
                   </div>
-                  <div className="text-[10px] text-text-dim">Stunden</div>
+                  <div className="text-[10px] text-text-dim">{t("stats.hours")}</div>
                 </div>
               </div>
             </Card>
@@ -221,7 +223,7 @@ export default function HomePage() {
             <motion.div variants={fadeUp}>
               <Link to="/train" className="block">
                 <Card interactive>
-                  <h3 className="mb-2 text-xs font-semibold text-text-dim">Letzte Session</h3>
+                  <h3 className="mb-2 text-xs font-semibold text-text-dim">{t("lastSession.title")}</h3>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-text">
                       {lastSession.name}
@@ -240,7 +242,7 @@ export default function HomePage() {
                   )}
                   {lastSession.retrospective && (
                     <div className="mt-2 text-[11px] text-accent">
-                      Retrospektive vorhanden
+                      {t("lastSession.retrospectiveAvailable")}
                     </div>
                   )}
                 </Card>
@@ -253,7 +255,7 @@ export default function HomePage() {
             <motion.div variants={fadeUp}>
               <Card>
                 <h3 className="mb-2 text-xs font-semibold text-text-dim">
-                  Offene Ziele ({activeGoals.length})
+                  {t("goals.title", { count: activeGoals.length })}
                 </h3>
                 <div className="flex flex-col gap-2">
                   {activeGoals.slice(0, 4).map((goal) => (
@@ -269,7 +271,7 @@ export default function HomePage() {
                   ))}
                   {activeGoals.length > 4 && (
                     <Link to={`/players/${activeGoals[4]?.playerId}`} className="text-[10px] text-accent hover:text-accent-hover">
-                      +{activeGoals.length - 4} weitere Ziele
+                      {t("goals.more", { count: activeGoals.length - 4 })}
                     </Link>
                   )}
                 </div>
@@ -282,7 +284,7 @@ export default function HomePage() {
             <motion.div variants={fadeUp}>
               <Card>
                 <h3 className="mb-2 text-xs font-semibold text-text-dim">
-                  Spieler ({players.length})
+                  {t("players.title", { count: players.length })}
                 </h3>
                 <div className="flex flex-col gap-2">
                   {frequentPlayers.map((player) => {
@@ -303,13 +305,13 @@ export default function HomePage() {
                           <span className="text-xs font-medium text-text">{player.name}</span>
                           {weak.length > 0 && (
                             <div className="text-[10px] text-text-dim">
-                              Fokus: {weak.join(", ")}
+                              {t("players.focus", { categories: weak.join(", ") })}
                             </div>
                           )}
                         </div>
                         {player.sessionCount > 0 && (
                           <span className="text-[10px] text-text-dim">
-                            {player.sessionCount} Sessions
+                            {t("players.sessions", { count: player.sessionCount })}
                           </span>
                         )}
                       </Link>
@@ -325,7 +327,7 @@ export default function HomePage() {
             <motion.div variants={fadeUp}>
               <Card>
                 <h3 className="mb-2 text-xs font-semibold text-text-dim">
-                  Letzte Coaching-Notizen
+                  {t("notes.title")}
                 </h3>
                 <div className="flex flex-col gap-2">
                   {recentNotes.map((note) => (
@@ -347,12 +349,14 @@ export default function HomePage() {
             <motion.div variants={fadeUp}>
               <Link to="/train" className="block">
                 <Card interactive>
-                  <h3 className="mb-1 text-xs font-semibold text-text-dim">Trainingsplaene</h3>
+                  <h3 className="mb-1 text-xs font-semibold text-text-dim">{t("plans.title")}</h3>
                   <div className="text-sm font-medium text-text">
-                    {trainingPlans.length} {trainingPlans.length === 1 ? "Plan" : "Plaene"}
+                    {trainingPlans.length === 1
+                      ? t("plans.count_one", { count: trainingPlans.length })
+                      : t("plans.count_other", { count: trainingPlans.length })}
                   </div>
                   <div className="mt-1 text-xs text-accent">
-                    Zu den Plaenen &rarr;
+                    {t("plans.link")} &rarr;
                   </div>
                 </Card>
               </Link>
@@ -370,10 +374,10 @@ export default function HomePage() {
           animate="visible"
         >
           {[
-            { to: "/learn", icon: "\uD83D\uDCDA", label: "Lernen", stat: "48 Karten" },
-            { to: "/train", icon: "\u23F1\uFE0F", label: "Training", stat: `${20 + customDrills.length} Drills` },
-            { to: "/board", icon: "\uD83C\uDFAF", label: "Taktik", stat: "Board" },
-            { to: "/analytics", icon: "\uD83D\uDCCA", label: "Analyse", stat: "Stats" },
+            { to: "/learn", icon: "\uD83D\uDCDA", label: t("features.learn"), stat: t("features.learnStat") },
+            { to: "/train", icon: "\u23F1\uFE0F", label: t("features.train"), stat: `${20 + customDrills.length} Drills` },
+            { to: "/board", icon: "\uD83C\uDFAF", label: t("features.board"), stat: t("features.boardStat") },
+            { to: "/analytics", icon: "\uD83D\uDCCA", label: t("features.analytics"), stat: t("features.analyticsStat") },
           ].map((item) => (
             <motion.div key={item.to} variants={fadeUp}>
               <Link
