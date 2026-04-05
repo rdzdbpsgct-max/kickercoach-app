@@ -73,7 +73,7 @@ function AnimatedRoutes() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="flex flex-1 flex-col"
+        className="flex flex-1 flex-col overflow-y-auto"
       >
         <Suspense fallback={<LoadingFallback />}>
           <Routes location={location}>
