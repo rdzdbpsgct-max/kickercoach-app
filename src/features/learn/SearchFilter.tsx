@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from "framer-motion";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
 import { DIFFICULTY_LABELS } from "../../domain/constants";
 import { SearchBar, Button } from "../../components/ui";
@@ -72,18 +73,21 @@ export default function SearchFilter({
       {/* Category filter */}
       <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Kategorie Filter">
         {CATEGORIES.map((cat) => (
-          <button
+          <motion.button
             key={cat}
             onClick={() => onCategoryChange(cat)}
             aria-pressed={category === cat}
             className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
               category === cat
-                ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                ? "border-2 border-accent bg-accent-dim text-accent"
                 : "border border-border text-text-muted hover:border-accent/50"
             }`}
+            whileTap={{ scale: 0.93 }}
+            layout
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
           >
             {cat}
-          </button>
+          </motion.button>
         ))}
       </div>
 
@@ -91,23 +95,35 @@ export default function SearchFilter({
       <div className="flex items-center gap-3">
         <div className="flex gap-1.5" role="radiogroup" aria-label="Schwierigkeitsgrad Filter">
           {DIFFICULTIES.map((diff) => (
-            <button
+            <motion.button
               key={diff}
               onClick={() => onDifficultyChange(diff)}
               aria-pressed={difficulty === diff}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
                 difficulty === diff
-                  ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                  ? "border-2 border-accent bg-accent-dim text-accent"
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
+              whileTap={{ scale: 0.93 }}
+              layout
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
             >
               {DIFFICULTY_FILTER_LABELS[diff]}
-            </button>
+            </motion.button>
           ))}
         </div>
-        <span className="ml-auto text-xs text-text-dim">
-          {resultCount} Ergebnisse
-        </span>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={resultCount}
+            className="ml-auto text-xs text-text-dim"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 6 }}
+            transition={{ duration: 0.2 }}
+          >
+            {resultCount} Ergebnisse
+          </motion.span>
+        </AnimatePresence>
       </div>
     </div>
   );

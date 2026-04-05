@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Card, Badge } from "../ui";
 import { DIFFICULTY_LABELS } from "../../domain/constants";
 import type { Player } from "../../domain/models/Player";
@@ -23,7 +24,10 @@ export function PlayerCard({
 }: PlayerCardProps) {
   if (compact) {
     return (
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
         onClick={onClick}
         className={`flex items-center gap-2 rounded-lg p-1 -mx-1 ${
           onClick
@@ -33,7 +37,7 @@ export function PlayerCard({
       >
         <span
           className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
-          style={{ backgroundColor: player.avatarColor ?? "#6366f1" }}
+          style={{ backgroundColor: player.avatarColor ?? "#00e676" }}
         >
           {player.name.charAt(0).toUpperCase()}
         </span>
@@ -47,7 +51,7 @@ export function PlayerCard({
             {showSessionCount} Sessions
           </span>
         )}
-      </div>
+      </motion.div>
     );
   }
 
@@ -57,26 +61,33 @@ export function PlayerCard({
       onClick={onClick}
       className="flex items-center gap-3"
     >
-      <div
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white"
-        style={{ backgroundColor: player.avatarColor ?? "#6366f1" }}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.25 }}
+        className="contents"
       >
-        {player.name.charAt(0).toUpperCase()}
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="font-semibold text-text truncate">{player.name}</p>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5">
-          <Badge color="blue">
-            {POSITION_LABELS[player.preferredPosition]}
-          </Badge>
-          <Badge color="orange">{DIFFICULTY_LABELS[player.level]}</Badge>
+        <div
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white"
+          style={{ backgroundColor: player.avatarColor ?? "#00e676" }}
+        >
+          {player.name.charAt(0).toUpperCase()}
         </div>
-      </div>
-      {showSessionCount != null && showSessionCount > 0 && (
-        <span className="text-[10px] text-text-dim shrink-0">
-          {showSessionCount} Sessions
-        </span>
-      )}
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold text-text truncate">{player.name}</p>
+          <div className="mt-1 flex flex-wrap items-center gap-1.5">
+            <Badge color="blue">
+              {POSITION_LABELS[player.preferredPosition]}
+            </Badge>
+            <Badge color="orange">{DIFFICULTY_LABELS[player.level]}</Badge>
+          </div>
+        </div>
+        {showSessionCount != null && showSessionCount > 0 && (
+          <span className="text-[10px] text-text-dim shrink-0">
+            {showSessionCount} Sessions
+          </span>
+        )}
+      </motion.div>
     </Card>
   );
 }

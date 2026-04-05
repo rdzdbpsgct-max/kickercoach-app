@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import { Button, Badge, Card } from "../../components/ui";
 import { SkillRadar } from "./SkillRadar";
 import { GoalList } from "./GoalList";
@@ -18,6 +19,19 @@ const POSITION_LABELS: Record<string, string> = {
   offense: "Sturm",
   defense: "Abwehr",
   both: "Beides",
+};
+
+const sectionVariants = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
 };
 
 interface PlayerDetailProps {
@@ -84,17 +98,22 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
   };
 
   return (
-    <div className="flex flex-col gap-5 overflow-auto pb-4">
-      <div className="flex items-center gap-3">
+    <motion.div
+      className="flex flex-col gap-5 overflow-auto pb-4"
+      variants={staggerContainer}
+      initial="initial"
+      animate="animate"
+    >
+      <motion.div className="flex items-center gap-3" variants={sectionVariants} transition={{ duration: 0.2 }}>
         <Button variant="ghost" size="sm" onClick={onBack}>
           &#8592; Zur&uuml;ck
         </Button>
-      </div>
+      </motion.div>
 
-      <div className="flex items-center gap-4">
+      <motion.div className="flex items-center gap-4" variants={sectionVariants} transition={{ duration: 0.25 }}>
         <div
           className="flex h-14 w-14 items-center justify-center rounded-2xl text-2xl font-bold text-white"
-          style={{ backgroundColor: player.avatarColor ?? "#6366f1" }}
+          style={{ backgroundColor: player.avatarColor ?? "#00e676" }}
         >
           {player.name.charAt(0).toUpperCase()}
         </div>
@@ -112,24 +131,26 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
             <Badge color="orange">{DIFFICULTY_LABELS[player.level]}</Badge>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <Card>
-        <h2 className="mb-3 text-sm font-semibold text-text">Skill-Profil</h2>
-        <SkillRadar ratings={player.skillRatings} />
-      </Card>
+      <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
+        <Card>
+          <h2 className="mb-3 text-sm font-semibold text-text">Skill-Profil</h2>
+          <SkillRadar ratings={player.skillRatings} />
+        </Card>
+      </motion.div>
 
       {/* Quick Actions */}
       {onStartTraining && (
-        <div className="flex gap-2 no-print">
+        <motion.div className="flex gap-2 no-print" variants={sectionVariants} transition={{ duration: 0.25 }}>
           <Button onClick={() => onStartTraining(player.id)}>
             Training starten
           </Button>
-        </div>
+        </motion.div>
       )}
 
       {/* Goals section */}
-      <div>
+      <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
         <h2 className="mb-3 text-sm font-semibold text-text">Trainingsziele</h2>
         {showGoalForm ? (
           <Card>
@@ -158,16 +179,16 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
             onToggleStatus={handleToggleStatus}
           />
         )}
-      </div>
+      </motion.div>
 
       {/* Techniques */}
-      <div>
+      <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
         <h2 className="mb-3 text-sm font-semibold text-text">Techniken</h2>
         <PlayerTechniques playerId={player.id} />
-      </div>
+      </motion.div>
 
       {/* Progress & Evaluation history */}
-      <div>
+      <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
         <h2 className="mb-3 text-sm font-semibold text-text">
           Fortschritt {evaluations.length > 0 && `(${evaluations.length} Bewertungen)`}
         </h2>
@@ -191,29 +212,31 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
           </Card>
         )}
         <ProgressView evaluations={evaluations} playerTechniques={playerTechniques} />
-      </div>
+      </motion.div>
 
       {/* Coaching Notes */}
-      <div>
+      <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
         <h2 className="mb-3 text-sm font-semibold text-text">Coaching-Notizen</h2>
         <div className="mb-3">
           <QuickNote playerId={player.id} />
         </div>
         <NotesFeed notes={playerNotes} />
-      </div>
+      </motion.div>
 
       {player.notes && (
-        <Card>
-          <h2 className="mb-2 text-sm font-semibold text-text">Profil-Notizen</h2>
-          <p className="text-sm text-text-muted whitespace-pre-wrap">{player.notes}</p>
-        </Card>
+        <motion.div variants={sectionVariants} transition={{ duration: 0.25 }}>
+          <Card>
+            <h2 className="mb-2 text-sm font-semibold text-text">Profil-Notizen</h2>
+            <p className="text-sm text-text-muted whitespace-pre-wrap">{player.notes}</p>
+          </Card>
+        </motion.div>
       )}
 
-      <div className="flex gap-3 no-print">
+      <motion.div className="flex gap-3 no-print" variants={sectionVariants} transition={{ duration: 0.25 }}>
         <Button onClick={onEdit}>Bearbeiten</Button>
         <Button variant="secondary" onClick={printCurrentPage}>Profil drucken</Button>
         <Button variant="danger" onClick={onDelete}>L&ouml;schen</Button>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

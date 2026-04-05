@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import type { CoachCard } from "../../domain/models/CoachCard";
 import {
   DIFFICULTY_LABELS,
@@ -21,6 +22,25 @@ const CATEGORY_BADGE_COLORS: Record<string, "blue" | "red" | "green" | "orange" 
   Mental: "accent",
 };
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.045,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 18, scale: 0.97 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
+};
+
 interface CardGridProps {
   cards: CoachCard[];
   favorites: string[];
@@ -34,66 +54,79 @@ export default function CardGrid({
 }: CardGridProps) {
   if (cards.length === 0) {
     return (
-      <EmptyState
-        icon="&#128269;"
-        title="Keine Karten gefunden"
-        description="Versuche einen anderen Filter oder Suchbegriff."
-      />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.25 }}
+      >
+        <EmptyState
+          icon="&#128269;"
+          title="Keine Karten gefunden"
+          description="Versuche einen anderen Filter oder Suchbegriff."
+        />
+      </motion.div>
     );
   }
 
   return (
-    <div className="grid min-h-0 flex-1 grid-cols-[repeat(auto-fill,minmax(260px,1fr))] content-start gap-3 overflow-auto pb-4">
+    <motion.div
+      className="grid min-h-0 flex-1 grid-cols-[repeat(auto-fill,minmax(260px,1fr))] content-start gap-3 overflow-auto pb-4"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      key={cards.map((c) => c.id).join(",")}
+    >
       {cards.map((card) => (
-        <Card
-          key={card.id}
-          interactive
-          onClick={() => onSelect(card)}
-          className="text-left"
-        >
-          <div className="mb-2 flex items-start justify-between">
-            <div className="flex-1">
-              <div className="text-sm font-semibold text-text">
-                {card.title}
+        <motion.div key={card.id} variants={cardVariants}>
+          <Card
+            interactive
+            onClick={() => onSelect(card)}
+            className="text-left"
+          >
+            <div className="mb-2 flex items-start justify-between">
+              <div className="flex-1">
+                <div className="text-sm font-semibold text-text">
+                  {card.title}
+                </div>
               </div>
+              {favorites.includes(card.id) && (
+                <span className="ml-2 text-sm text-kicker-orange">
+                  {"\u2605"}
+                </span>
+              )}
             </div>
-            {favorites.includes(card.id) && (
-              <span className="ml-2 text-sm text-kicker-orange">
-                {"\u2605"}
-              </span>
-            )}
-          </div>
 
-          <div className="mb-2 flex flex-wrap gap-1.5">
-            <Badge color={CATEGORY_BADGE_COLORS[card.category] ?? "accent"}>
-              {card.category}
-            </Badge>
-            <Badge color={DIFFICULTY_BADGE_COLORS[card.difficulty]}>
-              {DIFFICULTY_LABELS[card.difficulty]}
-            </Badge>
-          </div>
+            <div className="mb-2 flex flex-wrap gap-1.5">
+              <Badge color={CATEGORY_BADGE_COLORS[card.category] ?? "accent"}>
+                {card.category}
+              </Badge>
+              <Badge color={DIFFICULTY_BADGE_COLORS[card.difficulty]}>
+                {DIFFICULTY_LABELS[card.difficulty]}
+              </Badge>
+            </div>
 
-          <p className="line-clamp-2 text-xs leading-relaxed text-text-muted">
-            {card.summary}
-          </p>
+            <p className="line-clamp-2 text-xs leading-relaxed text-text-muted">
+              {card.summary}
+            </p>
 
-          <div className="mt-2 flex flex-wrap gap-1">
-            {card.tags.slice(0, MAX_VISIBLE_TAGS).map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full bg-surface px-2 py-0.5 text-[10px] text-text-dim"
-              >
-                {tag}
-              </span>
-            ))}
-            {card.tags.length > MAX_VISIBLE_TAGS && (
-              <span className="text-[10px] text-text-dim">
-                +{card.tags.length - MAX_VISIBLE_TAGS}
-              </span>
-            )}
-          </div>
-        </Card>
+            <div className="mt-2 flex flex-wrap gap-1">
+              {card.tags.slice(0, MAX_VISIBLE_TAGS).map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-surface px-2 py-0.5 text-[10px] text-text-dim"
+                >
+                  {tag}
+                </span>
+              ))}
+              {card.tags.length > MAX_VISIBLE_TAGS && (
+                <span className="text-[10px] text-text-dim">
+                  +{card.tags.length - MAX_VISIBLE_TAGS}
+                </span>
+              )}
+            </div>
+          </Card>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }

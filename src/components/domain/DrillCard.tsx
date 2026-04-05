@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Card, Badge } from "../ui";
 import { DIFFICULTY_LABELS, PHASE_LABELS } from "../../domain/constants";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
@@ -43,7 +44,10 @@ export function DrillCard({
 }: DrillCardProps) {
   if (compact) {
     return (
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
         onClick={onClick}
         className={`flex items-center gap-2 rounded-lg px-2 py-1.5 ${
           selected ? "bg-accent-dim" : ""
@@ -65,7 +69,7 @@ export function DrillCard({
         <span className="text-[10px] text-text-dim shrink-0">
           {formatTime(drillTotalDuration(drill))}
         </span>
-      </div>
+      </motion.div>
     );
   }
 
@@ -75,7 +79,12 @@ export function DrillCard({
       onClick={onClick}
       className={selected ? "border-accent bg-accent-dim" : ""}
     >
-      <div className="flex items-center justify-between">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.25 }}
+        className="flex items-center justify-between"
+      >
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="text-sm font-semibold">{drill.name}</span>
@@ -150,7 +159,7 @@ export function DrillCard({
             </button>
           )}
         </div>
-      </div>
+      </motion.div>
     </Card>
   );
 }

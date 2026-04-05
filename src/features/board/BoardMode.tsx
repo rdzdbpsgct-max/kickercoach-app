@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import type Konva from "konva";
 import type { TacticalScene } from "../../domain/models/TacticalBoard";
 import { useAppStore } from "../../store";
@@ -66,32 +67,52 @@ export default function BoardMode() {
   }, [handleSave]);
 
   return (
-    <div className="flex flex-1 flex-col gap-2 min-h-0">
-      <Toolbar
-        tool={state.tool}
-        dispatch={dispatch}
-        canUndo={canUndo}
-        canRedo={canRedo}
-        sceneName={state.scene.name}
-        onExport={handleExport}
-        onSave={handleSave}
-        onShowScenes={() => setShowScenes(true)}
-        onResetFigures={() =>
-          dispatch({ type: "RESET_FIGURES", figures: createDefaultFigures() })
-        }
-      />
-
-      <BoardCanvas state={state} dispatch={dispatch} stageRef={stageRef} />
-
-      {showScenes && (
-        <SceneManager
-          currentScene={state.scene}
-          savedScenes={boardScenes}
-          onSaveScenes={setBoardScenes}
+    <motion.div
+      className="flex flex-1 flex-col gap-2 min-h-0"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.05 }}
+      >
+        <Toolbar
+          tool={state.tool}
           dispatch={dispatch}
-          onClose={() => setShowScenes(false)}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          sceneName={state.scene.name}
+          onExport={handleExport}
+          onSave={handleSave}
+          onShowScenes={() => setShowScenes(true)}
+          onResetFigures={() =>
+            dispatch({ type: "RESET_FIGURES", figures: createDefaultFigures() })
+          }
         />
-      )}
-    </div>
+      </motion.div>
+
+      <motion.div
+        className="flex-1 min-h-0"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.35, delay: 0.12 }}
+      >
+        <BoardCanvas state={state} dispatch={dispatch} stageRef={stageRef} />
+      </motion.div>
+
+      <AnimatePresence>
+        {showScenes && (
+          <SceneManager
+            currentScene={state.scene}
+            savedScenes={boardScenes}
+            onSaveScenes={setBoardScenes}
+            dispatch={dispatch}
+            onClose={() => setShowScenes(false)}
+          />
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

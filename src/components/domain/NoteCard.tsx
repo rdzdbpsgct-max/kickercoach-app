@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Card, Badge } from "../ui";
 import type { CoachingNote, NotePriority } from "../../domain/models/CoachingNote";
 
@@ -36,7 +37,12 @@ interface NoteCardProps {
 export function NoteCard({ note, playerName, onClick }: NoteCardProps) {
   return (
     <Card interactive={!!onClick} onClick={onClick}>
-      <div className="flex flex-col gap-0.5">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.25 }}
+        className="flex flex-col gap-0.5"
+      >
         <div className="flex flex-wrap items-center gap-2">
           <Badge color={CATEGORY_BADGE_COLORS[note.category]}>
             {CATEGORY_LABELS[note.category]}
@@ -69,7 +75,7 @@ export function NoteCard({ note, playerName, onClick }: NoteCardProps) {
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
     </Card>
   );
 }

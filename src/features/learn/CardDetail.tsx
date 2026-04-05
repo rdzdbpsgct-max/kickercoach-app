@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import type { CoachCard } from "../../domain/models/CoachCard";
 import type { Drill } from "../../domain/models/Drill";
 import {
@@ -16,6 +17,15 @@ interface CardDetailProps {
   allCards?: CoachCard[];
   onNavigateToCard?: (card: CoachCard) => void;
 }
+
+const sectionVariants = {
+  hidden: { opacity: 0, y: 14 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, delay: 0.08 * i, ease: "easeOut" as const },
+  }),
+};
 
 export default function CardDetail({
   card,
@@ -50,9 +60,19 @@ export default function CardDetail({
     (c) => card.nextCards?.includes(c.id),
   );
   return (
-    <div className="flex flex-1 flex-col gap-5 overflow-auto pb-6">
+    <motion.div
+      className="flex flex-1 flex-col gap-5 overflow-auto pb-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+    >
       {/* Header */}
-      <div>
+      <motion.div
+        custom={0}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <button
           onClick={onBack}
           aria-label="Zurueck zur Bibliothek"
@@ -84,13 +104,27 @@ export default function CardDetail({
             {isFavorite ? "\u2605" : "\u2606"}
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Summary */}
-      <p className="text-sm leading-relaxed text-text-muted">{card.summary}</p>
+      <motion.p
+        className="text-sm leading-relaxed text-text-muted"
+        custom={1}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {card.summary}
+      </motion.p>
 
       {/* Tags */}
-      <div className="flex flex-wrap gap-1.5">
+      <motion.div
+        className="flex flex-wrap gap-1.5"
+        custom={2}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {card.tags.map((tag) => (
           <span
             key={tag}
@@ -99,25 +133,43 @@ export default function CardDetail({
             {tag}
           </span>
         ))}
-      </div>
+      </motion.div>
 
       {/* Steps */}
-      <div className="rounded-xl border border-border bg-card p-5">
+      <motion.div
+        className="rounded-xl border border-border bg-card p-5"
+        custom={3}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <h2 className="mb-3 text-base font-bold">Schritte</h2>
         <ol className="flex flex-col gap-2.5">
           {card.steps.map((step, i) => (
-            <li key={i} className="flex gap-3 text-sm">
+            <motion.li
+              key={i}
+              className="flex gap-3 text-sm"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.25, delay: 0.3 + i * 0.06 }}
+            >
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-dim text-xs font-bold text-accent">
                 {i + 1}
               </span>
               <span className="leading-relaxed text-text-muted">{step}</span>
-            </li>
+            </motion.li>
           ))}
         </ol>
-      </div>
+      </motion.div>
 
       {/* Common Mistakes */}
-      <div className="rounded-xl border border-kicker-red/20 bg-kicker-red/5 p-5">
+      <motion.div
+        className="rounded-xl border border-kicker-red/20 bg-kicker-red/5 p-5"
+        custom={4}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <h2 className="mb-3 text-base font-bold text-kicker-red">
           Haeufige Fehler
         </h2>
@@ -132,10 +184,16 @@ export default function CardDetail({
             </li>
           ))}
         </ul>
-      </div>
+      </motion.div>
 
       {/* Coach Cues */}
-      <div className="rounded-xl border border-kicker-green/20 bg-kicker-green/5 p-5">
+      <motion.div
+        className="rounded-xl border border-kicker-green/20 bg-kicker-green/5 p-5"
+        custom={5}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <h2 className="mb-3 text-base font-bold text-kicker-green">
           Coach Tipps
         </h2>
@@ -150,11 +208,17 @@ export default function CardDetail({
             </li>
           ))}
         </ul>
-      </div>
+      </motion.div>
 
       {/* Matching Drills */}
       {matchingDrills.length > 0 && (
-        <div className="rounded-xl border border-kicker-orange/20 bg-kicker-orange/5 p-5">
+        <motion.div
+          className="rounded-xl border border-kicker-orange/20 bg-kicker-orange/5 p-5"
+          custom={6}
+          variants={sectionVariants}
+          initial="hidden"
+          animate="visible"
+        >
           <h2 className="mb-3 text-base font-bold text-kicker-orange">
             Passende Drills
           </h2>
@@ -175,13 +239,19 @@ export default function CardDetail({
               </Button>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Lernpfad */}
       {(prerequisiteCards.length > 0 || nextStepCards.length > 0) && (
-        <div className="rounded-xl border border-accent/20 bg-accent-dim p-5">
-          <h2 className="mb-3 text-base font-bold text-accent-hover">
+        <motion.div
+          className="rounded-xl border border-accent/20 bg-accent-dim p-5"
+          custom={7}
+          variants={sectionVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <h2 className="mb-3 text-base font-bold text-accent">
             Lernpfad
           </h2>
 
@@ -224,8 +294,8 @@ export default function CardDetail({
               </div>
             </div>
           )}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }

@@ -1,3 +1,4 @@
+import { motion, AnimatePresence } from "framer-motion";
 import type { ToolState, ToolType, ArrowType, ZoneShape } from "../../../domain/models/TacticalBoard";
 import type { BoardAction } from "../hooks/useBoardReducer";
 import { ZONE_COLORS } from "../../../data/fieldConfig";
@@ -63,20 +64,23 @@ export default function Toolbar({
 
         {/* Tool buttons */}
         {TOOLS.map((t) => (
-          <button
+          <motion.button
             key={t.type}
             onClick={() => dispatch({ type: "SET_TOOL", tool: { activeTool: t.type } })}
             aria-pressed={tool.activeTool === t.type}
             title={`${t.label} (${t.key})`}
             className={`flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
               tool.activeTool === t.type
-                ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                ? "border-2 border-accent bg-accent-dim text-accent"
                 : "border border-border text-text-muted hover:border-accent/50"
             }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.92 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
             <span>{t.icon}</span>
             <span className="hidden md:inline">{t.label}</span>
-          </button>
+          </motion.button>
         ))}
 
         {/* Ball toggle */}
@@ -131,66 +135,88 @@ export default function Toolbar({
       </div>
 
       {/* Sub-options for arrow/zone */}
-      {tool.activeTool === "arrow" && (
-        <div className="flex items-center gap-1.5">
-          <span className="text-[11px] text-text-dim">Typ:</span>
-          {ARROW_TYPES.map((at) => (
-            <button
-              key={at.type}
-              onClick={() =>
-                dispatch({ type: "SET_TOOL", tool: { arrowType: at.type } })
-              }
-              className={`flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
-                tool.arrowType === at.type
-                  ? `${at.color} text-white`
-                  : "border border-border text-text-muted hover:border-accent/50"
-              }`}
-            >
-              {at.label}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {tool.activeTool === "zone" && (
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <span className="text-[11px] text-text-dim">Form:</span>
-            {ZONE_SHAPES.map((zs) => (
-              <button
-                key={zs.shape}
+      <AnimatePresence mode="wait">
+        {tool.activeTool === "arrow" && (
+          <motion.div
+            key="arrow-options"
+            className="flex items-center gap-1.5"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            <span className="text-[11px] text-text-dim">Typ:</span>
+            {ARROW_TYPES.map((at) => (
+              <motion.button
+                key={at.type}
                 onClick={() =>
-                  dispatch({ type: "SET_TOOL", tool: { zoneShape: zs.shape } })
+                  dispatch({ type: "SET_TOOL", tool: { arrowType: at.type } })
                 }
-                className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
-                  tool.zoneShape === zs.shape
-                    ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                className={`flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
+                  tool.arrowType === at.type
+                    ? `${at.color} text-white`
                     : "border border-border text-text-muted hover:border-accent/50"
                 }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.93 }}
               >
-                {zs.label}
-              </button>
+                {at.label}
+              </motion.button>
             ))}
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="text-[11px] text-text-dim">Farbe:</span>
-            {ZONE_COLORS.map((color, i) => (
-              <button
-                key={i}
-                onClick={() =>
-                  dispatch({ type: "SET_TOOL", tool: { zoneColor: color } })
-                }
-                className={`h-5 w-5 rounded-full border-2 transition-all ${
-                  tool.zoneColor === color
-                    ? "border-accent scale-110"
-                    : "border-border hover:border-accent/50"
-                }`}
-                style={{ backgroundColor: color.replace("0.15", "0.6") }}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+
+        {tool.activeTool === "zone" && (
+          <motion.div
+            key="zone-options"
+            className="flex items-center gap-3"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] text-text-dim">Form:</span>
+              {ZONE_SHAPES.map((zs) => (
+                <motion.button
+                  key={zs.shape}
+                  onClick={() =>
+                    dispatch({ type: "SET_TOOL", tool: { zoneShape: zs.shape } })
+                  }
+                  className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
+                    tool.zoneShape === zs.shape
+                      ? "border-2 border-accent bg-accent-dim text-accent"
+                      : "border border-border text-text-muted hover:border-accent/50"
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.93 }}
+                >
+                  {zs.label}
+                </motion.button>
+              ))}
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] text-text-dim">Farbe:</span>
+              {ZONE_COLORS.map((color, i) => (
+                <motion.button
+                  key={i}
+                  onClick={() =>
+                    dispatch({ type: "SET_TOOL", tool: { zoneColor: color } })
+                  }
+                  className={`h-5 w-5 rounded-full border-2 transition-all ${
+                    tool.zoneColor === color
+                      ? "border-accent scale-110"
+                      : "border-border hover:border-accent/50"
+                  }`}
+                  style={{ backgroundColor: color.replace("0.15", "0.6") }}
+                  whileHover={{ scale: 1.15 }}
+                  whileTap={{ scale: 0.9 }}
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

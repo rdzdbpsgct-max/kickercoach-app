@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 const PRIMARY_TABS = [
   { to: "/", label: "Home", icon: "\u{1F3E0}" },
@@ -21,40 +22,58 @@ export default function BottomNav() {
   return (
     <>
       {/* More overlay */}
-      {moreOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-          onClick={() => setMoreOpen(false)}
-        />
-      )}
-      {moreOpen && (
-        <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+3.5rem)] left-3 right-3 z-50 animate-slide-up rounded-2xl border border-border bg-surface p-3 shadow-xl">
-          <div className="mb-2 text-xs font-semibold text-text-dim">Weitere Bereiche</div>
-          <div className="grid grid-cols-2 gap-2">
-            {MORE_ITEMS.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                onClick={() => setMoreOpen(false)}
-                className={({ isActive }) =>
-                  `flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
-                    isActive
-                      ? "bg-accent-dim text-accent-hover"
-                      : "text-text-muted hover:bg-card-hover"
-                  }`
-                }
-              >
-                <span className="text-lg">{item.icon}</span>
-                {item.label}
-              </NavLink>
-            ))}
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {moreOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+              onClick={() => setMoreOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="fixed bottom-[calc(env(safe-area-inset-bottom)+3.5rem)] left-3 right-3 z-50 rounded-2xl border border-border bg-surface p-3 shadow-2xl"
+            >
+              <div className="mb-2 text-xs font-semibold text-text-dim">Weitere Bereiche</div>
+              <div className="grid grid-cols-2 gap-2">
+                {MORE_ITEMS.map((item, i) => (
+                  <motion.div
+                    key={item.to}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.04, duration: 0.15 }}
+                  >
+                    <NavLink
+                      to={item.to}
+                      onClick={() => setMoreOpen(false)}
+                      className={({ isActive }) =>
+                        `flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
+                          isActive
+                            ? "bg-accent-dim text-accent"
+                            : "text-text-muted hover:bg-surface-hover hover:text-text"
+                        }`
+                      }
+                    >
+                      <span className="text-lg">{item.icon}</span>
+                      {item.label}
+                    </NavLink>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Bottom nav bar */}
       <nav
-        className="bottom-nav fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-surface/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
+        className="bottom-nav fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-surface/90 backdrop-blur-lg pb-[env(safe-area-inset-bottom)]"
         aria-label="Hauptnavigation"
       >
         <div className="flex items-stretch justify-around">
@@ -64,18 +83,30 @@ export default function BottomNav() {
               to={tab.to}
               end={tab.to === "/"}
               className={({ isActive }) =>
-                `flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition-colors ${
+                `relative flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition-colors ${
                   isActive
                     ? "text-accent"
                     : "text-text-dim"
                 }`
               }
             >
-              <span className="text-xl leading-none">{tab.icon}</span>
-              {tab.label}
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <motion.div
+                      layoutId="bottomnav-indicator"
+                      className="absolute top-0 left-1/4 right-1/4 h-0.5 rounded-full bg-accent"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
+                  )}
+                  <span className="text-xl leading-none">{tab.icon}</span>
+                  {tab.label}
+                </>
+              )}
             </NavLink>
           ))}
-          <button
+          <motion.button
+            whileTap={{ scale: 0.93 }}
             onClick={() => setMoreOpen((prev) => !prev)}
             aria-label="Weitere Bereiche"
             aria-expanded={moreOpen}
@@ -85,7 +116,7 @@ export default function BottomNav() {
           >
             <span className="text-xl leading-none">{moreOpen ? "\u2716" : "\u2026"}</span>
             Mehr
-          </button>
+          </motion.button>
         </div>
       </nav>
     </>

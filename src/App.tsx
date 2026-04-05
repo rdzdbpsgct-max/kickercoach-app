@@ -1,5 +1,6 @@
 import { Suspense, lazy, Component, type ReactNode } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import Layout from "./components/Layout";
 import { FeatureErrorBoundary } from "./components/ErrorBoundary";
 import QuickActionFAB from "./components/QuickActionFAB";
@@ -39,7 +40,7 @@ class ErrorBoundary extends Component<
           </p>
           <button
             onClick={() => window.location.reload()}
-            className="rounded-xl border-2 border-accent bg-accent-dim px-6 py-2 text-sm font-semibold text-accent-hover hover:bg-accent hover:text-white transition-all"
+            className="rounded-xl border border-accent bg-accent px-6 py-2 text-sm font-bold text-bg hover:bg-accent-hover transition-all"
           >
             Seite neu laden
           </button>
@@ -61,12 +62,21 @@ function LoadingFallback() {
   );
 }
 
-export default function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
-    <ErrorBoundary>
-      <Layout>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname.split("/")[1] || "home"}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+        className="flex flex-1 flex-col"
+      >
         <Suspense fallback={<LoadingFallback />}>
-          <Routes>
+          <Routes location={location}>
             <Route path="/" element={<FeatureErrorBoundary featureName="Home"><HomePage /></FeatureErrorBoundary>} />
             <Route path="/learn" element={<FeatureErrorBoundary featureName="Lernen"><LearnMode /></FeatureErrorBoundary>} />
             <Route path="/train" element={<FeatureErrorBoundary featureName="Training"><TrainMode /></FeatureErrorBoundary>} />
@@ -85,6 +95,16 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <Layout>
+        <AnimatedRoutes />
         <QuickActionFAB />
       </Layout>
     </ErrorBoundary>

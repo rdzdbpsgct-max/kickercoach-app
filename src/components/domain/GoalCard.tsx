@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Card, Badge } from "../ui";
 import type { Goal } from "../../domain/models/Goal";
 
@@ -20,9 +21,11 @@ function ProgressBar({ current, target }: { current: number; target: number }) {
   return (
     <div className="mt-1.5 flex items-center gap-2">
       <div className="h-1.5 flex-1 rounded-full bg-surface-hover">
-        <div
-          className="h-1.5 rounded-full bg-accent transition-all"
-          style={{ width: `${pct}%` }}
+        <motion.div
+          className="h-1.5 rounded-full bg-accent"
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         />
       </div>
       <span className="text-[10px] font-medium text-text-dim">
@@ -41,7 +44,12 @@ interface GoalCardProps {
 export function GoalCard({ goal, playerName, onClick }: GoalCardProps) {
   return (
     <Card interactive={!!onClick} onClick={onClick}>
-      <div className="flex items-start justify-between gap-2">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.25 }}
+        className="flex items-start justify-between gap-2"
+      >
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-semibold text-text">
@@ -70,7 +78,7 @@ export function GoalCard({ goal, playerName, onClick }: GoalCardProps) {
             </p>
           )}
         </div>
-      </div>
+      </motion.div>
     </Card>
   );
 }

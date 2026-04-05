@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { useNavigate, useParams, useLocation, Outlet } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useAppStore } from "../../store";
 import { ConfirmDialog, Tabs } from "../../components/ui";
 import { PlayerList } from "./PlayerList";
@@ -16,6 +17,12 @@ const TABS: { value: Tab; label: string; icon: string }[] = [
   { value: "players", label: "Spieler", icon: "\u{1F464}" },
   { value: "teams", label: "Teams", icon: "\u{1F91D}" },
 ];
+
+const fadeIn = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.25, ease: "easeOut" as const },
+};
 
 export default function PlayersMode() {
   const navigate = useNavigate();
@@ -194,7 +201,7 @@ export default function PlayersMode() {
 
   // List view with tabs
   return (
-    <div className="flex flex-1 flex-col gap-4 overflow-hidden">
+    <motion.div className="flex flex-1 flex-col gap-4 overflow-hidden" {...fadeIn}>
       <Tabs tabs={TABS} active={tab} onChange={handleTabChange} />
 
       {tab === "players" && (
@@ -224,6 +231,6 @@ export default function PlayersMode() {
         />
       )}
       <Outlet />
-    </div>
+    </motion.div>
   );
 }

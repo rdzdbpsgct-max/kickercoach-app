@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { motion } from "framer-motion";
 import type { MatchPlan } from "../../domain/models/MatchPlan";
 import { useAppStore } from "../../store";
 import { Button } from "../../components/ui";
@@ -18,6 +19,25 @@ function createEmptyPlan(): MatchPlan {
     defensiveStrategy: "",
   };
 }
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 14 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
+};
 
 export default function PlanMode() {
   const matchPlans = useAppStore((s) => s.matchPlans);
@@ -98,8 +118,16 @@ export default function PlanMode() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-4 overflow-hidden">
-      <div className="flex items-center justify-between">
+    <motion.div
+      className="flex flex-1 flex-col gap-4 overflow-hidden"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.div
+        variants={itemVariants}
+        className="flex items-center justify-between"
+      >
         <h1 className="text-xl font-bold">Matchplan</h1>
         <div className="flex gap-2">
           <input
@@ -117,14 +145,16 @@ export default function PlanMode() {
           </Button>
           <Button onClick={handleNew}>+ Neuer Plan</Button>
         </div>
-      </div>
+      </motion.div>
 
-      <MatchPlanList
-        plans={matchPlans}
-        onSelect={setEditingPlan}
-        onDelete={handleDelete}
-        onExport={handleExport}
-      />
-    </div>
+      <motion.div variants={itemVariants}>
+        <MatchPlanList
+          plans={matchPlans}
+          onSelect={setEditingPlan}
+          onDelete={handleDelete}
+          onExport={handleExport}
+        />
+      </motion.div>
+    </motion.div>
   );
 }

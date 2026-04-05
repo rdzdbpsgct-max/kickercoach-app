@@ -1,6 +1,8 @@
 import { type ReactNode } from "react";
 import { NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
 import BottomNav from "./BottomNav";
+import { useTheme } from "../hooks/useTheme";
 
 const tabs = [
   { to: "/", label: "Home", icon: "\u{1F3E0}" },
@@ -13,15 +15,17 @@ const tabs = [
 ] as const;
 
 export default function Layout({ children }: { children: ReactNode }) {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <div className="flex h-full flex-col bg-bg text-text">
       {/* Skip to content */}
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-accent focus:text-white focus:px-4 focus:py-2 focus:rounded">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-accent focus:text-bg focus:px-4 focus:py-2 focus:rounded">
         Zum Inhalt springen
       </a>
 
-      {/* Desktop Header — hidden on mobile */}
-      <header className="hidden md:flex shrink-0 items-center justify-between border-b border-border bg-surface px-5 py-3">
+      {/* Desktop Header */}
+      <header className="hidden md:flex shrink-0 items-center justify-between border-b border-border bg-surface/80 backdrop-blur-md px-5 py-3">
         <NavLink
           to="/"
           end
@@ -31,7 +35,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             }`
           }
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-kicker-blue text-lg font-bold text-white">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-secondary text-lg font-bold text-bg">
             K
           </div>
           <div>
@@ -44,33 +48,45 @@ export default function Layout({ children }: { children: ReactNode }) {
           </div>
         </NavLink>
 
-        <nav className="flex gap-1.5" aria-label="Hauptnavigation">
-          {tabs.map((tab) => (
-            <NavLink
-              key={tab.to}
-              to={tab.to}
-              end={tab.to === "/"}
-              className={({ isActive }) =>
-                `flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-all ${
-                  isActive
-                    ? "border-2 border-accent bg-accent-dim text-accent-hover"
-                    : "border border-border text-text-muted hover:border-accent/50 hover:text-text"
-                }`
-              }
-            >
-              <span>{tab.icon}</span>
-              {tab.label}
-            </NavLink>
-          ))}
-        </nav>
+        <div className="flex items-center gap-3">
+          <nav className="flex gap-1.5" aria-label="Hauptnavigation">
+            {tabs.map((tab) => (
+              <NavLink
+                key={tab.to}
+                to={tab.to}
+                end={tab.to === "/"}
+                className={({ isActive }) =>
+                  `relative flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium transition-all ${
+                    isActive
+                      ? "bg-accent-dim text-accent border border-accent/30"
+                      : "border border-transparent text-text-muted hover:text-text hover:bg-surface-hover"
+                  }`
+                }
+              >
+                <span>{tab.icon}</span>
+                {tab.label}
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Theme toggle */}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={toggleTheme}
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-border text-text-muted hover:text-text hover:bg-surface-hover transition-all"
+            aria-label={theme === "dark" ? "Light Mode aktivieren" : "Dark Mode aktivieren"}
+          >
+            {theme === "dark" ? "\u2600\uFE0F" : "\uD83C\uDF19"}
+          </motion.button>
+        </div>
       </header>
 
-      {/* Main content — extra bottom padding on mobile for BottomNav */}
+      {/* Main content */}
       <main id="main-content" role="main" className="flex flex-1 flex-col overflow-hidden p-3 pb-20 md:p-5 md:pb-5">
         {children}
       </main>
 
-      {/* Mobile Bottom Navigation — hidden on desktop */}
+      {/* Mobile Bottom Navigation */}
       <div className="md:hidden">
         <BottomNav />
       </div>

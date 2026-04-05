@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import type { Drill, DrillPhase, RodPosition } from "../../domain/models/Drill";
 import type { Difficulty, Category } from "../../domain/models/CoachCard";
 import { drillTotalDuration, formatTime } from "../../domain/logic";
@@ -58,6 +59,19 @@ const POSITION_OPTIONS: (RodPosition | "Alle")[] = [
   "midfield",
   "offense",
 ];
+
+const listContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.04,
+    },
+  },
+};
+
+const listItem = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.2 } },
+};
 
 interface DrillSelectorProps {
   drills: Drill[];
@@ -125,93 +139,94 @@ export default function DrillSelector({
   }, [filtered, recommendedDrillIds]);
 
   const renderDrill = (drill: Drill) => (
-    <Card
-      key={drill.id}
-      interactive
-      onClick={() => onSelect(drill)}
-      className={
-        selectedId === drill.id
-          ? "border-accent bg-accent-dim"
-          : ""
-      }
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-sm font-semibold">{drill.name}</span>
-            {drill.difficulty && (
-              <Badge color={DIFFICULTY_BADGE_COLORS[drill.difficulty]}>
-                {DIFFICULTY_LABELS[drill.difficulty]}
-              </Badge>
+    <motion.div key={drill.id} variants={listItem}>
+      <Card
+        interactive
+        onClick={() => onSelect(drill)}
+        className={
+          selectedId === drill.id
+            ? "border-accent bg-accent-dim"
+            : ""
+        }
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-sm font-semibold">{drill.name}</span>
+              {drill.difficulty && (
+                <Badge color={DIFFICULTY_BADGE_COLORS[drill.difficulty]}>
+                  {DIFFICULTY_LABELS[drill.difficulty]}
+                </Badge>
+              )}
+              {drill.phase && (
+                <Badge color={PHASE_BADGE_COLORS[drill.phase]}>
+                  {PHASE_LABELS[drill.phase]}
+                </Badge>
+              )}
+              {drill.isCustom && (
+                <Badge color="accent">Eigener Drill</Badge>
+              )}
+            </div>
+            <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-text-dim">
+              <span>{drill.focusSkill}</span>
+              <span>&middot;</span>
+              <span>{drill.blocks.length} Blocks</span>
+              {drill.position && (
+                <>
+                  <span>&middot;</span>
+                  <span>{POSITION_LABELS[drill.position]}</span>
+                </>
+              )}
+              {drill.playerCount && drill.playerCount > 1 && (
+                <>
+                  <span>&middot;</span>
+                  <span>{drill.playerCount} Spieler</span>
+                </>
+              )}
+            </div>
+            {drill.description && (
+              <div className="mt-1 line-clamp-1 text-xs text-text-dim">
+                {drill.description}
+              </div>
             )}
-            {drill.phase && (
-              <Badge color={PHASE_BADGE_COLORS[drill.phase]}>
-                {PHASE_LABELS[drill.phase]}
-              </Badge>
-            )}
-            {drill.isCustom && (
-              <Badge color="accent">Eigener Drill</Badge>
+            {drill.measurableGoal && (
+              <div className="mt-0.5 text-[11px] text-accent">
+                Ziel: {drill.measurableGoal}
+              </div>
             )}
           </div>
-          <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-text-dim">
-            <span>{drill.focusSkill}</span>
-            <span>&middot;</span>
-            <span>{drill.blocks.length} Blocks</span>
-            {drill.position && (
-              <>
-                <span>&middot;</span>
-                <span>{POSITION_LABELS[drill.position]}</span>
-              </>
+          <div className="ml-3 flex shrink-0 items-center gap-2">
+            <span className="text-xs font-medium text-text-dim">
+              {formatTime(drillTotalDuration(drill))}
+            </span>
+            {drill.isCustom && onEditDrill && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEditDrill(drill);
+                }}
+                className="rounded-lg border border-border px-2 py-1 text-[11px] text-text-muted hover:border-accent/50 transition-all"
+                title="Bearbeiten"
+              >
+                &#9998;
+              </button>
             )}
-            {drill.playerCount && drill.playerCount > 1 && (
-              <>
-                <span>&middot;</span>
-                <span>{drill.playerCount} Spieler</span>
-              </>
+            {drill.isCustom && onDeleteDrill && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteDrill(drill.id);
+                }}
+                className="rounded-lg border border-border px-2 py-1 text-[11px] text-kicker-red hover:border-kicker-red/50 transition-all"
+                title="Loeschen"
+              >
+                &#10005;
+              </button>
             )}
           </div>
-          {drill.description && (
-            <div className="mt-1 line-clamp-1 text-xs text-text-dim">
-              {drill.description}
-            </div>
-          )}
-          {drill.measurableGoal && (
-            <div className="mt-0.5 text-[11px] text-accent">
-              Ziel: {drill.measurableGoal}
-            </div>
-          )}
         </div>
-        <div className="ml-3 flex shrink-0 items-center gap-2">
-          <span className="text-xs font-medium text-text-dim">
-            {formatTime(drillTotalDuration(drill))}
-          </span>
-          {drill.isCustom && onEditDrill && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onEditDrill(drill);
-              }}
-              className="rounded-lg border border-border px-2 py-1 text-[11px] text-text-muted hover:border-accent/50 transition-all"
-              title="Bearbeiten"
-            >
-              &#9998;
-            </button>
-          )}
-          {drill.isCustom && onDeleteDrill && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onDeleteDrill(drill.id);
-              }}
-              className="rounded-lg border border-border px-2 py-1 text-[11px] text-kicker-red hover:border-kicker-red/50 transition-all"
-              title="Loeschen"
-            >
-              &#10005;
-            </button>
-          )}
-        </div>
-      </div>
-    </Card>
+      </Card>
+    </motion.div>
   );
 
   return (
@@ -230,7 +245,7 @@ export default function DrillSelector({
               aria-pressed={difficultyFilter === opt}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
                 difficultyFilter === opt
-                  ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                  ? "border-2 border-accent bg-accent-dim text-accent"
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
@@ -248,7 +263,7 @@ export default function DrillSelector({
               aria-pressed={phaseFilter === opt}
               className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
                 phaseFilter === opt
-                  ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                  ? "border-2 border-accent bg-accent-dim text-accent"
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
@@ -266,7 +281,7 @@ export default function DrillSelector({
               aria-pressed={categoryFilter === opt}
               className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
                 categoryFilter === opt
-                  ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                  ? "border-2 border-accent bg-accent-dim text-accent"
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
@@ -284,7 +299,7 @@ export default function DrillSelector({
               aria-pressed={positionFilter === opt}
               className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-all ${
                 positionFilter === opt
-                  ? "border-2 border-accent bg-accent-dim text-accent-hover"
+                  ? "border-2 border-accent bg-accent-dim text-accent"
                   : "border border-border text-text-muted hover:border-accent/50"
               }`}
             >
@@ -303,7 +318,13 @@ export default function DrillSelector({
       </div>
 
       {/* Drill list */}
-      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-auto">
+      <motion.div
+        className="flex min-h-0 flex-1 flex-col gap-2 overflow-auto"
+        variants={listContainer}
+        initial="initial"
+        animate="animate"
+        key={`${difficultyFilter}-${phaseFilter}-${categoryFilter}-${positionFilter}-${search}`}
+      >
         {/* Recommended section */}
         {recommended.length > 0 && (
           <>
@@ -319,7 +340,7 @@ export default function DrillSelector({
           </>
         )}
         {rest.map(renderDrill)}
-      </div>
+      </motion.div>
     </div>
   );
 }

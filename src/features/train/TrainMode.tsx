@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import type { Drill } from "../../domain/models/Drill";
 import { advanceBlock, previousBlock } from "../../domain/logic/drill";
 import { useTimer } from "../../hooks/useTimer";
@@ -22,6 +23,13 @@ import type { TrainingPlan } from "../../domain/models/TrainingPlan";
 import { getRecommendedDrillIds } from "../../domain/logic/recommendations";
 
 type View = "drills" | "timer" | "session-builder" | "journal" | "drill-editor" | "session-rating" | "session-retrospective" | "training-plans" | "training-plan-editor";
+
+const fadeIn = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+  transition: { duration: 0.25, ease: "easeOut" as const },
+};
 
 export default function TrainMode() {
   const location = useLocation();
@@ -257,7 +265,7 @@ export default function TrainMode() {
   // Training Plan List view
   if (view === "training-plans") {
     return (
-      <div className="flex flex-1 flex-col gap-4 overflow-hidden">
+      <motion.div className="flex flex-1 flex-col gap-4 overflow-hidden" {...fadeIn}>
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold">Trainingspl&auml;ne</h1>
           <button
@@ -277,7 +285,7 @@ export default function TrainMode() {
             setView("training-plan-editor");
           }}
         />
-      </div>
+      </motion.div>
     );
   }
 
@@ -300,7 +308,7 @@ export default function TrainMode() {
   // Session Retrospective view
   if (view === "session-retrospective" && lastSavedSession) {
     return (
-      <div className="flex flex-1 flex-col gap-4 overflow-auto pb-4">
+      <motion.div className="flex flex-1 flex-col gap-4 overflow-auto pb-4" {...fadeIn}>
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold">Retrospektive</h2>
         </div>
@@ -316,7 +324,7 @@ export default function TrainMode() {
             setView("journal");
           }}
         />
-      </div>
+      </motion.div>
     );
   }
 
@@ -355,7 +363,7 @@ export default function TrainMode() {
   // Journal view
   if (view === "journal") {
     return (
-      <div className="flex flex-1 flex-col gap-4 overflow-hidden">
+      <motion.div className="flex flex-1 flex-col gap-4 overflow-hidden" {...fadeIn}>
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-bold">Trainingstagebuch</h1>
           <button
@@ -373,14 +381,14 @@ export default function TrainMode() {
           }}
           onDelete={handleDeleteSession}
         />
-      </div>
+      </motion.div>
     );
   }
 
   // Timer view
   if (view === "timer" && selectedDrill) {
     return (
-      <div className="flex flex-1 flex-col gap-6 overflow-hidden">
+      <motion.div className="flex flex-1 flex-col gap-6 overflow-hidden" {...fadeIn}>
         <div className="flex items-center justify-between">
           <div>
             <button
@@ -415,97 +423,106 @@ export default function TrainMode() {
         </div>
 
         <div className="flex flex-1 flex-col items-center justify-center gap-6">
-          {currentBlock && (
-            <>
-              <div className="text-sm font-medium text-text-muted">
-                {currentBlock.note ||
-                  (currentBlock.type === "work" ? "Training" : "Pause")}
-              </div>
+          <AnimatePresence mode="wait">
+            {currentBlock && (
+              <motion.div
+                key={blockIndex}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col items-center gap-6"
+              >
+                <div className="text-sm font-medium text-text-muted">
+                  {currentBlock.note ||
+                    (currentBlock.type === "work" ? "Training" : "Pause")}
+                </div>
 
-              <Timer
-                remainingSeconds={timer.remainingSeconds}
-                isRunning={timer.isRunning}
-                isFinished={currentBlock.type === "repetitions" ? (completedReps >= (currentBlock.repetitions ?? 0)) : timer.isFinished}
-                blockType={currentBlock.type}
-                repetitions={currentBlock.repetitions}
-                completedReps={completedReps}
-              />
+                <Timer
+                  remainingSeconds={timer.remainingSeconds}
+                  isRunning={timer.isRunning}
+                  isFinished={currentBlock.type === "repetitions" ? (completedReps >= (currentBlock.repetitions ?? 0)) : timer.isFinished}
+                  blockType={currentBlock.type}
+                  repetitions={currentBlock.repetitions}
+                  completedReps={completedReps}
+                />
 
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="secondary"
-                  onClick={handlePrev}
-                  disabled={blockIndex === 0}
-                >
-                  Zurueck
-                </Button>
-                {currentBlock.type === "repetitions" ? (
-                  /* Repetition controls */
-                  <>
-                    <Button
-                      variant="secondary"
-                      onClick={handleRepDecrement}
-                      disabled={completedReps === 0}
-                    >
-                      -1
-                    </Button>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="secondary"
+                    onClick={handlePrev}
+                    disabled={blockIndex === 0}
+                  >
+                    Zurueck
+                  </Button>
+                  {currentBlock.type === "repetitions" ? (
+                    /* Repetition controls */
+                    <>
+                      <Button
+                        variant="secondary"
+                        onClick={handleRepDecrement}
+                        disabled={completedReps === 0}
+                      >
+                        -1
+                      </Button>
+                      <Button
+                        size="lg"
+                        onClick={handleRepIncrement}
+                        disabled={completedReps >= (currentBlock.repetitions ?? 0)}
+                      >
+                        +1
+                      </Button>
+                    </>
+                  ) : (
                     <Button
                       size="lg"
-                      onClick={handleRepIncrement}
-                      disabled={completedReps >= (currentBlock.repetitions ?? 0)}
+                      onClick={timer.toggle}
                     >
-                      +1
+                      {timer.isFinished
+                        ? "Reset"
+                        : timer.isRunning
+                          ? "Pause"
+                          : "Start"}
                     </Button>
-                  </>
-                ) : (
+                  )}
                   <Button
-                    size="lg"
-                    onClick={timer.toggle}
+                    variant="secondary"
+                    onClick={handleNext}
+                    disabled={blockIndex === selectedDrill.blocks.length - 1}
                   >
-                    {timer.isFinished
-                      ? "Reset"
-                      : timer.isRunning
-                        ? "Pause"
-                        : "Start"}
+                    Weiter
                   </Button>
-                )}
-                <Button
-                  variant="secondary"
-                  onClick={handleNext}
-                  disabled={blockIndex === selectedDrill.blocks.length - 1}
+                </div>
+
+                <button
+                  onClick={handleReset}
+                  className="text-xs text-text-dim hover:text-text transition-colors"
                 >
-                  Weiter
-                </Button>
-              </div>
+                  Reset (R)
+                </button>
 
-              <button
-                onClick={handleReset}
-                className="text-xs text-text-dim hover:text-text transition-colors"
-              >
-                Reset (R)
-              </button>
-
-              <div className="flex gap-4 text-[11px] text-text-dim">
-                <span>Space: Start/Pause</span>
-                <span>&larr;/P: Prev</span>
-                <span>&rarr;/N: Next</span>
-                <span>R: Reset</span>
-              </div>
-            </>
-          )}
+                <div className="flex gap-4 text-[11px] text-text-dim">
+                  <span>Space: Start/Pause</span>
+                  <span>&larr;/P: Prev</span>
+                  <span>&rarr;/N: Next</span>
+                  <span>R: Reset</span>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <BlockProgress
           blocks={selectedDrill.blocks}
           currentIndex={blockIndex}
         />
-      </div>
+      </motion.div>
     );
   }
 
   // Default: Drill selector with sub-nav
   return (
-    <div className="flex flex-1 flex-col gap-4 overflow-hidden">
+    <motion.div className="flex flex-1 flex-col gap-4 overflow-hidden" {...fadeIn}>
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">Training</h1>
         <div className="flex gap-2">
@@ -566,6 +583,6 @@ export default function TrainMode() {
         title="Drill l&ouml;schen"
         message="M&ouml;chtest du diesen eigenen Drill wirklich l&ouml;schen?"
       />
-    </div>
+    </motion.div>
   );
 }

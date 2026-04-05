@@ -1,4 +1,5 @@
 import { type ReactNode, type HTMLAttributes } from "react";
+import { motion } from "framer-motion";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   interactive?: boolean;
@@ -11,13 +12,22 @@ export function Card({
   children,
   ...props
 }: CardProps) {
+  if (interactive) {
+    return (
+      <motion.div
+        whileHover={{ y: -2 }}
+        transition={{ duration: 0.2 }}
+        className={`rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/40 hover:bg-card-hover cursor-pointer ${className}`}
+        {...(props as Record<string, unknown>)}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+
   return (
     <div
-      className={`rounded-xl border border-border bg-card p-4 ${
-        interactive
-          ? "transition-all hover:border-accent/50 hover:bg-card-hover cursor-pointer"
-          : ""
-      } ${className}`}
+      className={`rounded-xl border border-border bg-card p-4 ${className}`}
       {...props}
     >
       {children}

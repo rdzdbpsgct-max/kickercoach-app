@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "../store";
 
 const ACTIONS = [
@@ -45,7 +46,6 @@ export default function QuickActionFAB() {
           navigate(`/players/${players[0].id}`);
         } else if (players.length > 1) {
           setShowPlayerPicker(true);
-
         } else {
           navigate("/players/new");
         }
@@ -70,132 +70,174 @@ export default function QuickActionFAB() {
   return (
     <>
       {/* Quick Note Sheet */}
-      {showNoteForm && (
-        <>
-          <div
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
-            onClick={() => setShowNoteForm(false)}
-          />
-          <div className="fixed bottom-24 left-3 right-3 z-50 rounded-2xl border border-border bg-surface p-4 shadow-xl md:left-auto md:right-6 md:w-80">
-            <h3 className="mb-3 text-sm font-bold text-text">Schnelle Notiz</h3>
-            <textarea
-              autoFocus
-              value={noteText}
-              onChange={(e) => setNoteText(e.target.value)}
-              placeholder="Coaching-Beobachtung..."
-              className="mb-2 w-full rounded-lg border border-border bg-card p-2 text-sm text-text placeholder:text-text-dim focus:border-accent focus:outline-none"
-              rows={3}
+      <AnimatePresence>
+        {showNoteForm && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+              onClick={() => setShowNoteForm(false)}
             />
-            <div className="mb-2 flex gap-2">
-              <select
-                value={noteCategory}
-                onChange={(e) => setNoteCategory(e.target.value as typeof noteCategory)}
-                className="flex-1 rounded-lg border border-border bg-card px-2 py-1.5 text-xs text-text"
-              >
-                <option value="technical">Technisch</option>
-                <option value="tactical">Taktisch</option>
-                <option value="mental">Mental</option>
-                <option value="communication">Kommunikation</option>
-              </select>
-              {players.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed bottom-24 left-3 right-3 z-50 rounded-2xl border border-border bg-surface p-4 shadow-2xl md:left-auto md:right-6 md:w-80"
+            >
+              <h3 className="mb-3 text-sm font-bold text-text">Schnelle Notiz</h3>
+              <textarea
+                autoFocus
+                value={noteText}
+                onChange={(e) => setNoteText(e.target.value)}
+                placeholder="Coaching-Beobachtung..."
+                className="mb-2 w-full rounded-xl border border-border bg-card p-3 text-sm text-text placeholder:text-text-dim focus:border-accent focus:ring-1 focus:ring-accent/30 focus:outline-none transition-all"
+                rows={3}
+              />
+              <div className="mb-3 flex gap-2">
                 <select
-                  value={notePlayerId}
-                  onChange={(e) => setNotePlayerId(e.target.value)}
-                  className="flex-1 rounded-lg border border-border bg-card px-2 py-1.5 text-xs text-text"
+                  value={noteCategory}
+                  onChange={(e) => setNoteCategory(e.target.value as typeof noteCategory)}
+                  className="flex-1 rounded-xl border border-border bg-card px-3 py-2 text-xs text-text focus:border-accent focus:outline-none"
                 >
-                  <option value="">Kein Spieler</option>
-                  {players.map((p) => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
+                  <option value="technical">Technisch</option>
+                  <option value="tactical">Taktisch</option>
+                  <option value="mental">Mental</option>
+                  <option value="communication">Kommunikation</option>
                 </select>
-              )}
-            </div>
-            <div className="flex justify-end gap-2">
+                {players.length > 0 && (
+                  <select
+                    value={notePlayerId}
+                    onChange={(e) => setNotePlayerId(e.target.value)}
+                    className="flex-1 rounded-xl border border-border bg-card px-3 py-2 text-xs text-text focus:border-accent focus:outline-none"
+                  >
+                    <option value="">Kein Spieler</option>
+                    {players.map((p) => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                )}
+              </div>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setShowNoteForm(false)}
+                  className="rounded-xl px-4 py-2 text-xs font-medium text-text-muted hover:text-text hover:bg-surface-hover transition-all"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  onClick={handleSaveNote}
+                  disabled={!noteText.trim()}
+                  className="rounded-xl bg-accent px-4 py-2 text-xs font-bold text-bg disabled:opacity-50 hover:bg-accent-hover transition-all"
+                >
+                  Speichern
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Player Picker */}
+      <AnimatePresence>
+        {showPlayerPicker && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+              onClick={() => setShowPlayerPicker(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed bottom-24 left-3 right-3 z-50 rounded-2xl border border-border bg-surface p-4 shadow-2xl md:left-auto md:right-6 md:w-80"
+            >
+              <h3 className="mb-3 text-sm font-bold text-text">Spieler waehlen</h3>
+              <div className="flex flex-col gap-1 max-h-60 overflow-auto">
+                {players.map((p) => (
+                  <motion.button
+                    key={p.id}
+                    whileHover={{ x: 4 }}
+                    onClick={() => {
+                      setShowPlayerPicker(false);
+                      navigate(`/players/${p.id}`);
+                    }}
+                    className="flex items-center gap-2 rounded-xl p-2 text-left hover:bg-surface-hover transition-colors min-h-[44px]"
+                  >
+                    <span
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
+                      style={{ backgroundColor: p.avatarColor ?? "#00e676" }}
+                    >
+                      {p.name.charAt(0).toUpperCase()}
+                    </span>
+                    <span className="text-sm font-medium text-text">{p.name}</span>
+                  </motion.button>
+                ))}
+              </div>
               <button
-                onClick={() => setShowNoteForm(false)}
-                className="rounded-lg px-3 py-1.5 text-xs text-text-muted hover:text-text"
+                onClick={() => setShowPlayerPicker(false)}
+                className="mt-2 w-full rounded-xl py-2 text-xs text-text-muted hover:text-text transition-colors"
               >
                 Abbrechen
               </button>
-              <button
-                onClick={handleSaveNote}
-                disabled={!noteText.trim()}
-                className="rounded-lg bg-accent px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
-              >
-                Speichern
-              </button>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Player Picker */}
-      {showPlayerPicker && (
-        <>
-          <div
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
-            onClick={() => setShowPlayerPicker(false)}
-          />
-          <div className="fixed bottom-24 left-3 right-3 z-50 rounded-2xl border border-border bg-surface p-4 shadow-xl md:left-auto md:right-6 md:w-80">
-            <h3 className="mb-3 text-sm font-bold text-text">Spieler waehlen</h3>
-            <div className="flex flex-col gap-1 max-h-60 overflow-auto">
-              {players.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => {
-                    setShowPlayerPicker(false);
-                    navigate(`/players/${p.id}`);
-                  }}
-                  className="flex items-center gap-2 rounded-lg p-2 text-left hover:bg-card-hover transition-colors min-h-[44px]"
-                >
-                  <span
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
-                    style={{ backgroundColor: p.avatarColor ?? "#6366f1" }}
-                  >
-                    {p.name.charAt(0).toUpperCase()}
-                  </span>
-                  <span className="text-sm font-medium text-text">{p.name}</span>
-                </button>
-              ))}
-            </div>
-            <button
-              onClick={() => setShowPlayerPicker(false)}
-              className="mt-2 w-full rounded-lg py-2 text-xs text-text-muted hover:text-text"
-            >
-              Abbrechen
-            </button>
-          </div>
-        </>
-      )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* FAB */}
       <div ref={fabRef} data-fab className="fixed bottom-20 right-4 z-30 md:bottom-6 md:right-6">
         {/* Expanded actions */}
-        {open && (
-          <div className="mb-3 flex flex-col items-end gap-2 animate-slide-up" role="menu">
-            {ACTIONS.map((a) => (
-              <button
-                key={a.action}
-                role="menuitem"
-                onClick={() => handleAction(a.action)}
-                className="flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-text shadow-lg transition-all hover:bg-card-hover"
-              >
-                <span>{a.icon}</span>
-                {a.label}
-              </button>
-            ))}
-          </div>
-        )}
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="mb-3 flex flex-col items-end gap-2"
+              role="menu"
+            >
+              {ACTIONS.map((a, i) => (
+                <motion.button
+                  key={a.action}
+                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                  transition={{ delay: i * 0.05, duration: 0.15 }}
+                  role="menuitem"
+                  onClick={() => handleAction(a.action)}
+                  className="flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text shadow-lg transition-colors hover:bg-surface-hover hover:border-accent/40"
+                >
+                  <span>{a.icon}</span>
+                  {a.label}
+                </motion.button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Main FAB button */}
-        <button
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
           onClick={() => setOpen((prev) => !prev)}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-2xl text-white shadow-lg transition-all hover:bg-accent-hover hover:scale-105 active:scale-95"
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-accent to-secondary text-2xl text-bg shadow-lg shadow-accent/20"
           aria-label="Schnellaktionen"
           aria-expanded={open}
         >
-          {open ? "\u2716" : "+"}
-        </button>
+          <motion.span
+            animate={{ rotate: open ? 45 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            +
+          </motion.span>
+        </motion.button>
       </div>
     </>
   );

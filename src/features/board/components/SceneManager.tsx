@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import type { TacticalScene } from "../../../domain/models/TacticalBoard";
 import type { BoardAction } from "../hooks/useBoardReducer";
 import { createDefaultScene } from "../logic/sceneFactory";
@@ -11,6 +12,27 @@ interface SceneManagerProps {
   dispatch: (action: BoardAction) => void;
   onClose: () => void;
 }
+
+const overlayVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1 },
+  exit: { opacity: 0 },
+};
+
+const panelVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 20 },
+  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.25, ease: "easeOut" as const } },
+  exit: { opacity: 0, scale: 0.95, y: 20, transition: { duration: 0.2 } },
+};
+
+const listItemVariants = {
+  hidden: { opacity: 0, x: -12 },
+  visible: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.2, delay: i * 0.04, ease: "easeOut" as const },
+  }),
+};
 
 export default function SceneManager({
   currentScene,
@@ -56,8 +78,21 @@ export default function SceneManager({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="flex max-h-[80vh] w-full max-w-md flex-col rounded-2xl border border-border bg-surface shadow-xl">
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      variants={overlayVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      transition={{ duration: 0.2 }}
+    >
+      <motion.div
+        className="flex max-h-[80vh] w-full max-w-md flex-col rounded-2xl border border-border bg-surface shadow-xl"
+        variants={panelVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
           <h2 className="text-base font-bold text-text">Szenen</h2>
@@ -80,9 +115,13 @@ export default function SceneManager({
             />
           ) : (
             <ul className="flex flex-col gap-2">
-              {savedScenes.map((scene) => (
-                <li
+              {savedScenes.map((scene, index) => (
+                <motion.li
                   key={scene.id}
+                  custom={index}
+                  variants={listItemVariants}
+                  initial="hidden"
+                  animate="visible"
                   className={`flex items-center gap-2 rounded-xl border p-3 transition-all ${
                     scene.id === currentScene.id
                       ? "border-accent bg-accent-dim"
@@ -149,7 +188,7 @@ export default function SceneManager({
                       </button>
                     </>
                   )}
-                </li>
+                </motion.li>
               ))}
             </ul>
           )}
@@ -169,7 +208,7 @@ export default function SceneManager({
             Aktuelle speichern
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       <ConfirmDialog
         open={deleteId !== null}
@@ -180,6 +219,6 @@ export default function SceneManager({
         title="Szene loeschen"
         message="Moechtest du diese Szene wirklich loeschen?"
       />
-    </div>
+    </motion.div>
   );
 }

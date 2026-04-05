@@ -1,4 +1,5 @@
 import { type ButtonHTMLAttributes } from "react";
+import { motion } from "framer-motion";
 
 interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;
@@ -10,20 +11,24 @@ export function IconButton({
   size = "md",
   className = "",
   children,
+  disabled,
   ...props
 }: IconButtonProps) {
   const sizeClass = size === "sm" ? "h-8 w-8 text-sm" : "h-9 w-9 text-base";
 
   return (
-    <button
+    <motion.button
+      whileTap={disabled ? undefined : { scale: 0.93 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
       className={`inline-flex items-center justify-center rounded-lg transition-all disabled:opacity-50 disabled:pointer-events-none ${sizeClass} ${
         active
-          ? "border-2 border-accent bg-accent-dim text-accent-hover"
-          : "border border-border text-text-muted hover:border-accent/50 hover:text-text"
+          ? "border border-accent bg-accent-dim text-accent"
+          : "border border-border text-text-muted hover:border-accent/50 hover:text-text hover:bg-surface-hover"
       } ${className}`}
-      {...props}
+      disabled={disabled}
+      {...(props as Record<string, unknown>)}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }

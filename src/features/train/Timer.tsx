@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { formatTime } from "../../domain/logic/time";
 import type { BlockType } from "../../domain/models/Drill";
 
@@ -28,12 +29,17 @@ export default function Timer({
         : "text-kicker-orange";
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <motion.div
+      className="flex flex-col items-center gap-2"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+    >
       {isRepetition ? (
         /* Repetition counter display */
         <div className="flex flex-col items-center gap-1">
           <div
-            className={`font-mono text-6xl md:text-8xl font-bold tabular-nums tracking-tight ${colorClass} transition-colors`}
+            className={`font-mono text-6xl md:text-8xl font-bold tabular-nums tracking-tight ${colorClass} transition-colors ${isRunning ? "animate-pulse-glow" : ""}`}
           >
             {completedReps ?? 0} / {repetitions ?? 0}
           </div>
@@ -45,7 +51,7 @@ export default function Timer({
           role="timer"
           aria-live="polite"
           aria-label={formatTime(remainingSeconds)}
-          className={`font-mono text-6xl md:text-8xl font-bold tabular-nums tracking-tight ${colorClass} transition-colors`}
+          className={`font-mono text-6xl md:text-8xl font-bold tabular-nums tracking-tight ${colorClass} transition-colors ${isRunning ? "animate-pulse-glow" : ""}`}
         >
           {formatTime(remainingSeconds)}
         </div>
@@ -62,6 +68,6 @@ export default function Timer({
           <span>Pausiert</span>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

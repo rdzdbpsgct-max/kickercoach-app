@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import { useAppStore } from "../../store";
 import { Select, Card, Badge } from "../../components/ui";
 import { TrainingFrequencyChart } from "./TrainingFrequencyChart";
@@ -19,6 +20,34 @@ const TECHNIQUE_STATUS_COLORS: Record<string, string> = {
   developing: "bg-kicker-blue",
   proficient: "bg-kicker-green",
   mastered: "bg-accent",
+};
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: "easeOut" as const },
+  },
+};
+
+const statCardVariants = {
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.3, ease: "easeOut" as const },
+  },
 };
 
 export default function AnalyticsMode() {
@@ -79,80 +108,121 @@ export default function AnalyticsMode() {
   }, [matches]);
 
   return (
-    <div className="flex flex-1 flex-col gap-4 overflow-auto pb-4">
-      <h1 className="text-xl font-bold">Analyse</h1>
+    <motion.div
+      className="flex flex-1 flex-col gap-4 overflow-auto pb-4"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.h1 variants={itemVariants} className="text-xl font-bold">
+        Analyse
+      </motion.h1>
 
       {/* Summary stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card className="text-center">
-          <div className="text-lg font-bold text-accent">{sessions.length}</div>
-          <div className="text-[11px] text-text-dim">Sessions</div>
-        </Card>
-        <Card className="text-center">
-          <div className="text-lg font-bold text-accent">{players.length}</div>
-          <div className="text-[11px] text-text-dim">Spieler</div>
-        </Card>
-        <Card className="text-center">
-          <div className="text-lg font-bold text-accent">{totalMatches}</div>
-          <div className="text-[11px] text-text-dim">Matches</div>
-        </Card>
-        <Card className="text-center">
-          <div className="text-lg font-bold text-kicker-green">
-            {wins}S
-          </div>
-          <div className="text-[11px] text-text-dim">
-            {wins}S / {draws}U / {losses}N
-          </div>
-        </Card>
-      </div>
+      <motion.div
+        className="grid grid-cols-2 md:grid-cols-4 gap-3"
+        variants={containerVariants}
+      >
+        <motion.div variants={statCardVariants}>
+          <Card className="text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#00e676]/10 to-transparent pointer-events-none" />
+            <div className="relative">
+              <div className="text-lg font-bold text-accent">{sessions.length}</div>
+              <div className="text-[11px] text-text-dim">Sessions</div>
+            </div>
+          </Card>
+        </motion.div>
+        <motion.div variants={statCardVariants}>
+          <Card className="text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#00e676]/10 to-transparent pointer-events-none" />
+            <div className="relative">
+              <div className="text-lg font-bold text-accent">{players.length}</div>
+              <div className="text-[11px] text-text-dim">Spieler</div>
+            </div>
+          </Card>
+        </motion.div>
+        <motion.div variants={statCardVariants}>
+          <Card className="text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#00e676]/10 to-transparent pointer-events-none" />
+            <div className="relative">
+              <div className="text-lg font-bold text-accent">{totalMatches}</div>
+              <div className="text-[11px] text-text-dim">Matches</div>
+            </div>
+          </Card>
+        </motion.div>
+        <motion.div variants={statCardVariants}>
+          <Card className="text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#00e676]/10 to-transparent pointer-events-none" />
+            <div className="relative">
+              <div className="text-lg font-bold text-kicker-green">
+                {wins}S
+              </div>
+              <div className="text-[11px] text-text-dim">
+                {wins}S / {draws}U / {losses}N
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+      </motion.div>
 
       {/* Drill avg rating + technique progress */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <Card>
-          <h3 className="text-sm font-semibold text-text mb-2">Drill-Erfolgsquote</h3>
-          <div className="text-2xl font-bold text-accent">{avgDrillRating}%</div>
-          <div className="text-[11px] text-text-dim">Durchschnittliche Erfolgsrate</div>
-        </Card>
-        {playerTechniques.length > 0 && (
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 gap-3"
+        variants={containerVariants}
+      >
+        <motion.div variants={itemVariants}>
           <Card>
-            <h3 className="text-sm font-semibold text-text mb-2">Technik-Fortschritt</h3>
-            <div className="flex flex-col gap-1">
-              {Object.entries(techniqueStats).filter(([, v]) => v > 0).map(([status, count]) => (
-                <div key={status} className="flex items-center gap-2 text-xs">
-                  <div className={`h-2.5 w-2.5 rounded-full ${TECHNIQUE_STATUS_COLORS[status]}`} />
-                  <span className="text-text-muted">{TECHNIQUE_STATUS_LABELS[status]}</span>
-                  <span className="ml-auto font-medium text-text">{count}</span>
+            <h3 className="text-sm font-semibold text-text mb-2">Drill-Erfolgsquote</h3>
+            <div className="text-2xl font-bold text-accent">{avgDrillRating}%</div>
+            <div className="text-[11px] text-text-dim">Durchschnittliche Erfolgsrate</div>
+          </Card>
+        </motion.div>
+        {playerTechniques.length > 0 && (
+          <motion.div variants={itemVariants}>
+            <Card>
+              <h3 className="text-sm font-semibold text-text mb-2">Technik-Fortschritt</h3>
+              <div className="flex flex-col gap-1">
+                {Object.entries(techniqueStats).filter(([, v]) => v > 0).map(([status, count]) => (
+                  <div key={status} className="flex items-center gap-2 text-xs">
+                    <div className={`h-2.5 w-2.5 rounded-full ${TECHNIQUE_STATUS_COLORS[status]}`} />
+                    <span className="text-text-muted">{TECHNIQUE_STATUS_LABELS[status]}</span>
+                    <span className="ml-auto font-medium text-text">{count}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </motion.div>
+        )}
+      </motion.div>
+
+      {/* Recent matches */}
+      {recentMatches.length > 0 && (
+        <motion.div variants={itemVariants}>
+          <Card>
+            <h3 className="text-sm font-semibold text-text mb-2">Letzte Spiele</h3>
+            <div className="flex flex-col gap-2">
+              {recentMatches.map((m) => (
+                <div key={m.id} className="flex items-center justify-between text-xs">
+                  <span className="text-text-muted">{m.date}</span>
+                  <span className="font-medium text-text">vs. {m.opponent}</span>
+                  <Badge color={m.result === "win" ? "green" : m.result === "loss" ? "red" : "orange"}>
+                    {m.result === "win" ? "Sieg" : m.result === "loss" ? "Niederlage" : "Unentschieden"}
+                  </Badge>
                 </div>
               ))}
             </div>
           </Card>
-        )}
-      </div>
-
-      {/* Recent matches */}
-      {recentMatches.length > 0 && (
-        <Card>
-          <h3 className="text-sm font-semibold text-text mb-2">Letzte Spiele</h3>
-          <div className="flex flex-col gap-2">
-            {recentMatches.map((m) => (
-              <div key={m.id} className="flex items-center justify-between text-xs">
-                <span className="text-text-muted">{m.date}</span>
-                <span className="font-medium text-text">vs. {m.opponent}</span>
-                <Badge color={m.result === "win" ? "green" : m.result === "loss" ? "red" : "orange"}>
-                  {m.result === "win" ? "Sieg" : m.result === "loss" ? "Niederlage" : "Unentschieden"}
-                </Badge>
-              </div>
-            ))}
-          </div>
-        </Card>
+        </motion.div>
       )}
 
       {/* Training frequency */}
-      <TrainingFrequencyChart />
+      <motion.div variants={itemVariants}>
+        <TrainingFrequencyChart />
+      </motion.div>
 
       {/* Player skill profile */}
       {players.length > 0 && (
-        <div className="flex flex-col gap-3">
+        <motion.div variants={itemVariants} className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <span className="text-sm font-medium text-text">Spieler:</span>
             <Select
@@ -170,14 +240,20 @@ export default function AnalyticsMode() {
           {selectedPlayerId && (
             <SkillProgressChart playerId={selectedPlayerId} />
           )}
-        </div>
+        </motion.div>
       )}
 
       {/* Player comparison */}
-      {players.length >= 2 && <PlayerComparison />}
+      {players.length >= 2 && (
+        <motion.div variants={itemVariants}>
+          <PlayerComparison />
+        </motion.div>
+      )}
 
       {/* Drill stats */}
-      <DrillStatsChart />
-    </div>
+      <motion.div variants={itemVariants}>
+        <DrillStatsChart />
+      </motion.div>
+    </motion.div>
   );
 }
