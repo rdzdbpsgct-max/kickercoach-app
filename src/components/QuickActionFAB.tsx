@@ -3,14 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "../store";
 import { generateId } from "../utils/id";
-
-const ACTIONS = [
-  { label: "Notiz", icon: "\u{1F4DD}", action: "note" as const },
-  { label: "Training", icon: "\u23F1\uFE0F", action: "training" as const },
-  { label: "Bewertung", icon: "\u2B50", action: "evaluation" as const },
-];
+import { useTranslation } from "react-i18next";
 
 export default function QuickActionFAB() {
+  const { t } = useTranslation("common");
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [showPlayerPicker, setShowPlayerPicker] = useState(false);
@@ -21,6 +17,12 @@ export default function QuickActionFAB() {
   const players = useAppStore((s) => s.players);
   const addCoachingNote = useAppStore((s) => s.addCoachingNote);
   const fabRef = useRef<HTMLDivElement>(null);
+
+  const ACTIONS = [
+    { label: t("quickAction.note"), icon: "\u{1F4DD}", action: "note" as const },
+    { label: t("quickAction.training"), icon: "\u23F1\uFE0F", action: "training" as const },
+    { label: t("quickAction.evaluation"), icon: "\u2B50", action: "evaluation" as const },
+  ];
 
   useEffect(() => {
     if (!open) return;
@@ -88,12 +90,12 @@ export default function QuickActionFAB() {
               transition={{ duration: 0.2 }}
               className="fixed bottom-24 left-3 right-3 z-50 rounded-2xl border border-border bg-surface p-4 shadow-2xl md:left-auto md:right-6 md:w-80"
             >
-              <h3 className="mb-3 text-sm font-bold text-text">Schnelle Notiz</h3>
+              <h3 className="mb-3 text-sm font-bold text-text">{t("quickAction.quickNote")}</h3>
               <textarea
                 autoFocus
                 value={noteText}
                 onChange={(e) => setNoteText(e.target.value)}
-                placeholder="Coaching-Beobachtung..."
+                placeholder={t("quickAction.notePlaceholder")}
                 className="mb-2 w-full rounded-xl border border-border bg-card p-3 text-sm text-text placeholder:text-text-dim focus:border-accent focus:ring-1 focus:ring-accent/30 focus:outline-none transition-all"
                 rows={3}
               />
@@ -103,10 +105,10 @@ export default function QuickActionFAB() {
                   onChange={(e) => setNoteCategory(e.target.value as typeof noteCategory)}
                   className="flex-1 rounded-xl border border-border bg-card px-3 py-2 text-xs text-text focus:border-accent focus:outline-none"
                 >
-                  <option value="technical">Technisch</option>
-                  <option value="tactical">Taktisch</option>
-                  <option value="mental">Mental</option>
-                  <option value="communication">Kommunikation</option>
+                  <option value="technical">{t("constants.noteCategory.technical")}</option>
+                  <option value="tactical">{t("constants.noteCategory.tactical")}</option>
+                  <option value="mental">{t("constants.noteCategory.mental")}</option>
+                  <option value="communication">{t("constants.noteCategory.communication")}</option>
                 </select>
                 {players.length > 0 && (
                   <select
@@ -114,7 +116,7 @@ export default function QuickActionFAB() {
                     onChange={(e) => setNotePlayerId(e.target.value)}
                     className="flex-1 rounded-xl border border-border bg-card px-3 py-2 text-xs text-text focus:border-accent focus:outline-none"
                   >
-                    <option value="">Kein Spieler</option>
+                    <option value="">{t("quickAction.noPlayer")}</option>
                     {players.map((p) => (
                       <option key={p.id} value={p.id}>{p.name}</option>
                     ))}
@@ -126,14 +128,14 @@ export default function QuickActionFAB() {
                   onClick={() => setShowNoteForm(false)}
                   className="rounded-xl px-4 py-2 text-xs font-medium text-text-muted hover:text-text hover:bg-surface-hover transition-all"
                 >
-                  Abbrechen
+                  {t("actions.cancel")}
                 </button>
                 <button
                   onClick={handleSaveNote}
                   disabled={!noteText.trim()}
                   className="rounded-xl bg-accent px-4 py-2 text-xs font-bold text-bg disabled:opacity-50 hover:bg-accent-hover transition-all"
                 >
-                  Speichern
+                  {t("actions.save")}
                 </button>
               </div>
             </motion.div>
@@ -159,7 +161,7 @@ export default function QuickActionFAB() {
               transition={{ duration: 0.2 }}
               className="fixed bottom-24 left-3 right-3 z-50 rounded-2xl border border-border bg-surface p-4 shadow-2xl md:left-auto md:right-6 md:w-80"
             >
-              <h3 className="mb-3 text-sm font-bold text-text">Spieler waehlen</h3>
+              <h3 className="mb-3 text-sm font-bold text-text">{t("quickAction.selectPlayer")}</h3>
               <div className="flex flex-col gap-1 max-h-60 overflow-auto">
                 {players.map((p) => (
                   <motion.button
@@ -185,7 +187,7 @@ export default function QuickActionFAB() {
                 onClick={() => setShowPlayerPicker(false)}
                 className="mt-2 w-full rounded-xl py-2 text-xs text-text-muted hover:text-text transition-colors"
               >
-                Abbrechen
+                {t("actions.cancel")}
               </button>
             </motion.div>
           </>
@@ -229,7 +231,7 @@ export default function QuickActionFAB() {
           whileHover={{ scale: 1.05 }}
           onClick={() => setOpen((prev) => !prev)}
           className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-accent to-secondary text-2xl text-bg shadow-lg shadow-accent/20"
-          aria-label="Schnellaktionen"
+          aria-label={t("quickAction.ariaLabel")}
           aria-expanded={open}
         >
           <motion.span

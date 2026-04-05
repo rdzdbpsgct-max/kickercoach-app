@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 interface BarData {
   label: string;
   value: number;
@@ -11,6 +13,7 @@ interface SimpleBarChartProps {
 }
 
 export function SimpleBarChart({ data, maxValue, height = 160 }: SimpleBarChartProps) {
+  const { t } = useTranslation("common");
   const max = maxValue ?? Math.max(...data.map((d) => d.value), 1);
   const barWidth = Math.min(40, Math.max(16, Math.floor(280 / data.length)));
   const gap = 4;
@@ -22,7 +25,7 @@ export function SimpleBarChart({ data, maxValue, height = 160 }: SimpleBarChartP
       viewBox={`0 0 ${svgWidth} ${height}`}
       className="w-full max-w-sm"
       role="img"
-      aria-label="Balkendiagramm"
+      aria-label={t("ui.barChart")}
     >
       {data.map((d, i) => {
         const barHeight = max > 0 ? (d.value / max) * chartHeight : 0;

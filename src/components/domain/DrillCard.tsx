@@ -136,7 +136,7 @@ export function DrillCard({
                 onEdit();
               }}
               className="rounded-lg border border-border px-2 py-1 text-[11px] text-text-muted hover:border-accent/50 transition-all"
-              title="Bearbeiten"
+              title={t("actions.edit")}
             >
               &#9998;
             </button>
@@ -148,7 +148,7 @@ export function DrillCard({
                 onDelete();
               }}
               className="rounded-lg border border-border px-2 py-1 text-[11px] text-kicker-red hover:border-kicker-red/50 transition-all"
-              title="Loeschen"
+              title={t("actions.delete")}
             >
               &#10005;
             </button>

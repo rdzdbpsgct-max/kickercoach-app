@@ -1,13 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, Badge } from "../ui";
 import type { Goal } from "../../domain/models/Goal";
-
-const STATUS_LABELS: Record<string, string> = {
-  active: "Aktiv",
-  achieved: "Erreicht",
-  paused: "Pausiert",
-  abandoned: "Aufgegeben",
-};
+import { useTranslation } from "react-i18next";
 
 const STATUS_COLORS: Record<string, "green" | "blue" | "orange"> = {
   active: "green",
@@ -42,6 +36,8 @@ interface GoalCardProps {
 }
 
 export function GoalCard({ goal, playerName, onClick }: GoalCardProps) {
+  const { t } = useTranslation("common");
+
   return (
     <Card interactive={!!onClick} onClick={onClick}>
       <motion.div
@@ -56,7 +52,7 @@ export function GoalCard({ goal, playerName, onClick }: GoalCardProps) {
               {goal.title}
             </span>
             <Badge color={STATUS_COLORS[goal.status]}>
-              {STATUS_LABELS[goal.status]}
+              {t(`constants.goalStatus.${goal.status}`)}
             </Badge>
             <Badge color="accent">{goal.category}</Badge>
             {playerName && (
@@ -74,7 +70,7 @@ export function GoalCard({ goal, playerName, onClick }: GoalCardProps) {
           )}
           {goal.targetDate && (
             <p className="mt-0.5 text-[10px] text-text-dim">
-              Ziel: {goal.targetDate}
+              {t("ui.goalTarget", { date: goal.targetDate })}
             </p>
           )}
         </div>

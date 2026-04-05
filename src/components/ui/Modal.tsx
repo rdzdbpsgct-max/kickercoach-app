@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface ModalProps {
   open: boolean;
@@ -10,6 +11,7 @@ interface ModalProps {
 }
 
 export function Modal({ open, onClose, title, children, actions }: ModalProps) {
+  const { t } = useTranslation("common");
   useEffect(() => {
     if (!open) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -47,7 +49,7 @@ export function Modal({ open, onClose, title, children, actions }: ModalProps) {
               <button
                 onClick={onClose}
                 className="flex h-8 w-8 items-center justify-center rounded-lg text-text-dim hover:text-text hover:bg-surface-hover transition-all"
-                aria-label="Schliessen"
+                aria-label={t("ui.closeModal")}
               >
                 &#10005;
               </button>

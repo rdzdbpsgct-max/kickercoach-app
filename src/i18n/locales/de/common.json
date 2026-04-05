@@ -46,7 +46,12 @@
   "quickAction": {
     "note": "Notiz",
     "training": "Training",
-    "evaluation": "Bewertung"
+    "evaluation": "Bewertung",
+    "quickNote": "Schnelle Notiz",
+    "notePlaceholder": "Coaching-Beobachtung...",
+    "noPlayer": "Kein Spieler",
+    "selectPlayer": "Spieler wählen",
+    "ariaLabel": "Schnellaktionen"
   },
   "constants": {
     "difficulty": {
@@ -102,6 +107,12 @@
       "midfield": "Mittelfeld",
       "offense": "Sturm"
     },
+    "goalStatus": {
+      "active": "Aktiv",
+      "achieved": "Erreicht",
+      "paused": "Pausiert",
+      "abandoned": "Aufgegeben"
+    },
     "category": {
       "Torschuss": "Torschuss",
       "Passspiel": "Passspiel",
@@ -111,5 +122,12 @@
       "Offensive": "Offensive",
       "Mental": "Mental"
     }
+  },
+  "ui": {
+    "clearSearch": "Suche leeren",
+    "closeModal": "Schliessen",
+    "barChart": "Balkendiagramm",
+    "searchPlaceholder": "Suchen...",
+    "goalTarget": "Ziel: {{date}}"
   }
 }
