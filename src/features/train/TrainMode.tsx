@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import type { Drill } from "../../domain/models/Drill";
 import { useAppStore } from "../../store";
@@ -38,6 +39,7 @@ const fadeIn = {
 };
 
 export default function TrainMode() {
+  const { t } = useTranslation(["train", "common"]);
   const location = useLocation();
   const locState = location.state as {
     quickStart?: boolean;
@@ -89,7 +91,7 @@ export default function TrainMode() {
     Record<string, { rating: number; notes?: string }>
   >({});
   const drillResultCount = Object.keys(drillResults).length;
-  const drillResultLabel = `${drillResultCount} Drill-Ergebnis${drillResultCount !== 1 ? "se" : ""} erfasst`;
+  const drillResultLabel = t("drillResultCount", { count: drillResultCount });
 
   // Merge default + custom drills
   const allDrills = useMemo(
@@ -108,8 +110,8 @@ export default function TrainMode() {
   const recommendLabel = useMemo(() => {
     if (!initialPlayerId) return undefined;
     const player = players.find((p) => p.id === initialPlayerId);
-    return player ? `Empfohlen für ${player.name}` : undefined;
-  }, [initialPlayerId, players]);
+    return player ? t("recommendedFor", { name: player.name }) : undefined;
+  }, [initialPlayerId, players, t]);
 
   // Load drills
   useEffect(() => {
@@ -216,12 +218,12 @@ export default function TrainMode() {
     return (
       <motion.div className="flex flex-col gap-4" {...fadeIn}>
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold">Trainingspläne</h1>
+          <h1 className="text-xl font-bold">{t("trainingPlans")}</h1>
           <button
             onClick={() => setView("drills")}
             className="text-xs text-text-dim hover:text-accent transition-colors"
           >
-            &larr; Zurück
+            &larr; {t("back")}
           </button>
         </div>
         <TrainingPlanList
@@ -262,7 +264,7 @@ export default function TrainMode() {
         {...fadeIn}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">Retrospektive</h2>
+          <h2 className="text-lg font-bold">{t("retrospective")}</h2>
         </div>
         <SessionRetrospectiveForm
           initial={lastSavedSession.retrospective}
@@ -320,12 +322,12 @@ export default function TrainMode() {
     return (
       <motion.div className="flex flex-col gap-4" {...fadeIn}>
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold">Trainingstagebuch</h1>
+          <h1 className="text-xl font-bold">{t("trainingJournal")}</h1>
           <button
             onClick={() => setView("drills")}
             className="text-xs text-text-dim hover:text-accent transition-colors"
           >
-            &larr; Zurück
+            &larr; {t("back")}
           </button>
         </div>
         <Journal
@@ -361,16 +363,16 @@ export default function TrainMode() {
   return (
     <motion.div className="flex flex-col gap-4" {...fadeIn}>
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">Training</h1>
+        <h1 className="text-xl font-bold">{t("title")}</h1>
         <div className="flex gap-2">
           <Button
             variant="secondary"
             onClick={() => setView("training-plans")}
           >
-            Pläne
+            {t("plans")}
           </Button>
           <Button variant="secondary" onClick={() => setView("journal")}>
-            Tagebuch
+            {t("journal")}
           </Button>
           <Button
             variant="secondary"
@@ -385,7 +387,7 @@ export default function TrainMode() {
               setView("session-builder");
             }}
           >
-            Schnellstart
+            {t("quickStart")}
           </Button>
           <Button
             onClick={() => {
@@ -393,7 +395,7 @@ export default function TrainMode() {
               setView("session-builder");
             }}
           >
-            + Session
+            {t("newSession")}
           </Button>
         </div>
       </div>
@@ -402,7 +404,7 @@ export default function TrainMode() {
         <div className="rounded-lg border border-accent/30 bg-accent-dim px-3 py-2 text-xs text-accent-hover flex items-center justify-between">
           <span>{drillResultLabel}</span>
           <span className="text-text-dim">
-            Werden bei Session-Erstellung gespeichert
+            {t("drillResultsSavedWithSession")}
           </span>
         </div>
       )}
@@ -433,8 +435,8 @@ export default function TrainMode() {
             setDeleteDrillId(null);
           }
         }}
-        title="Drill löschen"
-        message="Möchtest du diesen eigenen Drill wirklich löschen?"
+        title={t("deleteDrill.title")}
+        message={t("deleteDrill.message")}
       />
     </motion.div>
   );

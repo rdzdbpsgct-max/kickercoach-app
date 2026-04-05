@@ -1,0 +1,246 @@
+{
+  "title": "Training",
+  "plans": "Pläne",
+  "journal": "Tagebuch",
+  "quickStart": "Schnellstart",
+  "newSession": "+ Session",
+  "back": "Zurück",
+
+  "drillResultCount": "{{count}} Drill-Ergebnis erfasst",
+  "drillResultCount_other": "{{count}} Drill-Ergebnisse erfasst",
+  "drillResultsSavedWithSession": "Werden bei Session-Erstellung gespeichert",
+
+  "trainingPlans": "Trainingspläne",
+  "retrospective": "Retrospektive",
+  "trainingJournal": "Trainingstagebuch",
+
+  "deleteDrill": {
+    "title": "Drill löschen",
+    "message": "Möchtest du diesen eigenen Drill wirklich löschen?"
+  },
+
+  "recommendedFor": "Empfohlen für {{name}}",
+  "recommended": "Empfohlen",
+
+  "drillSelector": {
+    "searchPlaceholder": "Drill suchen...",
+    "customDrill": "Eigener Drill",
+    "blocks": "{{count}} Blocks",
+    "players": "{{count}} Spieler",
+    "goal": "Ziel: {{goal}}",
+    "editTitle": "Bearbeiten",
+    "deleteTitle": "Loeschen",
+    "allLevels": "Alle Stufen",
+    "allPhases": "Alle Phasen",
+    "allCategories": "Alle Kategorien",
+    "allPositions": "Alle Positionen",
+    "drillCount": "{{count}} Drills",
+    "newDrill": "+ Neuer Drill",
+    "recommendedSection": "{{label}} ({{count}})",
+    "moreDrills": "Weitere Drills ({{count}})"
+  },
+
+  "drillEditor": {
+    "editTitle": "Drill bearbeiten",
+    "newTitle": "Neuer Drill",
+    "cancel": "Abbrechen",
+    "templateSaved": "Vorlage gespeichert",
+    "saveAsTemplate": "Als Vorlage",
+    "save": "Speichern",
+    "nameLabel": "Name",
+    "namePlaceholder": "Drill-Name",
+    "focusSkillLabel": "Fokus-Skill",
+    "focusSkillPlaceholder": "z.B. Pull-Shot, Tic-Tac...",
+    "difficultyLabel": "Schwierigkeit",
+    "categoryLabel": "Kategorie",
+    "phaseLabel": "Phase",
+    "positionLabel": "Position",
+    "none": "Keine",
+    "beginner": "Anfaenger",
+    "intermediate": "Fortgeschritten",
+    "advanced": "Profi",
+    "descriptionLabel": "Beschreibung",
+    "descriptionPlaceholder": "Optionale Beschreibung...",
+    "measurableGoalLabel": "Messbares Ziel",
+    "measurableGoalPlaceholder": "z.B. 8 von 10 Schuessen im Tor",
+    "blocksLabel": "Bloecke ({{count}})",
+    "addBlock": "+ Block",
+    "blockTypeWork": "Training",
+    "blockTypeRest": "Pause",
+    "blockTypeRepetitions": "Wiederholungen",
+    "reps": "Wdh.",
+    "seconds": "Sek.",
+    "notePlaceholder": "Notiz...",
+    "validation": {
+      "nameRequired": "Name ist erforderlich",
+      "focusSkillRequired": "Fokus-Skill ist erforderlich",
+      "blocksRequired": "Mindestens ein Block erforderlich"
+    }
+  },
+
+  "drillTimerView": {
+    "backToSelection": "Zurück zur Auswahl",
+    "autoAdvance": "Auto-Advance",
+    "blockTypeWork": "Training",
+    "blockTypeRest": "Pause",
+    "prev": "Zurück",
+    "next": "Weiter",
+    "reset": "Reset",
+    "pause": "Pause",
+    "start": "Start",
+    "resetShortcut": "Reset (R)",
+    "shortcutSpace": "Space: Start/Pause",
+    "shortcutPrev": "←/P: Prev",
+    "shortcutNext": "→/N: Next",
+    "shortcutReset": "R: Reset"
+  },
+
+  "timer": {
+    "repetitions": "Wiederholungen",
+    "finished": "Fertig!",
+    "counting": "Zaehle...",
+    "running": "Laeuft",
+    "paused": "Pausiert"
+  },
+
+  "blockProgress": {
+    "label": "Trainingsfortschritt",
+    "blockOf": "Block {{current}} / {{total}}",
+    "blockTypeWork": "Training",
+    "blockTypeRest": "Pause"
+  },
+
+  "drillResultCapture": {
+    "drillCompleted": "Drill abgeschlossen!",
+    "captureResult": "Ergebnis erfassen",
+    "qualityLabel": "Qualität",
+    "chooseRating": "Wähle eine Bewertung",
+    "noteLabel": "Notiz (optional)",
+    "notePlaceholder": "Kurze Anmerkung zum Drill...",
+    "charCount": "{{current}}/{{max}}",
+    "skip": "Überspringen",
+    "save": "Speichern"
+  },
+
+  "sessionBuilder": {
+    "title": "Session erstellen",
+    "cancel": "Abbrechen",
+    "templateSaved": "Vorlage gespeichert",
+    "saveAsTemplate": "Als Vorlage",
+    "save": "Speichern",
+    "planContextInfo": "Session aus Trainingsplan — Woche {{week}}, Session {{session}}",
+    "loadFromTemplate": "Aus Vorlage laden",
+    "deleteTemplateTitle": "Vorlage loeschen",
+    "sessionNameLabel": "Session-Name",
+    "sessionNamePlaceholder": "z.B. Morgen-Training, Schuss-Drill...",
+    "dateLabel": "Datum",
+    "playersLabel": "Spieler ({{count}} ausgewählt)",
+    "teamLabel": "Team (optional)",
+    "noTeam": "Kein Team",
+    "selectDrillsLabel": "Drills auswaehlen",
+    "selectedCount": "{{count}} ausgewaehlt",
+    "phaseOther": "Sonstige",
+    "focusAreasLabel": "Schwerpunkte",
+    "ratingLabel": "Bewertung",
+    "notesLabel": "Notizen",
+    "notesPlaceholder": "Optionale Notizen zur Session...",
+    "planWeekName": "{{planName}} - Woche {{week}}"
+  },
+
+  "sessionRating": {
+    "title": "Spieler bewerten",
+    "skip": "Überspringen",
+    "playerProgress": "({{current}}/{{total}})",
+    "skillRatingTitle": "Skill-Bewertung",
+    "notRated": "nicht bewertet",
+    "notesLabel": "Notizen",
+    "notesPlaceholder": "Beobachtungen, Fortschritte...",
+    "next": "Weiter",
+    "finish": "Abschliessen"
+  },
+
+  "sessionRetrospective": {
+    "formTitle": "Session-Retrospektive",
+    "viewTitle": "Retrospektive",
+    "whatWentWellLabel": "Was lief gut?",
+    "whatWentWellPlaceholder": "z.B. Pin-Shot-Quote deutlich verbessert...",
+    "whatToImproveLabel": "Was muss besser werden?",
+    "whatToImprovePlaceholder": "z.B. Brush-Pass von der 5er noch zu ungenau...",
+    "focusNextTimeLabel": "Fokus naechstes Mal",
+    "focusNextTimePlaceholder": "z.B. Mehr an der 5er-Kontrolle arbeiten...",
+    "skipBtn": "Ueberspringen",
+    "saveBtn": "Retrospektive speichern",
+    "whatWentWellView": "Was lief gut:",
+    "whatToImproveView": "Was muss besser werden:",
+    "focusNextTimeView": "Fokus naechstes Mal:"
+  },
+
+  "journal": {
+    "print": "Drucken",
+    "searchPlaceholder": "Session suchen...",
+    "allFilter": "Alle",
+    "sessionCount": "{{count}} Sessions",
+    "statsSessions": "Sessions",
+    "statsTotal": "Gesamt (min)",
+    "statsAverage": "Durchschnitt",
+    "statsLongest": "Laengste",
+    "emptyTitle": "Noch keine Sessions",
+    "emptyDescription": "Noch keine Sessions aufgezeichnet.",
+    "noMatchTitle": "Keine Treffer",
+    "noMatchDescription": "Versuche einen anderen Filter oder Suchbegriff.",
+    "drills": "{{count}} Drills",
+    "results": "Ergebnisse:",
+    "completedCount": "{{completed}}/{{total}} abgeschlossen",
+    "retrospectivePresent": "Retrospektive vorhanden",
+    "detailsExpand": "Details",
+    "detailsCollapse": "Weniger",
+    "drillResultsTitle": "Drill-Ergebnisse",
+    "deleteSessionLabel": "Session loeschen",
+    "showDrillResults": "Drill-Ergebnisse anzeigen",
+    "deleteConfirmTitle": "Session loeschen",
+    "deleteConfirmMessage": "Moechtest du diese Session wirklich loeschen?"
+  },
+
+  "trainingPlanList": {
+    "emptyTitle": "Keine Trainingspläne",
+    "emptyDescription": "Erstelle einen mehrwöchigen Trainingsplan mit Session-Vorlagen.",
+    "emptyAction": "Plan erstellen",
+    "planCount": "{{count}} Pläne",
+    "print": "Drucken",
+    "newPlan": "+ Neuer Plan",
+    "weeks": "{{count}} Wochen",
+    "sessions": "{{count}} Sessions",
+    "completedOf": "{{completed}}/{{total}} erledigt",
+    "editTitle": "Bearbeiten",
+    "weekLabel": "Woche {{number}}",
+    "sessionsCompleted": "{{completed}}/{{total}} Sessions abgeschlossen",
+    "startSession": "Starten",
+    "done": "Erledigt",
+    "deleteTitle": "Trainingsplan löschen",
+    "deleteMessage": "Möchtest du diesen Trainingsplan wirklich löschen?",
+    "allSessionsDone": "Alle Sessions abgeschlossen"
+  },
+
+  "trainingPlanEditor": {
+    "editTitle": "Plan bearbeiten",
+    "newTitle": "Neuer Trainingsplan",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "planNameLabel": "Planname",
+    "planNamePlaceholder": "z.B. 4-Wochen Schuss-Fokus",
+    "goalLabel": "Ziel",
+    "goalPlaceholder": "Was soll der Plan erreichen?",
+    "playersLabel": "Spieler",
+    "weeksLabel": "Wochen ({{count}})",
+    "addWeek": "+ Woche",
+    "weekTitle": "Woche {{number}}",
+    "addSession": "+ Session",
+    "sessionPlaceholder": "Session {{number}}",
+    "minutes": "Min.",
+    "drillsLabel": "Drills",
+    "drillsSelected": "{{count}} Drills gewaehlt",
+    "validation": {
+      "nameRequired": "Name ist erforderlich"
+    }
+  }
+}
