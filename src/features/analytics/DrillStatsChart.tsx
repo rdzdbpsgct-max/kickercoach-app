@@ -4,11 +4,13 @@ import { Card } from "../../components/ui";
 import { SimpleBarChart } from "../../components/ui/SimpleBarChart";
 import { STAR_RATING_SCALE } from "../../domain/constants";
 import { buildNameMap } from "../../domain/logic/drill";
+import { useTranslation } from "react-i18next";
 import type { Drill } from "../../domain/models/Drill";
 
 type ChartMode = "usage" | "quality";
 
 export function DrillStatsChart() {
+  const { t } = useTranslation("analytics");
   const sessions = useAppStore((s) => s.sessions);
   const customDrills = useAppStore((s) => s.customDrills);
   const [defaultDrills, setDefaultDrills] = useState<Drill[]>([]);
@@ -71,7 +73,7 @@ export function DrillStatsChart() {
   return (
     <Card className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-text">Drill-Statistiken</h3>
+        <h3 className="text-sm font-semibold text-text">{t("drillStats.title")}</h3>
         {hasQualityData && (
           <div className="flex rounded-lg border border-border overflow-hidden">
             <button
@@ -82,7 +84,7 @@ export function DrillStatsChart() {
                   : "text-text-dim hover:text-text"
               }`}
             >
-              Nutzung
+              {t("drillStats.usage")}
             </button>
             <button
               onClick={() => setMode("quality")}
@@ -92,21 +94,21 @@ export function DrillStatsChart() {
                   : "text-text-dim hover:text-text"
               }`}
             >
-              Qualitaet
+              {t("drillStats.quality")}
             </button>
           </div>
         )}
       </div>
       <p className="text-xs text-text-dim">
         {mode === "usage"
-          ? "Meistgenutzte Drills in Sessions"
-          : "Durchschnittliche Qualitaet (1-5 Sterne)"}
+          ? t("drillStats.usageDescription")
+          : t("drillStats.qualityDescription")}
       </p>
       {chartData.length === 0 ? (
         <p className="text-xs text-text-dim py-4 text-center">
           {mode === "usage"
-            ? "Noch keine Drills in Sessions verwendet."
-            : "Noch keine Drill-Bewertungen vorhanden."}
+            ? t("drillStats.emptyUsage")
+            : t("drillStats.emptyQuality")}
         </p>
       ) : (
         <SimpleBarChart

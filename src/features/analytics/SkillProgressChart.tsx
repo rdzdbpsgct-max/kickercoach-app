@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useAppStore } from "../../store";
 import { Card } from "../../components/ui";
 import { SimpleBarChart } from "../../components/ui/SimpleBarChart";
+import { useTranslation } from "react-i18next";
 import type { Category } from "../../domain/models/CoachCard";
 
 interface SkillProgressChartProps {
@@ -19,6 +20,7 @@ const CATEGORY_COLORS: Record<Category, string> = {
 };
 
 export function SkillProgressChart({ playerId }: SkillProgressChartProps) {
+  const { t } = useTranslation("analytics");
   const evaluations = useAppStore((s) => s.getPlayerEvaluations(playerId));
   const players = useAppStore((s) => s.players);
   const player = players.find((p) => p.id === playerId);
@@ -52,11 +54,11 @@ export function SkillProgressChart({ playerId }: SkillProgressChartProps) {
   return (
     <Card className="flex flex-col gap-3">
       <h3 className="text-sm font-semibold text-text">
-        Skill-Profil: {player.name}
+        {t("skillProfile.title", { name: player.name })}
       </h3>
       <p className="text-xs text-text-dim">
-        Aktuelle Bewertungen (1-5)
-        {evaluations.length > 0 && ` \u00B7 ${evaluations.length} Bewertungen`}
+        {t("skillProfile.ratings")}
+        {evaluations.length > 0 && t("skillProfile.evaluationCount", { count: evaluations.length })}
       </p>
       <SimpleBarChart data={chartData} maxValue={5} />
     </Card>

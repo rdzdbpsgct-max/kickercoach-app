@@ -1,0 +1,50 @@
+{
+  "title": "Analyse",
+  "stats": {
+    "sessions": "Sessions",
+    "players": "Spieler",
+    "matches": "Matches",
+    "winsShort": "{{wins}}S",
+    "record": "{{wins}}S / {{draws}}U / {{losses}}N"
+  },
+  "drillSuccessRate": {
+    "title": "Drill-Erfolgsquote",
+    "avgRate": "Durchschnittliche Erfolgsrate"
+  },
+  "techniqueProgress": {
+    "title": "Technik-Fortschritt"
+  },
+  "recentMatches": {
+    "title": "Letzte Spiele",
+    "vs": "vs. {{opponent}}",
+    "win": "Sieg",
+    "loss": "Niederlage",
+    "draw": "Unentschieden"
+  },
+  "trainingFrequency": {
+    "title": "Trainingsfrequenz",
+    "subtitle": "Sessions pro Woche (letzte 8 Wochen)",
+    "empty": "Noch keine Sessions vorhanden."
+  },
+  "skillProfile": {
+    "title": "Skill-Profil: {{name}}",
+    "ratings": "Aktuelle Bewertungen (1-5)",
+    "evaluationCount": " \u00B7 {{count}} Bewertungen",
+    "playerLabel": "Spieler:"
+  },
+  "drillStats": {
+    "title": "Drill-Statistiken",
+    "usage": "Nutzung",
+    "quality": "Qualitaet",
+    "usageDescription": "Meistgenutzte Drills in Sessions",
+    "qualityDescription": "Durchschnittliche Qualitaet (1-5 Sterne)",
+    "emptyUsage": "Noch keine Drills in Sessions verwendet.",
+    "emptyQuality": "Noch keine Drill-Bewertungen vorhanden."
+  },
+  "playerComparison": {
+    "title": "Spielervergleich",
+    "minPlayersRequired": "Mindestens 2 Spieler fuer einen Vergleich erforderlich.",
+    "selectDifferent": "Waehle zwei verschiedene Spieler fuer den Vergleich.",
+    "sessions": "Sessions"
+  }
+}

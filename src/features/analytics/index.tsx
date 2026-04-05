@@ -39,7 +39,7 @@ const statCardVariants = {
 };
 
 export default function AnalyticsMode() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["analytics", "common"]);
   const players = useAppStore((s) => s.players);
   const sessions = useAppStore((s) => s.sessions);
   const matches = useAppStore((s) => s.matches);
@@ -104,7 +104,7 @@ export default function AnalyticsMode() {
       animate="visible"
     >
       <motion.h1 variants={itemVariants} className="text-xl font-bold">
-        Analyse
+        {t("analytics:title")}
       </motion.h1>
 
       {/* Summary stats */}
@@ -117,7 +117,7 @@ export default function AnalyticsMode() {
             <div className="absolute inset-0 bg-gradient-to-br from-[#00e676]/10 to-transparent pointer-events-none" />
             <div className="relative">
               <div className="text-lg font-bold text-accent">{sessions.length}</div>
-              <div className="text-[11px] text-text-dim">Sessions</div>
+              <div className="text-[11px] text-text-dim">{t("analytics:stats.sessions")}</div>
             </div>
           </Card>
         </motion.div>
@@ -126,7 +126,7 @@ export default function AnalyticsMode() {
             <div className="absolute inset-0 bg-gradient-to-br from-[#00e676]/10 to-transparent pointer-events-none" />
             <div className="relative">
               <div className="text-lg font-bold text-accent">{players.length}</div>
-              <div className="text-[11px] text-text-dim">Spieler</div>
+              <div className="text-[11px] text-text-dim">{t("analytics:stats.players")}</div>
             </div>
           </Card>
         </motion.div>
@@ -135,7 +135,7 @@ export default function AnalyticsMode() {
             <div className="absolute inset-0 bg-gradient-to-br from-[#00e676]/10 to-transparent pointer-events-none" />
             <div className="relative">
               <div className="text-lg font-bold text-accent">{totalMatches}</div>
-              <div className="text-[11px] text-text-dim">Matches</div>
+              <div className="text-[11px] text-text-dim">{t("analytics:stats.matches")}</div>
             </div>
           </Card>
         </motion.div>
@@ -144,10 +144,10 @@ export default function AnalyticsMode() {
             <div className="absolute inset-0 bg-gradient-to-br from-[#00e676]/10 to-transparent pointer-events-none" />
             <div className="relative">
               <div className="text-lg font-bold text-kicker-green">
-                {wins}S
+                {t("analytics:stats.winsShort", { wins })}
               </div>
               <div className="text-[11px] text-text-dim">
-                {wins}S / {draws}U / {losses}N
+                {t("analytics:stats.record", { wins, draws, losses })}
               </div>
             </div>
           </Card>
@@ -161,20 +161,20 @@ export default function AnalyticsMode() {
       >
         <motion.div variants={itemVariants}>
           <Card>
-            <h3 className="text-sm font-semibold text-text mb-2">Drill-Erfolgsquote</h3>
+            <h3 className="text-sm font-semibold text-text mb-2">{t("analytics:drillSuccessRate.title")}</h3>
             <div className="text-2xl font-bold text-accent">{avgDrillRating}%</div>
-            <div className="text-[11px] text-text-dim">Durchschnittliche Erfolgsrate</div>
+            <div className="text-[11px] text-text-dim">{t("analytics:drillSuccessRate.avgRate")}</div>
           </Card>
         </motion.div>
         {playerTechniques.length > 0 && (
           <motion.div variants={itemVariants}>
             <Card>
-              <h3 className="text-sm font-semibold text-text mb-2">Technik-Fortschritt</h3>
+              <h3 className="text-sm font-semibold text-text mb-2">{t("analytics:techniqueProgress.title")}</h3>
               <div className="flex flex-col gap-1">
                 {Object.entries(techniqueStats).filter(([, v]) => v > 0).map(([status, count]) => (
                   <div key={status} className="flex items-center gap-2 text-xs">
                     <div className={`h-2.5 w-2.5 rounded-full ${TECHNIQUE_STATUS_COLORS[status as TechniqueStatus]}`} />
-                    <span className="text-text-muted">{t(`constants.techniqueStatus.${status}`)}</span>
+                    <span className="text-text-muted">{t(`constants.techniqueStatus.${status}`, { ns: "common" })}</span>
                     <span className="ml-auto font-medium text-text">{count}</span>
                   </div>
                 ))}
@@ -188,14 +188,14 @@ export default function AnalyticsMode() {
       {recentMatches.length > 0 && (
         <motion.div variants={itemVariants}>
           <Card>
-            <h3 className="text-sm font-semibold text-text mb-2">Letzte Spiele</h3>
+            <h3 className="text-sm font-semibold text-text mb-2">{t("analytics:recentMatches.title")}</h3>
             <div className="flex flex-col gap-2">
               {recentMatches.map((m) => (
                 <div key={m.id} className="flex items-center justify-between text-xs">
                   <span className="text-text-muted">{m.date}</span>
-                  <span className="font-medium text-text">vs. {m.opponent}</span>
+                  <span className="font-medium text-text">{t("analytics:recentMatches.vs", { opponent: m.opponent })}</span>
                   <Badge color={m.result === "win" ? "green" : m.result === "loss" ? "red" : "orange"}>
-                    {m.result === "win" ? "Sieg" : m.result === "loss" ? "Niederlage" : "Unentschieden"}
+                    {m.result === "win" ? t("analytics:recentMatches.win") : m.result === "loss" ? t("analytics:recentMatches.loss") : t("analytics:recentMatches.draw")}
                   </Badge>
                 </div>
               ))}
@@ -213,7 +213,7 @@ export default function AnalyticsMode() {
       {players.length > 0 && (
         <motion.div variants={itemVariants} className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-text">Spieler:</span>
+            <span className="text-sm font-medium text-text">{t("analytics:skillProfile.playerLabel")}</span>
             <Select
               value={selectedPlayerId}
               onChange={(e) => setSelectedPlayerId(e.target.value)}

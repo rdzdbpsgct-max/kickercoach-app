@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAppStore } from "../../store";
 import { Card, Select } from "../../components/ui";
 import { CATEGORY_BAR_COLORS } from "../../domain/constants";
+import { useTranslation } from "react-i18next";
 import type { Category } from "../../domain/models/CoachCard";
 
 const CATEGORIES: Category[] = [
@@ -9,6 +10,7 @@ const CATEGORIES: Category[] = [
 ];
 
 export function PlayerComparison() {
+  const { t } = useTranslation("analytics");
   const players = useAppStore((s) => s.players);
   const sessions = useAppStore((s) => s.sessions);
   const [idA, setIdA] = useState(players[0]?.id ?? "");
@@ -24,7 +26,7 @@ export function PlayerComparison() {
     return (
       <Card className="py-6 text-center">
         <p className="text-xs text-text-dim">
-          Mindestens 2 Spieler fuer einen Vergleich erforderlich.
+          {t("playerComparison.minPlayersRequired")}
         </p>
       </Card>
     );
@@ -32,7 +34,7 @@ export function PlayerComparison() {
 
   return (
     <Card className="flex flex-col gap-4">
-      <h3 className="text-sm font-semibold text-text">Spielervergleich</h3>
+      <h3 className="text-sm font-semibold text-text">{t("playerComparison.title")}</h3>
 
       <div className="grid grid-cols-2 gap-3">
         <Select value={idA} onChange={(e) => setIdA(e.target.value)}>
@@ -109,11 +111,11 @@ export function PlayerComparison() {
           <div className="grid grid-cols-2 gap-3 text-center">
             <div className="rounded-xl bg-surface-alt p-2">
               <div className="text-sm font-bold text-accent">{sessionsA}</div>
-              <div className="text-[10px] text-text-dim">Sessions</div>
+              <div className="text-[10px] text-text-dim">{t("playerComparison.sessions")}</div>
             </div>
             <div className="rounded-xl bg-surface-alt p-2">
               <div className="text-sm font-bold text-accent">{sessionsB}</div>
-              <div className="text-[10px] text-text-dim">Sessions</div>
+              <div className="text-[10px] text-text-dim">{t("playerComparison.sessions")}</div>
             </div>
           </div>
         </>
@@ -121,7 +123,7 @@ export function PlayerComparison() {
 
       {idA === idB && (
         <p className="text-xs text-text-dim text-center py-2">
-          Waehle zwei verschiedene Spieler fuer den Vergleich.
+          {t("playerComparison.selectDifferent")}
         </p>
       )}
     </Card>

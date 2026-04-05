@@ -2,8 +2,10 @@ import { useMemo } from "react";
 import { useAppStore } from "../../store";
 import { Card } from "../../components/ui";
 import { SimpleBarChart } from "../../components/ui/SimpleBarChart";
+import { useTranslation } from "react-i18next";
 
 export function TrainingFrequencyChart() {
+  const { t } = useTranslation("analytics");
   const sessions = useAppStore((s) => s.sessions);
 
   const weekData = useMemo(() => {
@@ -30,10 +32,10 @@ export function TrainingFrequencyChart() {
 
   return (
     <Card className="flex flex-col gap-3">
-      <h3 className="text-sm font-semibold text-text">Trainingsfrequenz</h3>
-      <p className="text-xs text-text-dim">Sessions pro Woche (letzte 8 Wochen)</p>
+      <h3 className="text-sm font-semibold text-text">{t("trainingFrequency.title")}</h3>
+      <p className="text-xs text-text-dim">{t("trainingFrequency.subtitle")}</p>
       {sessions.length === 0 ? (
-        <p className="text-xs text-text-dim py-4 text-center">Noch keine Sessions vorhanden.</p>
+        <p className="text-xs text-text-dim py-4 text-center">{t("trainingFrequency.empty")}</p>
       ) : (
         <SimpleBarChart data={weekData} />
       )}
