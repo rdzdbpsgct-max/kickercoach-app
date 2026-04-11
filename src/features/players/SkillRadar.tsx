@@ -33,6 +33,7 @@ export function SkillRadar({ ratings, editable = false, onChange }: SkillRadarPr
             {[1, 2, 3, 4, 5].map((level) => (
               <button
                 key={level}
+                type="button"
                 disabled={!editable}
                 onClick={() => editable && onChange?.(cat, level)}
                 className={`h-6 flex-1 rounded transition-all ${
