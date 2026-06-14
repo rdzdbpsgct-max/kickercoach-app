@@ -31,8 +31,8 @@ export function useFocusTrap(
       if (e.key !== "Tab") return;
       const els = focusables();
       if (els.length === 0) return;
-      const first = els[0];
-      const last = els[els.length - 1];
+      const first = els[0]!; // safe: els.length === 0 returned above
+      const last = els[els.length - 1]!; // safe: els is non-empty here
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
         last.focus();

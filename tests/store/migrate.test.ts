@@ -16,8 +16,8 @@ describe("migrateArray", () => {
     ];
     const result = migrateArray(oldSessions, SessionSchema);
     expect(result).toHaveLength(1);
-    expect(result[0].playerIds).toEqual([]);
-    expect(result[0].focusAreas).toEqual([]);
+    expect(result[0]!.playerIds).toEqual([]);
+    expect(result[0]!.focusAreas).toEqual([]);
   });
 
   it("filters out invalid items", () => {
@@ -34,7 +34,7 @@ describe("migrateArray", () => {
     ];
     const result = migrateArray(data, SessionSchema);
     expect(result).toHaveLength(1);
-    expect(result[0].id).toBe("s1");
+    expect(result[0]!.id).toBe("s1");
   });
 
   it("returns empty array for non-array input", () => {

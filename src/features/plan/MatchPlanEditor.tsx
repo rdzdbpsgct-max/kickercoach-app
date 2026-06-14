@@ -65,7 +65,9 @@ export default function MatchPlanEditor({
 
   const updateSet = (index: number, field: "scoreHome" | "scoreAway", value: number) => {
     const sets = [...(plan.sets ?? [])];
-    sets[index] = { ...sets[index], [field]: value };
+    const existing = sets[index];
+    if (!existing) return;
+    sets[index] = { ...existing, [field]: value };
     onChange({ ...plan, sets, result: computeResult(sets) });
   };
 

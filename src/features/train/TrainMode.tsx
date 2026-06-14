@@ -129,7 +129,7 @@ export default function TrainMode() {
     if (quickStart) {
       const templates = useAppStore.getState().sessionTemplates;
       if (templates.length > 0) {
-        setQuickStartTemplate(templates[templates.length - 1].id ?? null);
+        setQuickStartTemplate(templates[templates.length - 1]!.id ?? null); // safe: templates.length > 0 checked
       }
       setView("session-builder");
     }
@@ -384,7 +384,7 @@ export default function TrainMode() {
               const templates = useAppStore.getState().sessionTemplates;
               if (templates.length > 0) {
                 setQuickStartTemplate(
-                  templates[templates.length - 1].id ?? null,
+                  templates[templates.length - 1]!.id ?? null, // safe: templates.length > 0 checked
                 );
               }
               setEditSession(null);

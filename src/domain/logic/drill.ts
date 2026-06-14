@@ -44,7 +44,7 @@ export function advanceBlock(
   if (nextIndex >= drill.blocks.length) return null;
   return {
     blockIndex: nextIndex,
-    block: drill.blocks[nextIndex],
+    block: drill.blocks[nextIndex]!, // safe: nextIndex < blocks.length checked above
     isLast: nextIndex === drill.blocks.length - 1,
   };
 }
@@ -61,7 +61,7 @@ export function previousBlock(
   if (prevIndex < 0) return null;
   return {
     blockIndex: prevIndex,
-    block: drill.blocks[prevIndex],
+    block: drill.blocks[prevIndex]!, // safe: prevIndex >= 0 and < currentIndex < blocks.length
     isLast: prevIndex === drill.blocks.length - 1,
   };
 }
@@ -77,7 +77,7 @@ export function validateDrill(drill: Drill): string[] {
   if (drill.blocks.length === 0)
     errors.push("Mindestens ein Block erforderlich.");
   for (let i = 0; i < drill.blocks.length; i++) {
-    const block = drill.blocks[i];
+    const block = drill.blocks[i]!; // safe: i < drill.blocks.length loop bound
     if (block.durationSeconds <= 0)
       errors.push(`Block ${i + 1}: Dauer muss positiv sein.`);
   }

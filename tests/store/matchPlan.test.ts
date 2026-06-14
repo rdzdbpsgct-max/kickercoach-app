@@ -39,7 +39,7 @@ describe("Match plan CRUD", () => {
       useAppStore
         .getState()
         .updateMatchPlan("mp1", { opponent: "Team Bravo" });
-      expect(useAppStore.getState().matchPlans[0].opponent).toBe("Team Bravo");
+      expect(useAppStore.getState().matchPlans[0]!.opponent).toBe("Team Bravo");
     });
 
     it("updates analysis and gameplan", () => {
@@ -48,7 +48,7 @@ describe("Match plan CRUD", () => {
         analysis: "Weak in midfield",
         gameplan: "Control possession",
       });
-      const plan = useAppStore.getState().matchPlans[0];
+      const plan = useAppStore.getState().matchPlans[0]!;
       expect(plan.analysis).toBe("Weak in midfield");
       expect(plan.gameplan).toBe("Control possession");
     });
@@ -61,7 +61,7 @@ describe("Match plan CRUD", () => {
       useAppStore
         .getState()
         .updateMatchPlan("mp1", { opponent: "Changed" });
-      expect(useAppStore.getState().matchPlans[1].opponent).toBe("Team Beta");
+      expect(useAppStore.getState().matchPlans[1]!.opponent).toBe("Team Beta");
     });
 
     it("updates optional strategy fields", () => {
@@ -71,7 +71,7 @@ describe("Match plan CRUD", () => {
         defensiveStrategy: "Zone defense",
         result: "win",
       });
-      const plan = useAppStore.getState().matchPlans[0];
+      const plan = useAppStore.getState().matchPlans[0]!;
       expect(plan.offensiveStrategy).toBe("Counter-attack");
       expect(plan.defensiveStrategy).toBe("Zone defense");
       expect(plan.result).toBe("win");
@@ -93,7 +93,7 @@ describe("Match plan CRUD", () => {
       useAppStore.getState().deleteMatchPlan("mp1");
       const plans = useAppStore.getState().matchPlans;
       expect(plans).toHaveLength(1);
-      expect(plans[0].id).toBe("mp2");
+      expect(plans[0]!.id).toBe("mp2");
     });
 
     it("is a no-op for non-existent id", () => {
@@ -111,7 +111,7 @@ describe("Match plan CRUD", () => {
       ]);
       const plans = useAppStore.getState().matchPlans;
       expect(plans).toHaveLength(1);
-      expect(plans[0].id).toBe("mp3");
+      expect(plans[0]!.id).toBe("mp3");
     });
   });
 });

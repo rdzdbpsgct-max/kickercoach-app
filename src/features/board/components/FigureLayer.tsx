@@ -36,7 +36,7 @@ export default function FigureLayer({
     const groups: Record<number, FigureMarker[]> = {};
     for (const fig of figures) {
       if (!groups[fig.rodIndex]) groups[fig.rodIndex] = [];
-      groups[fig.rodIndex].push(fig);
+      groups[fig.rodIndex]!.push(fig); // safe: initialized to [] on the line above
     }
     return groups;
   }, [figures]);

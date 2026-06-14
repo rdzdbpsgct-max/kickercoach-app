@@ -61,8 +61,8 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
   const skillTrends = useMemo(() => {
     if (evaluations.length < 2) return null;
     const sorted = [...evaluations].sort((a, b) => b.date.localeCompare(a.date));
-    const latest = sorted[0];
-    const previous = sorted[1];
+    const latest = sorted[0]!; // safe: evaluations.length < 2 returned above
+    const previous = sorted[1]!; // safe: sorted has at least 2 elements here
     const trends: Record<string, string> = {};
     for (const sr of latest.skillRatings) {
       const prev = previous.skillRatings.find((p) => p.category === sr.category);

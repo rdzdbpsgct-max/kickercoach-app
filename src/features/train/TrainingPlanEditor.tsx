@@ -91,7 +91,8 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
   };
 
   const toggleFocusArea = (weekIdx: number, sessionIdx: number, cat: Category) => {
-    const session = weeks[weekIdx].sessionTemplates[sessionIdx];
+    const session = weeks[weekIdx]?.sessionTemplates[sessionIdx];
+    if (!session) return;
     const newAreas = session.focusAreas.includes(cat)
       ? session.focusAreas.filter((c) => c !== cat)
       : [...session.focusAreas, cat];

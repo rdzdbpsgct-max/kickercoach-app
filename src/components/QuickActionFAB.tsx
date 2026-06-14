@@ -47,7 +47,7 @@ export default function QuickActionFAB() {
         break;
       case "evaluation":
         if (players.length === 1) {
-          navigate(`/players/${players[0].id}`);
+          navigate(`/players/${players[0]!.id}`); // safe: length === 1 guarantees index 0 exists
         } else if (players.length > 1) {
           setShowPlayerPicker(true);
         } else {

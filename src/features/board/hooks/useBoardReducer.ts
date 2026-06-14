@@ -173,7 +173,7 @@ const DEFAULT_TOOL: ToolState = {
   activeTool: "select",
   arrowType: "pass",
   zoneShape: "rectangle",
-  zoneColor: ZONE_COLORS[0],
+  zoneColor: ZONE_COLORS[0]!, // safe: ZONE_COLORS is a non-empty literal array
 };
 
 export function useBoardReducer(initialScene: TacticalScene) {
@@ -213,7 +213,7 @@ export function useBoardReducer(initialScene: TacticalScene) {
             const [next, ...rest] = prev.future;
             return {
               past: [...prev.past, prev.present].slice(-MAX_HISTORY),
-              present: next,
+              present: next!, // safe: future.length === 0 returned above
               future: rest,
             };
           });

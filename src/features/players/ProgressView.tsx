@@ -27,8 +27,8 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
   // Compute progress summary
   const summary = useMemo(() => {
     if (sorted.length < 2) return null;
-    const first = sorted[0];
-    const last = sorted[sorted.length - 1];
+    const first = sorted[0]!; // safe: sorted.length < 2 returned above
+    const last = sorted[sorted.length - 1]!; // safe: sorted has at least 2 elements here
     const changes: { category: Category; diff: number }[] = [];
 
     for (const cat of ALL_CATEGORIES) {
@@ -164,11 +164,11 @@ export function ProgressView({ evaluations, playerTechniques }: ProgressViewProp
                   ))}
                   {/* Last value label */}
                   <text
-                    x={points[points.length - 1].x + 6}
-                    y={points[points.length - 1].y + 3}
+                    x={points[points.length - 1]!.x + 6}
+                    y={points[points.length - 1]!.y + 3}
                     className="text-[10px] fill-text-muted font-semibold"
                   >
-                    {points[points.length - 1].rating}
+                    {points[points.length - 1]!.rating /* safe: sorted.length >= 2 so points is non-empty */}
                   </text>
                 </svg>
               </Card>

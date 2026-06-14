@@ -55,7 +55,7 @@ export function PlayerTechniques({ playerId }: PlayerTechniquesProps) {
 
   const handleCycleStatus = (techniqueId: string, currentStatus: TechniqueStatus, ptId?: string) => {
     const currentIdx = STATUS_ORDER.indexOf(currentStatus);
-    const nextStatus = STATUS_ORDER[(currentIdx + 1) % STATUS_ORDER.length];
+    const nextStatus = STATUS_ORDER[(currentIdx + 1) % STATUS_ORDER.length]!; // safe: modulo index into non-empty STATUS_ORDER
 
     if (ptId) {
       updatePlayerTechnique(ptId, { status: nextStatus });

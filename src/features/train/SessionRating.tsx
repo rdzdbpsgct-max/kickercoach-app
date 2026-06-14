@@ -37,6 +37,7 @@ export default function SessionRating({
   }
 
   const currentPlayer = participatingPlayers[currentPlayerIndex];
+  if (!currentPlayer) return null;
 
   const handleSave = () => {
     // Only include categories where the user explicitly set a rating

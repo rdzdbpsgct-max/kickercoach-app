@@ -36,7 +36,8 @@ export function Tabs<T extends string>({
                 e.key === "ArrowRight"
                   ? tabs[(idx + 1) % tabs.length]
                   : tabs[(idx - 1 + tabs.length) % tabs.length];
-              onChange(next.value);
+              // safe: handler lives on a rendered tab, so tabs is non-empty and modulo index is in-bounds
+              onChange(next!.value);
             }}
             className={`relative flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
               isActive

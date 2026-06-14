@@ -24,7 +24,7 @@ describe("useAppStore", () => {
       };
       useAppStore.getState().addSession(session);
       expect(useAppStore.getState().sessions).toHaveLength(1);
-      expect(useAppStore.getState().sessions[0].id).toBe("s1");
+      expect(useAppStore.getState().sessions[0]!.id).toBe("s1");
     });
 
     it("updates a session", () => {
@@ -40,7 +40,7 @@ describe("useAppStore", () => {
       };
       useAppStore.getState().addSession(session);
       useAppStore.getState().updateSession("s1", { name: "Updated" });
-      expect(useAppStore.getState().sessions[0].name).toBe("Updated");
+      expect(useAppStore.getState().sessions[0]!.name).toBe("Updated");
     });
 
     it("deletes a session", () => {
@@ -149,7 +149,7 @@ describe("useAppStore", () => {
 
       const result = useAppStore.getState().getPlayerSessions("p1");
       expect(result).toHaveLength(1);
-      expect(result[0].id).toBe("s1");
+      expect(result[0]!.id).toBe("s1");
     });
   });
 });

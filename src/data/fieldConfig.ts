@@ -32,10 +32,11 @@ export const RODS: RodConfig[] = [
 ];
 
 /** Arrow styling per type */
-export const ARROW_STYLES: Record<
-  string,
-  { color: string; dash: number[]; strokeWidth: number }
-> = {
+type ArrowStyle = { color: string; dash: number[]; strokeWidth: number };
+
+// `pass` is guaranteed present so the `?? ARROW_STYLES.pass` fallback at call
+// sites resolves to a defined ArrowStyle even under noUncheckedIndexedAccess.
+export const ARROW_STYLES: Record<string, ArrowStyle> & { pass: ArrowStyle } = {
   pass: { color: "#3b82f6", dash: [], strokeWidth: 3 },
   shot: { color: "#ef4444", dash: [], strokeWidth: 4 },
   block: { color: "#f59e0b", dash: [10, 5], strokeWidth: 3 },

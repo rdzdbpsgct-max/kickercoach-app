@@ -33,7 +33,7 @@ export default function TrainingPlanList({ onEdit, onNew, onStartSession }: Trai
       let total = 0;
       let completed = 0;
       for (let wi = 0; wi < plan.weeks.length; wi++) {
-        for (let si = 0; si < plan.weeks[wi].sessionTemplates.length; si++) {
+        for (let si = 0; si < plan.weeks[wi]!.sessionTemplates.length; si++) { // safe: wi < plan.weeks.length loop bound
           total++;
           if (isSessionCompleted(plan, wi, si)) completed++;
         }

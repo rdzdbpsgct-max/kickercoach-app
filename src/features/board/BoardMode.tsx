@@ -15,7 +15,7 @@ function getLastScene(scenes: TacticalScene[]): TacticalScene {
     return [...scenes].sort(
       (a, b) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-    )[0];
+    )[0]!; // safe: scenes.length > 0 checked above
   }
   return createDefaultScene();
 }

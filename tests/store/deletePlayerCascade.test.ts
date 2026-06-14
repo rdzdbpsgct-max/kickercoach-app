@@ -137,7 +137,7 @@ describe("deletePlayer cascade", () => {
     useAppStore.getState().deletePlayer("p1");
     const state = useAppStore.getState();
     expect(state.players).toHaveLength(1);
-    expect(state.players[0].id).toBe("p2");
+    expect(state.players[0]!.id).toBe("p2");
   });
 
   it("removes goals belonging to the deleted player", () => {
@@ -145,7 +145,7 @@ describe("deletePlayer cascade", () => {
     useAppStore.getState().deletePlayer("p1");
     const state = useAppStore.getState();
     expect(state.goals).toHaveLength(1);
-    expect(state.goals[0].id).toBe("g2");
+    expect(state.goals[0]!.id).toBe("g2");
   });
 
   it("removes evaluations belonging to the deleted player", () => {
@@ -153,7 +153,7 @@ describe("deletePlayer cascade", () => {
     useAppStore.getState().deletePlayer("p1");
     const state = useAppStore.getState();
     expect(state.evaluations).toHaveLength(1);
-    expect(state.evaluations[0].id).toBe("e2");
+    expect(state.evaluations[0]!.id).toBe("e2");
   });
 
   it("removes coaching notes belonging to the deleted player", () => {
@@ -161,7 +161,7 @@ describe("deletePlayer cascade", () => {
     useAppStore.getState().deletePlayer("p1");
     const state = useAppStore.getState();
     expect(state.coachingNotes).toHaveLength(1);
-    expect(state.coachingNotes[0].id).toBe("n2");
+    expect(state.coachingNotes[0]!.id).toBe("n2");
   });
 
   it("removes playerTechniques belonging to the deleted player", () => {
@@ -169,7 +169,7 @@ describe("deletePlayer cascade", () => {
     useAppStore.getState().deletePlayer("p1");
     const state = useAppStore.getState();
     expect(state.playerTechniques).toHaveLength(1);
-    expect(state.playerTechniques[0].id).toBe("pt2");
+    expect(state.playerTechniques[0]!.id).toBe("pt2");
   });
 
   it("cleans playerIds from sessions but keeps sessions", () => {
@@ -192,7 +192,7 @@ describe("deletePlayer cascade", () => {
     useAppStore.getState().deletePlayer("p1");
     const state = useAppStore.getState();
     expect(state.matches).toHaveLength(1);
-    expect(state.matches[0].playerIds).toEqual(["p2"]);
+    expect(state.matches[0]!.playerIds).toEqual(["p2"]);
   });
 
   it("removes teams that include the deleted player", () => {

@@ -27,8 +27,8 @@ describe("Training plan operations", () => {
       useAppStore.getState().addTrainingPlan(basePlan);
       const plans = useAppStore.getState().trainingPlans;
       expect(plans).toHaveLength(1);
-      expect(plans[0].id).toBe("tp1");
-      expect(plans[0].name).toBe("Pre-season plan");
+      expect(plans[0]!.id).toBe("tp1");
+      expect(plans[0]!.name).toBe("Pre-season plan");
     });
 
     it("adds multiple training plans", () => {
@@ -46,7 +46,7 @@ describe("Training plan operations", () => {
       useAppStore
         .getState()
         .updateTrainingPlan("tp1", { name: "Updated plan" });
-      expect(useAppStore.getState().trainingPlans[0].name).toBe(
+      expect(useAppStore.getState().trainingPlans[0]!.name).toBe(
         "Updated plan",
       );
     });
@@ -57,7 +57,7 @@ describe("Training plan operations", () => {
         .getState()
         .addTrainingPlan({ ...basePlan, id: "tp2", name: "Second plan" });
       useAppStore.getState().updateTrainingPlan("tp1", { name: "Changed" });
-      expect(useAppStore.getState().trainingPlans[1].name).toBe("Second plan");
+      expect(useAppStore.getState().trainingPlans[1]!.name).toBe("Second plan");
     });
 
     it("updates weeks structure", () => {
@@ -75,7 +75,7 @@ describe("Training plan operations", () => {
         },
       ];
       useAppStore.getState().updateTrainingPlan("tp1", { weeks: newWeeks });
-      expect(useAppStore.getState().trainingPlans[0].weeks).toHaveLength(2);
+      expect(useAppStore.getState().trainingPlans[0]!.weeks).toHaveLength(2);
     });
   });
 
@@ -94,7 +94,7 @@ describe("Training plan operations", () => {
       useAppStore.getState().deleteTrainingPlan("tp1");
       const plans = useAppStore.getState().trainingPlans;
       expect(plans).toHaveLength(1);
-      expect(plans[0].id).toBe("tp2");
+      expect(plans[0]!.id).toBe("tp2");
     });
   });
 
@@ -102,7 +102,7 @@ describe("Training plan operations", () => {
     it("adds a session id to completedSessionIds", () => {
       useAppStore.getState().addTrainingPlan(basePlan);
       useAppStore.getState().markPlanSessionCompleted("tp1", "s1");
-      const plan = useAppStore.getState().trainingPlans[0];
+      const plan = useAppStore.getState().trainingPlans[0]!;
       expect(plan.completedSessionIds).toContain("s1");
     });
 
@@ -110,7 +110,7 @@ describe("Training plan operations", () => {
       useAppStore.getState().addTrainingPlan(basePlan);
       useAppStore.getState().markPlanSessionCompleted("tp1", "s1");
       useAppStore.getState().markPlanSessionCompleted("tp1", "s2");
-      const plan = useAppStore.getState().trainingPlans[0];
+      const plan = useAppStore.getState().trainingPlans[0]!;
       expect(plan.completedSessionIds).toEqual(["s1", "s2"]);
     });
 
@@ -120,7 +120,7 @@ describe("Training plan operations", () => {
         .getState()
         .addTrainingPlan({ ...basePlan, id: "tp2", name: "Other" });
       useAppStore.getState().markPlanSessionCompleted("tp1", "s1");
-      const otherPlan = useAppStore.getState().trainingPlans[1];
+      const otherPlan = useAppStore.getState().trainingPlans[1]!;
       expect(otherPlan.completedSessionIds ?? []).toEqual([]);
     });
 
@@ -129,7 +129,7 @@ describe("Training plan operations", () => {
       delete (planNoCompleted as Record<string, unknown>).completedSessionIds;
       useAppStore.getState().addTrainingPlan(planNoCompleted);
       useAppStore.getState().markPlanSessionCompleted("tp1", "s1");
-      const plan = useAppStore.getState().trainingPlans[0];
+      const plan = useAppStore.getState().trainingPlans[0]!;
       expect(plan.completedSessionIds).toContain("s1");
     });
   });

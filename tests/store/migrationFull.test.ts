@@ -161,7 +161,7 @@ describe("Full migration path", () => {
       const result = migrate(v0State, 0);
 
       // Session should have playerIds, focusAreas, createdAt defaults from v2 migration
-      const session = (result.sessions as Record<string, unknown>[])[0];
+      const session = (result.sessions as Record<string, unknown>[])[0]!;
       expect(session.playerIds).toEqual([]);
       expect(session.focusAreas).toEqual([]);
       expect(session.createdAt).toBeDefined();
@@ -175,18 +175,18 @@ describe("Full migration path", () => {
       expect(result.playerTechniques).toEqual([]);
 
       // v4: Player should have preferredPositions and isActive
-      const player = (result.players as Record<string, unknown>[])[0];
+      const player = (result.players as Record<string, unknown>[])[0]!;
       expect(player.preferredPositions).toEqual([]);
       expect(player.isActive).toBe(true);
 
       // v4: CoachingNote should have actionItems, tags, resolved
-      const note = (result.coachingNotes as Record<string, unknown>[])[0];
+      const note = (result.coachingNotes as Record<string, unknown>[])[0]!;
       expect(note.actionItems).toEqual([]);
       expect(note.tags).toEqual([]);
       expect(note.resolved).toBe(false);
 
       // v4: TrainingPlan should have completedSessionIds
-      const plan = (result.trainingPlans as Record<string, unknown>[])[0];
+      const plan = (result.trainingPlans as Record<string, unknown>[])[0]!;
       expect(plan.completedSessionIds).toEqual([]);
     });
 
@@ -293,17 +293,17 @@ describe("Full migration path", () => {
       expect(result.playerTechniques).toEqual([]);
 
       // v4 additions
-      const player = (result.players as Record<string, unknown>[])[0];
+      const player = (result.players as Record<string, unknown>[])[0]!;
       expect(player.preferredPositions).toEqual([]);
       expect(player.isActive).toBe(true);
 
-      const note = (result.coachingNotes as Record<string, unknown>[])[0];
+      const note = (result.coachingNotes as Record<string, unknown>[])[0]!;
       expect(note.actionItems).toEqual([]);
       expect(note.tags).toEqual([]);
       expect(note.resolved).toBe(false);
 
       // Session should be unchanged (already has playerIds etc.)
-      const session = (result.sessions as Record<string, unknown>[])[0];
+      const session = (result.sessions as Record<string, unknown>[])[0]!;
       expect(session.playerIds).toEqual(["p1"]);
     });
   });
@@ -339,7 +339,7 @@ describe("Full migration path", () => {
       const result = migrate(v3State, 3);
 
       // v4 additions on player
-      const player = (result.players as Record<string, unknown>[])[0];
+      const player = (result.players as Record<string, unknown>[])[0]!;
       expect(player.preferredPositions).toEqual([]);
       expect(player.isActive).toBe(true);
 
@@ -400,16 +400,16 @@ describe("Full migration path", () => {
       const result = migrate(v4State, 4);
 
       // Everything should be the same
-      const player = (result.players as Record<string, unknown>[])[0];
+      const player = (result.players as Record<string, unknown>[])[0]!;
       expect(player.preferredPositions).toEqual(["torwart"]);
       expect(player.isActive).toBe(false);
 
-      const note = (result.coachingNotes as Record<string, unknown>[])[0];
+      const note = (result.coachingNotes as Record<string, unknown>[])[0]!;
       expect(note.actionItems).toEqual(["do this"]);
       expect(note.tags).toEqual(["focus"]);
       expect(note.resolved).toBe(true);
 
-      const plan = (result.trainingPlans as Record<string, unknown>[])[0];
+      const plan = (result.trainingPlans as Record<string, unknown>[])[0]!;
       expect(plan.completedSessionIds).toEqual(["s1"]);
     });
   });
@@ -445,7 +445,7 @@ describe("Full migration path", () => {
       };
 
       const result = migrate(state, 0);
-      const player = (result.players as Record<string, unknown>[])[0];
+      const player = (result.players as Record<string, unknown>[])[0]!;
       // The existing preferredPositions should be preserved (spread first, then default)
       expect(player.preferredPositions).toEqual(["3er-Reihe"]);
       expect(player.isActive).toBe(false);
@@ -469,7 +469,7 @@ describe("Full migration path", () => {
       };
 
       const result = migrate(state, 0);
-      const session = (result.sessions as Record<string, unknown>[])[0];
+      const session = (result.sessions as Record<string, unknown>[])[0]!;
       expect(session.createdAt).toBe("2025-01-01T10:00:00Z");
     });
   });
