@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { TrainingPlan, TrainingWeek, SessionTemplate } from "../../domain/models/TrainingPlan";
 import type { Category } from "../../domain/models/CoachCard";
 import type { Drill } from "../../domain/models/Drill";
-import { Button, FormField, Input, Textarea, Card } from "../../components/ui";
+import { Avatar, Button, FormField, Input, Textarea, Card } from "../../components/ui";
 import { useAppStore } from "../../store";
 import { generateId } from "../../utils/id";
 
@@ -161,12 +161,11 @@ export default function TrainingPlanEditor({ plan, onSave, onCancel }: TrainingP
                       : "border-border text-text-muted hover:border-accent/50"
                   }`}
                 >
-                  <span
-                    className="inline-flex h-4 w-4 items-center justify-center rounded-full text-[8px] font-bold text-white"
-                    style={{ backgroundColor: player.avatarColor ?? "#6366f1" }}
-                  >
-                    {player.name.charAt(0).toUpperCase()}
-                  </span>
+                  <Avatar
+                    name={player.name}
+                    color={player.avatarColor}
+                    className="h-4 w-4 rounded-full text-[8px]"
+                  />
                   {player.name}
                 </button>
               );

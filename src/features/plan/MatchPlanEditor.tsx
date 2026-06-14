@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import type { MatchPlan, MatchSet, StrategyTemplate } from "../../domain/models/MatchPlan";
 import { useAppStore } from "../../store";
-import { Button, Badge, Card, FormField, Input, Textarea, Select } from "../../components/ui";
+import { Avatar, Button, Badge, Card, FormField, Input, Textarea, Select } from "../../components/ui";
 import { printCurrentPage } from "../../utils/print";
 
 interface MatchPlanEditorProps {
@@ -260,12 +260,11 @@ export default function MatchPlanEditor({
                     : "border border-border text-text-muted hover:border-accent/50"
                 }`}
               >
-                <div
-                  className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
-                  style={{ backgroundColor: p.avatarColor ?? "#6366f1" }}
-                >
-                  {p.name.charAt(0).toUpperCase()}
-                </div>
+                <Avatar
+                  name={p.name}
+                  color={p.avatarColor}
+                  className="h-5 w-5 rounded-md text-[10px]"
+                />
                 {p.name}
               </button>
             ))}

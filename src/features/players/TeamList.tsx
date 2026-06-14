@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppStore } from "../../store";
-import { Card, Button, EmptyState, ConfirmDialog } from "../../components/ui";
+import { Avatar, Card, Button, EmptyState, ConfirmDialog } from "../../components/ui";
 import { useTranslation } from "react-i18next";
 import type { Team } from "../../domain/models/Team";
 
@@ -56,12 +56,11 @@ export function TeamList({ onAdd, onEdit }: TeamListProps) {
                 {[p1, p2].map((p, i) =>
                   p ? (
                     <div key={p.id} className="flex items-center gap-1.5">
-                      <div
-                        className="flex h-7 w-7 items-center justify-center rounded-lg text-xs font-bold text-white"
-                        style={{ backgroundColor: p.avatarColor ?? "#6366f1" }}
-                      >
-                        {p.name.charAt(0).toUpperCase()}
-                      </div>
+                      <Avatar
+                        name={p.name}
+                        color={p.avatarColor}
+                        className="h-7 w-7 rounded-lg text-xs"
+                      />
                       <span className="text-xs text-text-muted truncate">
                         {p.name}
                       </span>

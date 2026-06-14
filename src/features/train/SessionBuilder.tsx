@@ -5,7 +5,7 @@ import { drillTotalDuration, formatTime } from "../../domain/logic";
 import { calculateSessionDuration } from "../../domain/logic/session";
 import { ALL_CATEGORIES, STAR_RATING_SCALE } from "../../domain/constants";
 import { useTranslation } from "react-i18next";
-import { Button, FormField, Input, Select, Textarea, StarRating } from "../../components/ui";
+import { Avatar, Button, FormField, Input, Select, Textarea, StarRating } from "../../components/ui";
 import { useAppStore } from "../../store";
 import type { Session, DrillResult } from "../../store";
 import { generateId } from "../../utils/id";
@@ -260,12 +260,11 @@ export default function SessionBuilder({
                       : "border-border text-text-muted hover:border-accent/50"
                   }`}
                 >
-                  <span
-                    className="inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold text-white"
-                    style={{ backgroundColor: player.avatarColor ?? "#6366f1" }}
-                  >
-                    {player.name.charAt(0).toUpperCase()}
-                  </span>
+                  <Avatar
+                    name={player.name}
+                    color={player.avatarColor}
+                    className="h-5 w-5 rounded-full text-[10px]"
+                  />
                   {player.name}
                 </button>
               );

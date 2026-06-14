@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAppStore } from "../../store";
-import { Button, Card, FormField, Input, Textarea } from "../../components/ui";
+import { Avatar, Button, Card, FormField, Input, Textarea } from "../../components/ui";
 import { useTranslation } from "react-i18next";
 import type { Team } from "../../domain/models/Team";
 import { generateId } from "../../utils/id";
@@ -82,12 +82,11 @@ export function TeamForm({ team, onSave, onCancel }: TeamFormProps) {
                         : "border border-border text-text-muted hover:border-accent/50"
                   }`}
                 >
-                  <div
-                    className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
-                    style={{ backgroundColor: p.avatarColor ?? "#6366f1" }}
-                  >
-                    {p.name.charAt(0).toUpperCase()}
-                  </div>
+                  <Avatar
+                    name={p.name}
+                    color={p.avatarColor}
+                    className="h-5 w-5 rounded-md text-[10px]"
+                  />
                   {p.name}
                 </button>
               ))}
@@ -115,12 +114,11 @@ export function TeamForm({ team, onSave, onCancel }: TeamFormProps) {
                         : "border border-border text-text-muted hover:border-accent/50"
                   }`}
                 >
-                  <div
-                    className="h-5 w-5 rounded-md text-[10px] font-bold text-white flex items-center justify-center"
-                    style={{ backgroundColor: p.avatarColor ?? "#6366f1" }}
-                  >
-                    {p.name.charAt(0).toUpperCase()}
-                  </div>
+                  <Avatar
+                    name={p.name}
+                    color={p.avatarColor}
+                    className="h-5 w-5 rounded-md text-[10px]"
+                  />
                   {p.name}
                 </button>
               ))}
@@ -134,14 +132,11 @@ export function TeamForm({ team, onSave, onCancel }: TeamFormProps) {
               (p) =>
                 p && (
                   <div key={p.id} className="flex items-center gap-1.5">
-                    <div
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold text-white"
-                      style={{
-                        backgroundColor: p.avatarColor ?? "#6366f1",
-                      }}
-                    >
-                      {p.name.charAt(0).toUpperCase()}
-                    </div>
+                    <Avatar
+                      name={p.name}
+                      color={p.avatarColor}
+                      className="h-8 w-8 rounded-lg text-sm"
+                    />
                     <span className="text-sm font-medium text-text">
                       {p.name}
                     </span>

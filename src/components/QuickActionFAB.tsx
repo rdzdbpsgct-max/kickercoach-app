@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAppStore } from "../store";
 import { generateId } from "../utils/id";
 import { useTranslation } from "react-i18next";
+import { Avatar } from "./ui";
 
 export default function QuickActionFAB() {
   const { t } = useTranslation("common");
@@ -173,12 +174,11 @@ export default function QuickActionFAB() {
                     }}
                     className="flex items-center gap-2 rounded-xl p-2 text-left hover:bg-surface-hover transition-colors min-h-[44px]"
                   >
-                    <span
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold text-white"
-                      style={{ backgroundColor: p.avatarColor ?? "#00e676" }}
-                    >
-                      {p.name.charAt(0).toUpperCase()}
-                    </span>
+                    <Avatar
+                      name={p.name}
+                      color={p.avatarColor}
+                      className="h-8 w-8 rounded-full text-xs"
+                    />
                     <span className="text-sm font-medium text-text">{p.name}</span>
                   </motion.button>
                 ))}

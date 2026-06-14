@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { Category } from "../../domain/models/CoachCard";
 import type { Evaluation, SkillRating } from "../../domain/models/Evaluation";
 import { useAppStore } from "../../store";
-import { Button, Card, FormField, Textarea } from "../../components/ui";
+import { Avatar, Button, Card, FormField, Textarea } from "../../components/ui";
 import { ALL_CATEGORIES } from "../../domain/constants";
 import { generateId } from "../../utils/id";
 
@@ -79,12 +79,11 @@ export default function SessionRating({
       </div>
 
       <div className="flex items-center gap-3">
-        <div
-          className="flex h-10 w-10 items-center justify-center rounded-xl text-lg font-bold text-white"
-          style={{ backgroundColor: currentPlayer.avatarColor ?? "#6366f1" }}
-        >
-          {currentPlayer.name.charAt(0).toUpperCase()}
-        </div>
+        <Avatar
+          name={currentPlayer.name}
+          color={currentPlayer.avatarColor}
+          className="h-10 w-10 rounded-xl text-lg"
+        />
         <div>
           <span className="text-sm font-semibold text-text">{currentPlayer.name}</span>
           <span className="ml-2 text-xs text-text-dim">

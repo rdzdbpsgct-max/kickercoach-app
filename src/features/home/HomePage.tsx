@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "../../store";
-import { Badge, Card, Button, StarRating } from "../../components/ui";
+import { Avatar, Badge, Card, Button, StarRating } from "../../components/ui";
 import { getWeakCategories } from "../../domain/logic/recommendations";
 
 const staggerContainer = {
@@ -295,12 +295,11 @@ export default function HomePage() {
                         to={`/players/${player.id}`}
                         className="flex items-center gap-2 rounded-lg p-1 -mx-1 hover:bg-card-hover transition-colors"
                       >
-                        <span
-                          className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
-                          style={{ backgroundColor: player.avatarColor ?? "var(--color-accent)" }}
-                        >
-                          {player.name.charAt(0).toUpperCase()}
-                        </span>
+                        <Avatar
+                          name={player.name}
+                          color={player.avatarColor}
+                          className="h-7 w-7 rounded-full text-[11px]"
+                        />
                         <div className="flex-1">
                           <span className="text-xs font-medium text-text">{player.name}</span>
                           {weak.length > 0 && (

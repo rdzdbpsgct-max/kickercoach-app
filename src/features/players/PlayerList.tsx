@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Badge, Card, Button, EmptyState, SearchBar } from "../../components/ui";
+import { Avatar, Badge, Card, Button, EmptyState, SearchBar } from "../../components/ui";
 import { useTranslation } from "react-i18next";
 import type { Player } from "../../domain/models/Player";
 
@@ -112,12 +112,11 @@ export function PlayerList({ players, onSelect, onAdd }: PlayerListProps) {
                 onClick={() => onSelect(player)}
                 className={`flex items-center gap-3 ${inactive ? "opacity-50" : ""}`}
               >
-                <div
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white"
-                  style={{ backgroundColor: player.avatarColor ?? "#00e676" }}
-                >
-                  {player.name.charAt(0).toUpperCase()}
-                </div>
+                <Avatar
+                  name={player.name}
+                  color={player.avatarColor}
+                  className="h-10 w-10 rounded-xl text-lg"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-text truncate">{player.name}</p>
                   <div className="mt-1 flex gap-1.5 flex-wrap">

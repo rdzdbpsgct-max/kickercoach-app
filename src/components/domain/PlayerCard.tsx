@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { Card, Badge } from "../ui";
+import { Avatar, Card, Badge } from "../ui";
 import type { Player } from "../../domain/models/Player";
 
 interface PlayerCardProps {
@@ -31,12 +31,11 @@ export function PlayerCard({
             : ""
         }`}
       >
-        <span
-          className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
-          style={{ backgroundColor: player.avatarColor ?? "#00e676" }}
-        >
-          {player.name.charAt(0).toUpperCase()}
-        </span>
+        <Avatar
+          name={player.name}
+          color={player.avatarColor}
+          className="h-7 w-7 rounded-full text-[11px]"
+        />
         <div className="flex-1 min-w-0">
           <span className="text-xs font-medium text-text truncate block">
             {player.name}
@@ -63,12 +62,11 @@ export function PlayerCard({
         transition={{ duration: 0.25 }}
         className="contents"
       >
-        <div
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg font-bold text-white"
-          style={{ backgroundColor: player.avatarColor ?? "#00e676" }}
-        >
-          {player.name.charAt(0).toUpperCase()}
-        </div>
+        <Avatar
+          name={player.name}
+          color={player.avatarColor}
+          className="h-10 w-10 rounded-xl text-lg"
+        />
         <div className="min-w-0 flex-1">
           <p className="font-semibold text-text truncate">{player.name}</p>
           <div className="mt-1 flex flex-wrap items-center gap-1.5">

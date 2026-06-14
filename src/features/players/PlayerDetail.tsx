@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Button, Badge, Card } from "../../components/ui";
+import { Avatar, Button, Badge, Card } from "../../components/ui";
 import { SkillRadar } from "./SkillRadar";
 import { GoalList } from "./GoalList";
 import { GoalForm } from "./GoalForm";
@@ -105,12 +105,11 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
       </motion.div>
 
       <motion.div className="flex items-center gap-4" variants={sectionVariants} transition={{ duration: 0.25 }}>
-        <div
-          className="flex h-14 w-14 items-center justify-center rounded-2xl text-2xl font-bold text-white"
-          style={{ backgroundColor: player.avatarColor ?? "#00e676" }}
-        >
-          {player.name.charAt(0).toUpperCase()}
-        </div>
+        <Avatar
+          name={player.name}
+          color={player.avatarColor}
+          className="h-14 w-14 rounded-2xl text-2xl"
+        />
         <div>
           <h1 className="text-xl font-bold text-text">
             {player.name}
