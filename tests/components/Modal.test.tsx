@@ -37,6 +37,16 @@ describe("Modal", () => {
     expect(handleClose).toHaveBeenCalledOnce();
   });
 
+  it("moves focus into the dialog on open", () => {
+    render(
+      <Modal open={true} onClose={vi.fn()} title="Title">
+        <button>inner</button>
+      </Modal>,
+    );
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.contains(document.activeElement)).toBe(true);
+  });
+
   it("renders title and children", () => {
     render(
       <Modal open={true} onClose={vi.fn()} title="My Dialog">

@@ -1,6 +1,7 @@
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useFocusTrap } from "../../hooks/useFocusTrap";
 
 interface ModalProps {
   open: boolean;
@@ -12,6 +13,8 @@ interface ModalProps {
 
 export function Modal({ open, onClose, title, children, actions }: ModalProps) {
   const { t } = useTranslation("common");
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, open);
   useEffect(() => {
     if (!open) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -35,6 +38,7 @@ export function Modal({ open, onClose, title, children, actions }: ModalProps) {
             aria-hidden="true"
           />
           <motion.div
+            ref={dialogRef}
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
