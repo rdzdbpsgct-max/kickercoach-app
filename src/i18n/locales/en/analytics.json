@@ -1,0 +1,54 @@
+{
+  "title": "Analytics",
+  "stats": {
+    "sessions": "Sessions",
+    "players": "Players",
+    "matches": "Matches",
+    "winsShort": "{{wins}}W",
+    "record": "{{wins}}W / {{draws}}D / {{losses}}L"
+  },
+  "drillSuccessRate": {
+    "title": "Drill Success Rate",
+    "avgRate": "Average success rate"
+  },
+  "techniqueProgress": {
+    "title": "Technique Progress"
+  },
+  "recentMatches": {
+    "title": "Recent Matches",
+    "vs": "vs. {{opponent}}",
+    "win": "Win",
+    "loss": "Loss",
+    "draw": "Draw"
+  },
+  "trainingFrequency": {
+    "title": "Training Frequency",
+    "subtitle": "Sessions per week (last 8 weeks)",
+    "empty": "No sessions yet."
+  },
+  "skillProfile": {
+    "title": "Skill Profile: {{name}}",
+    "ratings": "Current ratings (1-5)",
+    "evaluationCount": " · {{count}} evaluations",
+    "playerLabel": "Player:"
+  },
+  "skillTrend": {
+    "title": "Skill development over time",
+    "needMore": "At least 2 evaluations are needed to show a trend."
+  },
+  "drillStats": {
+    "title": "Drill Statistics",
+    "usage": "Usage",
+    "quality": "Quality",
+    "usageDescription": "Most-used drills in sessions",
+    "qualityDescription": "Average quality (1-5 stars)",
+    "emptyUsage": "No drills used in sessions yet.",
+    "emptyQuality": "No drill ratings yet."
+  },
+  "playerComparison": {
+    "title": "Player Comparison",
+    "minPlayersRequired": "At least 2 players are required for a comparison.",
+    "selectDifferent": "Select two different players to compare.",
+    "sessions": "Sessions"
+  }
+}

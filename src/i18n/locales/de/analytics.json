@@ -32,6 +32,10 @@
     "evaluationCount": " \u00B7 {{count}} Bewertungen",
     "playerLabel": "Spieler:"
   },
+  "skillTrend": {
+    "title": "Skill-Entwicklung \u00FCber Zeit",
+    "needMore": "Mindestens 2 Bewertungen n\u00F6tig, um eine Entwicklung anzuzeigen."
+  },
   "drillStats": {
     "title": "Drill-Statistiken",
     "usage": "Nutzung",

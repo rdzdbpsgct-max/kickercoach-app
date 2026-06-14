@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import type { TechniqueStatus } from "../../domain/models/PlayerTechnique";
 import { TrainingFrequencyChart } from "./TrainingFrequencyChart";
 import { SkillProgressChart } from "./SkillProgressChart";
+import { SkillTrendChart } from "./SkillTrendChart";
 import { DrillStatsChart } from "./DrillStatsChart";
 import { PlayerComparison } from "./PlayerComparison";
 
@@ -227,7 +228,10 @@ export default function AnalyticsMode() {
             </Select>
           </div>
           {selectedPlayerId && (
-            <SkillProgressChart playerId={selectedPlayerId} />
+            <>
+              <SkillProgressChart playerId={selectedPlayerId} />
+              <SkillTrendChart playerId={selectedPlayerId} />
+            </>
           )}
         </motion.div>
       )}
