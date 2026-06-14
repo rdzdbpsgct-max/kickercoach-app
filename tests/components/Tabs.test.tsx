@@ -27,12 +27,34 @@ describe("Tabs", () => {
     expect(handleChange).toHaveBeenCalledWith("offense");
   });
 
-  it("highlights active tab", () => {
+  it("uses tablist/tab roles and marks the active tab as selected", () => {
     render(<Tabs tabs={[...tabs]} active="offense" onChange={vi.fn()} />);
-    const offenseTab = screen.getByText("Offensive").closest("button")!;
-    expect(offenseTab).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("tablist")).toBeInTheDocument();
 
-    const allTab = screen.getByText("Alle").closest("button")!;
-    expect(allTab).toHaveAttribute("aria-pressed", "false");
+    const offenseTab = screen.getByRole("tab", { name: "Offensive" });
+    expect(offenseTab).toHaveAttribute("aria-selected", "true");
+    expect(offenseTab).toHaveAttribute("tabindex", "0");
+
+    const allTab = screen.getByRole("tab", { name: "Alle" });
+    expect(allTab).toHaveAttribute("aria-selected", "false");
+    expect(allTab).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("moves to the next tab with ArrowRight", async () => {
+    const user = userEvent.setup();
+    const handleChange = vi.fn<(value: TabValue) => void>();
+    render(<Tabs tabs={[...tabs]} active="all" onChange={handleChange} />);
+    screen.getByRole("tab", { name: "Alle" }).focus();
+    await user.keyboard("{ArrowRight}");
+    expect(handleChange).toHaveBeenCalledWith("offense");
+  });
+
+  it("wraps to the last tab with ArrowLeft from the first", async () => {
+    const user = userEvent.setup();
+    const handleChange = vi.fn<(value: TabValue) => void>();
+    render(<Tabs tabs={[...tabs]} active="all" onChange={handleChange} />);
+    screen.getByRole("tab", { name: "Alle" }).focus();
+    await user.keyboard("{ArrowLeft}");
+    expect(handleChange).toHaveBeenCalledWith("defense");
   });
 });

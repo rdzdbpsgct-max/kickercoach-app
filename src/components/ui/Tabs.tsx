@@ -18,19 +18,31 @@ export function Tabs<T extends string>({
   onChange,
 }: TabsProps<T>) {
   return (
-    <div className="flex gap-1.5 relative">
+    <div role="tablist" className="flex gap-1.5 relative">
       {tabs.map((tab) => {
         const isActive = active === tab.value;
         return (
           <button
             key={tab.value}
+            role="tab"
+            aria-selected={isActive}
+            tabIndex={isActive ? 0 : -1}
             onClick={() => onChange(tab.value)}
+            onKeyDown={(e) => {
+              if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+              e.preventDefault();
+              const idx = tabs.findIndex((x) => x.value === active);
+              const next =
+                e.key === "ArrowRight"
+                  ? tabs[(idx + 1) % tabs.length]
+                  : tabs[(idx - 1 + tabs.length) % tabs.length];
+              onChange(next.value);
+            }}
             className={`relative flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-colors ${
               isActive
                 ? "text-accent"
                 : "border border-border text-text-muted hover:border-accent/50 hover:text-text"
             }`}
-            aria-pressed={isActive}
           >
             {isActive && (
               <motion.div
