@@ -4,7 +4,9 @@ let _cache: CoachCard[] | null = null;
 
 export async function loadCoachCards(): Promise<CoachCard[]> {
   if (_cache) return _cache;
-  const resp = await fetch("/data/coachCards.json");
+  // Prefix with the app's base URL ("/kicker-coach/" in dev, "/" on Vercel)
+  // so the fetch resolves correctly under any base.
+  const resp = await fetch(`${import.meta.env.BASE_URL}data/coachCards.json`);
   _cache = await resp.json();
   return _cache!;
 }
