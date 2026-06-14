@@ -1,0 +1,32 @@
+{
+  "title": "Settings",
+  "language": "Language",
+  "appearance": {
+    "title": "Appearance",
+    "dark": "Dark theme",
+    "light": "Light theme",
+    "toggle": "Toggle theme"
+  },
+  "storage": {
+    "title": "Storage",
+    "used": "{{kb}} KB used",
+    "limit": "~{{mb}} MB limit",
+    "warning": "Storage almost full! Export your data as a backup and delete old sessions."
+  },
+  "backup": {
+    "title": "Data Backup",
+    "exportDescription": "Export all your data as a JSON file. Use it to create a backup or transfer your data to another device.",
+    "exportButton": "Export data",
+    "importDescription": "Import a previously exported backup. Caution: your current data will be replaced!",
+    "importButton": "Import backup",
+    "importing": "Importing...",
+    "importSuccess": "Import successful! The app will use the new data after the next page change.",
+    "importFailed": "Import failed.",
+    "confirmTitle": "Import data?",
+    "confirmMessage": "Caution: importing replaces your current data. Do you want to continue?",
+    "confirmButton": "Import"
+  },
+  "about": {
+    "description": "Your digital coaching app for table football."
+  }
+}

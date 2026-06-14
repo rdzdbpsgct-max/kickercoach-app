@@ -1,0 +1,47 @@
+{
+  "sceneName": "Scene name",
+  "loading": "Loading...",
+  "tools": {
+    "select": "Select",
+    "arrow": "Arrow",
+    "zone": "Zone",
+    "eraser": "Eraser"
+  },
+  "arrowTypes": {
+    "pass": "Pass",
+    "shot": "Shot",
+    "block": "Block"
+  },
+  "zoneShapes": {
+    "rectangle": "Rectangle",
+    "circle": "Circle"
+  },
+  "subLabels": {
+    "type": "Type:",
+    "shape": "Shape:",
+    "color": "Color:"
+  },
+  "tooltips": {
+    "ballToggle": "Ball on/off",
+    "resetFigures": "Reset rods",
+    "undo": "Undo (Ctrl+Z)",
+    "redo": "Redo (Ctrl+Y)"
+  },
+  "buttons": {
+    "scenes": "Scenes",
+    "save": "Save",
+    "exportPng": "PNG"
+  },
+  "sceneManager": {
+    "title": "Scenes",
+    "close": "Close",
+    "noScenes": "No scenes",
+    "noScenesDescription": "No scenes saved yet.",
+    "cancel": "Cancel",
+    "load": "Load",
+    "newScene": "New scene",
+    "saveCurrent": "Save current",
+    "deleteTitle": "Delete scene",
+    "deleteMessage": "Do you really want to delete this scene?"
+  }
+}

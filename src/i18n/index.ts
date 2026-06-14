@@ -12,6 +12,16 @@ import trainDe from "./locales/de/train.json";
 import playersDe from "./locales/de/players.json";
 import settingsDe from "./locales/de/settings.json";
 
+import commonEn from "./locales/en/common.json";
+import homeEn from "./locales/en/home.json";
+import learnEn from "./locales/en/learn.json";
+import planEn from "./locales/en/plan.json";
+import boardEn from "./locales/en/board.json";
+import analyticsEn from "./locales/en/analytics.json";
+import trainEn from "./locales/en/train.json";
+import playersEn from "./locales/en/players.json";
+import settingsEn from "./locales/en/settings.json";
+
 const resources = {
   de: {
     common: commonDe,
@@ -24,7 +34,21 @@ const resources = {
     players: playersDe,
     settings: settingsDe,
   },
+  en: {
+    common: commonEn,
+    home: homeEn,
+    learn: learnEn,
+    train: trainEn,
+    plan: planEn,
+    board: boardEn,
+    analytics: analyticsEn,
+    players: playersEn,
+    settings: settingsEn,
+  },
 };
+
+export const SUPPORTED_LANGUAGES = ["de", "en"] as const;
+export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
 i18n
   .use(LanguageDetector)
@@ -32,6 +56,8 @@ i18n
   .init({
     resources,
     fallbackLng: "de",
+    supportedLngs: ["de", "en"],
+    nonExplicitSupportedLngs: true,
     defaultNS: "common",
     interpolation: { escapeValue: false },
     detection: {

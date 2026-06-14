@@ -1,0 +1,54 @@
+{
+  "title": "Coaching Hub",
+  "streak": "{{count}}-day streak",
+  "quickActions": {
+    "training": "+ Training",
+    "player": "+ Player",
+    "matchplan": "+ Match Plan",
+    "techniques": "Techniques"
+  },
+  "onboarding": {
+    "title": "Welcome to KickerCoach!",
+    "description": "Your digital coaching app for table football. Get started now with your first player or a training session.",
+    "addPlayer": "Add your first player",
+    "startTraining": "Start your first session",
+    "exploreTechniques": "Explore techniques"
+  },
+  "stats": {
+    "title": "Training Statistics",
+    "thisWeek": "This week",
+    "total": "Total",
+    "hours": "Hours"
+  },
+  "lastSession": {
+    "title": "Last Session",
+    "retrospectiveAvailable": "Retrospective available"
+  },
+  "goals": {
+    "title": "Open Goals ({{count}})",
+    "more": "+{{count}} more goals"
+  },
+  "players": {
+    "title": "Players ({{count}})",
+    "focus": "Focus: {{categories}}",
+    "sessions": "{{count}} sessions"
+  },
+  "notes": {
+    "title": "Recent Coaching Notes"
+  },
+  "plans": {
+    "title": "Training Plans",
+    "count_one": "{{count}} plan",
+    "count_other": "{{count}} plans",
+    "link": "Go to plans"
+  },
+  "features": {
+    "learn": "Learn",
+    "learnStat": "48 cards",
+    "train": "Training",
+    "board": "Tactics",
+    "boardStat": "Board",
+    "analytics": "Analytics",
+    "analyticsStat": "Stats"
+  }
+}

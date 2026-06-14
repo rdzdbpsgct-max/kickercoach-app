@@ -1,0 +1,246 @@
+{
+  "title": "Training",
+  "plans": "Plans",
+  "journalButton": "Journal",
+  "quickStart": "Quick start",
+  "newSession": "+ Session",
+  "back": "Back",
+
+  "drillResultCount": "{{count}} drill result recorded",
+  "drillResultCount_other": "{{count}} drill results recorded",
+  "drillResultsSavedWithSession": "Saved when the session is created",
+
+  "trainingPlans": "Training plans",
+  "retrospective": "Retrospective",
+  "trainingJournal": "Training journal",
+
+  "deleteDrill": {
+    "title": "Delete drill",
+    "message": "Do you really want to delete this custom drill?"
+  },
+
+  "recommendedFor": "Recommended for {{name}}",
+  "recommended": "Recommended",
+
+  "drillSelector": {
+    "searchPlaceholder": "Search drill...",
+    "customDrill": "Custom drill",
+    "blocks": "{{count}} blocks",
+    "players": "{{count}} players",
+    "goal": "Goal: {{goal}}",
+    "editTitle": "Edit",
+    "deleteTitle": "Delete",
+    "allLevels": "All levels",
+    "allPhases": "All phases",
+    "allCategories": "All categories",
+    "allPositions": "All positions",
+    "drillCount": "{{count}} drills",
+    "newDrill": "+ New drill",
+    "recommendedSection": "{{label}} ({{count}})",
+    "moreDrills": "More drills ({{count}})"
+  },
+
+  "drillEditor": {
+    "editTitle": "Edit drill",
+    "newTitle": "New drill",
+    "cancel": "Cancel",
+    "templateSaved": "Template saved",
+    "saveAsTemplate": "As template",
+    "save": "Save",
+    "nameLabel": "Name",
+    "namePlaceholder": "Drill name",
+    "focusSkillLabel": "Focus skill",
+    "focusSkillPlaceholder": "e.g. pull shot, tic-tac...",
+    "difficultyLabel": "Difficulty",
+    "categoryLabel": "Category",
+    "phaseLabel": "Phase",
+    "positionLabel": "Position",
+    "none": "None",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Pro",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Optional description...",
+    "measurableGoalLabel": "Measurable goal",
+    "measurableGoalPlaceholder": "e.g. 8 of 10 shots on goal",
+    "blocksLabel": "Blocks ({{count}})",
+    "addBlock": "+ Block",
+    "blockTypeWork": "Work",
+    "blockTypeRest": "Rest",
+    "blockTypeRepetitions": "Repetitions",
+    "reps": "reps",
+    "seconds": "sec",
+    "notePlaceholder": "Note...",
+    "validation": {
+      "nameRequired": "Name is required",
+      "focusSkillRequired": "Focus skill is required",
+      "blocksRequired": "At least one block required"
+    }
+  },
+
+  "drillTimerView": {
+    "backToSelection": "Back to selection",
+    "autoAdvance": "Auto-advance",
+    "blockTypeWork": "Work",
+    "blockTypeRest": "Rest",
+    "prev": "Prev",
+    "next": "Next",
+    "reset": "Reset",
+    "pause": "Pause",
+    "start": "Start",
+    "resetShortcut": "Reset (R)",
+    "shortcutSpace": "Space: Start/Pause",
+    "shortcutPrev": "←/P: Prev",
+    "shortcutNext": "→/N: Next",
+    "shortcutReset": "R: Reset"
+  },
+
+  "timer": {
+    "repetitions": "Repetitions",
+    "finished": "Done!",
+    "counting": "Counting...",
+    "running": "Running",
+    "paused": "Paused"
+  },
+
+  "blockProgress": {
+    "label": "Training progress",
+    "blockOf": "Block {{current}} / {{total}}",
+    "blockTypeWork": "Work",
+    "blockTypeRest": "Rest"
+  },
+
+  "drillResultCapture": {
+    "drillCompleted": "Drill completed!",
+    "captureResult": "Record result",
+    "qualityLabel": "Quality",
+    "chooseRating": "Choose a rating",
+    "noteLabel": "Note (optional)",
+    "notePlaceholder": "Short note on the drill...",
+    "charCount": "{{current}}/{{max}}",
+    "skip": "Skip",
+    "save": "Save"
+  },
+
+  "sessionBuilder": {
+    "title": "Create session",
+    "cancel": "Cancel",
+    "templateSaved": "Template saved",
+    "saveAsTemplate": "As template",
+    "save": "Save",
+    "planContextInfo": "Session from training plan — week {{week}}, session {{session}}",
+    "loadFromTemplate": "Load from template",
+    "deleteTemplateTitle": "Delete template",
+    "sessionNameLabel": "Session name",
+    "sessionNamePlaceholder": "e.g. morning training, shot drill...",
+    "dateLabel": "Date",
+    "playersLabel": "Players ({{count}} selected)",
+    "teamLabel": "Team (optional)",
+    "noTeam": "No team",
+    "selectDrillsLabel": "Select drills",
+    "selectedCount": "{{count}} selected",
+    "phaseOther": "Other",
+    "focusAreasLabel": "Focus areas",
+    "ratingLabel": "Rating",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Optional notes on the session...",
+    "planWeekName": "{{planName}} - Week {{week}}"
+  },
+
+  "sessionRating": {
+    "title": "Rate players",
+    "skip": "Skip",
+    "playerProgress": "({{current}}/{{total}})",
+    "skillRatingTitle": "Skill rating",
+    "notRated": "not rated",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Observations, progress...",
+    "next": "Next",
+    "finish": "Finish"
+  },
+
+  "sessionRetrospective": {
+    "formTitle": "Session retrospective",
+    "viewTitle": "Retrospective",
+    "whatWentWellLabel": "What went well?",
+    "whatWentWellPlaceholder": "e.g. pin-shot rate clearly improved...",
+    "whatToImproveLabel": "What needs to improve?",
+    "whatToImprovePlaceholder": "e.g. brush pass from the 5-bar still too imprecise...",
+    "focusNextTimeLabel": "Focus next time",
+    "focusNextTimePlaceholder": "e.g. work more on 5-bar control...",
+    "skipBtn": "Skip",
+    "saveBtn": "Save retrospective",
+    "whatWentWellView": "What went well:",
+    "whatToImproveView": "What needs to improve:",
+    "focusNextTimeView": "Focus next time:"
+  },
+
+  "journal": {
+    "print": "Print",
+    "searchPlaceholder": "Search session...",
+    "allFilter": "All",
+    "sessionCount": "{{count}} sessions",
+    "statsSessions": "Sessions",
+    "statsTotal": "Total (min)",
+    "statsAverage": "Average",
+    "statsLongest": "Longest",
+    "emptyTitle": "No sessions yet",
+    "emptyDescription": "No sessions recorded yet.",
+    "noMatchTitle": "No matches",
+    "noMatchDescription": "Try a different filter or search term.",
+    "drills": "{{count}} drills",
+    "results": "Results:",
+    "completedCount": "{{completed}}/{{total}} completed",
+    "retrospectivePresent": "Retrospective available",
+    "detailsExpand": "Details",
+    "detailsCollapse": "Less",
+    "drillResultsTitle": "Drill results",
+    "deleteSessionLabel": "Delete session",
+    "showDrillResults": "Show drill results",
+    "deleteConfirmTitle": "Delete session",
+    "deleteConfirmMessage": "Do you really want to delete this session?"
+  },
+
+  "trainingPlanList": {
+    "emptyTitle": "No training plans",
+    "emptyDescription": "Create a multi-week training plan with session templates.",
+    "emptyAction": "Create plan",
+    "planCount": "{{count}} plans",
+    "print": "Print",
+    "newPlan": "+ New plan",
+    "weeks": "{{count}} weeks",
+    "sessions": "{{count}} sessions",
+    "completedOf": "{{completed}}/{{total}} done",
+    "editTitle": "Edit",
+    "weekLabel": "Week {{number}}",
+    "sessionsCompleted": "{{completed}}/{{total}} sessions completed",
+    "startSession": "Start",
+    "done": "Done",
+    "deleteTitle": "Delete training plan",
+    "deleteMessage": "Do you really want to delete this training plan?",
+    "allSessionsDone": "All sessions completed"
+  },
+
+  "trainingPlanEditor": {
+    "editTitle": "Edit plan",
+    "newTitle": "New training plan",
+    "cancel": "Cancel",
+    "save": "Save",
+    "planNameLabel": "Plan name",
+    "planNamePlaceholder": "e.g. 4-week shot focus",
+    "goalLabel": "Goal",
+    "goalPlaceholder": "What should the plan achieve?",
+    "playersLabel": "Players",
+    "weeksLabel": "Weeks ({{count}})",
+    "addWeek": "+ Week",
+    "weekTitle": "Week {{number}}",
+    "addSession": "+ Session",
+    "sessionPlaceholder": "Session {{number}}",
+    "minutes": "min",
+    "drillsLabel": "Drills",
+    "drillsSelected": "{{count}} drills selected",
+    "validation": {
+      "nameRequired": "Name is required"
+    }
+  }
+}

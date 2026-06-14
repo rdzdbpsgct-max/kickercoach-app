@@ -1,0 +1,50 @@
+{
+  "title": "Match Plan",
+  "newPlan": "+ New Plan",
+  "import": "Import",
+  "importError": {
+    "invalidFile": "Invalid match plan file. Please select a valid JSON file.",
+    "readError": "The file could not be read. Please select a valid JSON file."
+  },
+  "editor": {
+    "title": "Edit match plan",
+    "print": "Print",
+    "opponent": "Opponent",
+    "opponentPlaceholder": "Opponent team",
+    "date": "Date",
+    "analysis": "Opponent analysis",
+    "analysisPlaceholder": "Strengths, weaknesses, typical play patterns...",
+    "offensiveStrategy": "Offensive strategy",
+    "defensiveStrategy": "Defensive strategy",
+    "noTemplate": "No template",
+    "gameplan": "Game plan",
+    "gameplanPlaceholder": "Tactical approach, shot strategy, defensive setup...",
+    "timeoutStrategies": "Timeout strategies",
+    "addStrategyPlaceholder": "Add new strategy...",
+    "players": "Players",
+    "recordResult": "Record result",
+    "set": "Set {{number}}",
+    "addSet": "+ Add set",
+    "resultLabel": "Result:",
+    "resultWin": "Win",
+    "resultLoss": "Loss",
+    "resultDraw": "Draw",
+    "notes": "Notes",
+    "notesPlaceholder": "Other notes..."
+  },
+  "list": {
+    "emptyTitle": "No match plans yet",
+    "emptyDescription": "No match plans created yet.",
+    "searchPlaceholder": "Search opponent...",
+    "unnamed": "Unnamed",
+    "noDate": "No date",
+    "strategies": "{{count}} strategies",
+    "tactics": "Tactics",
+    "tacticsTooltip": "Open tactics board",
+    "export": "Export",
+    "exportTooltip": "Export JSON",
+    "deleteTooltip": "Delete",
+    "deleteTitle": "Delete match plan",
+    "deleteMessage": "Do you really want to delete this match plan?"
+  }
+}

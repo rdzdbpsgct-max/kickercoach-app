@@ -1,0 +1,27 @@
+{
+  "title": "Learn",
+  "search": {
+    "placeholder": "Search technique...",
+    "favorites": "Favorites",
+    "results": "{{count}} results",
+    "allLevels": "All levels",
+    "categoryFilter": "Category filter",
+    "difficultyFilter": "Difficulty filter"
+  },
+  "grid": {
+    "emptyTitle": "No cards found",
+    "emptyDescription": "Try a different filter or search term."
+  },
+  "detail": {
+    "backToLibrary": "Back to library",
+    "removeFavorite": "Remove from favorites",
+    "addFavorite": "Add to favorites",
+    "steps": "Steps",
+    "commonMistakes": "Common mistakes",
+    "coachTips": "Coach tips",
+    "matchingDrills": "Matching drills",
+    "learningPath": "Learning path",
+    "prerequisites": "Prerequisites",
+    "nextSteps": "Next steps"
+  }
+}
