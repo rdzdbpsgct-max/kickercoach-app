@@ -2,7 +2,9 @@
  * localStorage monitoring and backup utilities
  */
 
+import { z } from "zod";
 import { migrateArray } from "../store/migrate";
+import { useAppStore } from "../store/useAppStore";
 import { PlayerSchema } from "../domain/schemas/player";
 import { GoalSchema } from "../domain/schemas/goal";
 import { EvaluationSchema } from "../domain/schemas/evaluation";
@@ -12,7 +14,13 @@ import { MatchPlanSchema } from "../domain/schemas/matchPlan";
 import { MatchSchema } from "../domain/schemas/match";
 import { TacticalSceneSchema } from "../domain/schemas/tacticalBoard";
 import { PlayerTechniqueSchema } from "../domain/schemas/playerTechnique";
-import { TrainingPlanSchema } from "../domain/schemas/trainingPlan";
+import {
+  TrainingPlanSchema,
+  SessionTemplateSchema,
+} from "../domain/schemas/trainingPlan";
+import { TeamSchema } from "../domain/schemas/team";
+import { DrillSchema } from "../domain/schemas/drill";
+import { TechniqueSchema } from "../domain/schemas/technique";
 
 const STORE_KEY = "kickercoach-store";
 
@@ -31,6 +39,13 @@ const ARRAY_SCHEMAS: Record<string, import("zod").ZodType> = {
   boardScenes: TacticalSceneSchema,
   playerTechniques: PlayerTechniqueSchema,
   trainingPlans: TrainingPlanSchema,
+  teams: TeamSchema,
+  customDrills: DrillSchema,
+  drillTemplates: DrillSchema,
+  sessionTemplates: SessionTemplateSchema,
+  techniques: TechniqueSchema,
+  // favorites is a string[] — validate each element as a string.
+  favorites: z.string(),
 };
 
 export interface StorageUsage {
@@ -164,6 +179,7 @@ export function importStoreData(file: File): Promise<ImportResult> {
             const current = raw ? JSON.parse(raw) : {};
             current.state = validateState(parsed as Record<string, unknown>);
             localStorage.setItem(STORE_KEY, JSON.stringify(current));
+            void useAppStore.persist.rehydrate();
             resolve({ success: true });
             return;
           }
@@ -177,6 +193,7 @@ export function importStoreData(file: File): Promise<ImportResult> {
         const current = raw ? JSON.parse(raw) : {};
         current.state = validatedState;
         localStorage.setItem(STORE_KEY, JSON.stringify(current));
+        void useAppStore.persist.rehydrate();
         resolve({ success: true });
       } catch (err) {
         resolve({
