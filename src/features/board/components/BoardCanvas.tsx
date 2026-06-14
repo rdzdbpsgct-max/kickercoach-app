@@ -151,6 +151,18 @@ export default function BoardCanvas({
     [tool.activeTool, dispatch],
   );
 
+  const handleMoveRod = useCallback(
+    (rodIndex: number, deltaY: number) =>
+      dispatch({ type: "MOVE_ROD", rodIndex, deltaY }),
+    [dispatch],
+  );
+
+  const handleMoveBall = useCallback(
+    (pos: { x: number; y: number }) =>
+      dispatch({ type: "MOVE_BALL", position: pos }),
+    [dispatch],
+  );
+
   if (dimensions.width === 0) {
     return (
       <div
@@ -193,10 +205,8 @@ export default function BoardCanvas({
           figures={scene.figures}
           ball={scene.ball}
           activeTool={tool.activeTool}
-          onMoveRod={(rodIndex, deltaY) =>
-            dispatch({ type: "MOVE_ROD", rodIndex, deltaY })
-          }
-          onMoveBall={(pos) => dispatch({ type: "MOVE_BALL", position: pos })}
+          onMoveRod={handleMoveRod}
+          onMoveBall={handleMoveBall}
         />
         <OverlayLayer drawingInProgress={drawingInProgress} tool={tool} />
       </Stage>

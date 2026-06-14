@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Layer, Arrow, Rect, Circle } from "react-konva";
 import type {
   ArrowElement,
@@ -12,7 +13,7 @@ interface AnnotationLayerProps {
   onClickElement: (id: string) => void;
 }
 
-export default function AnnotationLayer({
+function AnnotationLayer({
   arrows,
   zones,
   selectedElementId,
@@ -82,3 +83,5 @@ export default function AnnotationLayer({
     </Layer>
   );
 }
+
+export default memo(AnnotationLayer);
