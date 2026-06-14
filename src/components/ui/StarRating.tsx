@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 interface StarRatingProps {
   rating: number;
   max?: number;
@@ -21,9 +23,27 @@ export function StarRating({
   onChange,
   size = "sm",
 }: StarRatingProps) {
+  const { t } = useTranslation("common");
   if (onChange) {
     return (
-      <span className={className ?? `inline-flex gap-0.5 ${SIZE_CLASSES[size]}`}>
+      <span
+        role="slider"
+        tabIndex={0}
+        aria-valuemin={0}
+        aria-valuemax={max}
+        aria-valuenow={rating}
+        aria-label={t("ui.ratingLabel")}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+            e.preventDefault();
+            onChange(Math.min(max, rating + 1));
+          } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+            e.preventDefault();
+            onChange(Math.max(0, rating - 1));
+          }
+        }}
+        className={className ?? `inline-flex gap-0.5 ${SIZE_CLASSES[size]}`}
+      >
         {Array.from({ length: max }, (_, i) => {
           const starValue = i + 1;
           const filled = starValue <= rating;
@@ -31,11 +51,12 @@ export function StarRating({
             <button
               key={i}
               type="button"
+              tabIndex={-1}
               onClick={() => onChange(rating === starValue ? 0 : starValue)}
               className={`transition-transform hover:scale-110 ${
                 filled ? "text-kicker-orange" : "text-text-dim"
               }`}
-              aria-label={`${starValue} Sterne`}
+              aria-label={t("ui.starValue", { count: starValue })}
             >
               {filled ? "\u2605" : "\u2606"}
             </button>
