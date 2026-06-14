@@ -1,4 +1,7 @@
 import "@testing-library/jest-dom/vitest";
+// Initialize i18n so components' t() resolves real strings instead of raw keys.
+// Inline resources make init synchronous; "de" is the fallback regardless of detection.
+import "../src/i18n";
 
 // jsdom's localStorage doesn't work properly with zustand persist middleware.
 // Provide a working in-memory implementation.
