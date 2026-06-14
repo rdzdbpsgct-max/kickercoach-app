@@ -47,6 +47,25 @@ export const useAppStore = create<AppState>()(
     {
       name: "kickercoach-store",
       version: STORE_VERSION,
+      // Only persist data — never selectors/actions or future transient UI state.
+      partialize: (state) => ({
+        players: state.players,
+        teams: state.teams,
+        sessions: state.sessions,
+        sessionTemplates: state.sessionTemplates,
+        customDrills: state.customDrills,
+        drillTemplates: state.drillTemplates,
+        matches: state.matches,
+        matchPlans: state.matchPlans,
+        goals: state.goals,
+        evaluations: state.evaluations,
+        coachingNotes: state.coachingNotes,
+        techniques: state.techniques,
+        playerTechniques: state.playerTechniques,
+        trainingPlans: state.trainingPlans,
+        boardScenes: state.boardScenes,
+        favorites: state.favorites,
+      }),
       migrate: (persistedState, version) => {
         const state = persistedState as Record<string, unknown>;
 
