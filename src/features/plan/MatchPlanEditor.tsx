@@ -4,6 +4,7 @@ import type { MatchPlan, MatchSet, StrategyTemplate } from "../../domain/models/
 import { useAppStore } from "../../store";
 import { Avatar, Button, Badge, Card, FormField, Input, Textarea, Select } from "../../components/ui";
 import { printCurrentPage } from "../../utils/print";
+import { downloadBlob, slugify } from "../../utils/download";
 
 interface MatchPlanEditorProps {
   plan: MatchPlan;
@@ -21,6 +22,7 @@ export default function MatchPlanEditor({
   const { t } = useTranslation(["plan", "common"]);
   const [newStrategy, setNewStrategy] = useState("");
   const [templates, setTemplates] = useState<StrategyTemplate[]>([]);
+  const [exporting, setExporting] = useState(false);
   const players = useAppStore((s) => s.players);
 
   useEffect(() => {
@@ -41,6 +43,26 @@ export default function MatchPlanEditor({
 
   const update = (field: keyof MatchPlan, value: unknown) => {
     onChange({ ...plan, [field]: value });
+  };
+
+  const handleExportPdf = async () => {
+    setExporting(true);
+    try {
+      const { generateMatchPlanPdf } = await import("../export/matchPlanPdf");
+      const blob = await generateMatchPlanPdf({
+        plan,
+        offensiveStrategyName: selectedOffensive?.name,
+        defensiveStrategyName: selectedDefensive?.name,
+      });
+      downloadBlob(
+        blob,
+        `kickercoach-matchplan-${slugify(plan.opponent || "plan")}.pdf`,
+      );
+    } catch {
+      alert(t("export.failed", { ns: "common" }));
+    } finally {
+      setExporting(false);
+    }
   };
 
   const computeResult = (sets: MatchSet[]): "win" | "loss" | "draw" | undefined => {
@@ -107,6 +129,11 @@ export default function MatchPlanEditor({
           </Button>
           <Button variant="secondary" onClick={printCurrentPage}>
             {t("plan:editor.print")}
+          </Button>
+          <Button variant="secondary" onClick={handleExportPdf} disabled={exporting}>
+            {exporting
+              ? t("export.generating", { ns: "common" })
+              : t("export.button", { ns: "common" })}
           </Button>
           <Button onClick={onSave}>{t("common:actions.save")}</Button>
         </div>
