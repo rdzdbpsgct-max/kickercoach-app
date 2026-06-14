@@ -16,6 +16,7 @@ export default function LanguageSelector() {
         {t("language")}
       </label>
       <select
+        data-testid="language-select"
         value={current}
         onChange={(e) => i18n.changeLanguage(e.target.value)}
         className="mt-1 w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text"
