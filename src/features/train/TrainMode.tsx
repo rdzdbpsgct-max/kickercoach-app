@@ -49,6 +49,7 @@ export default function TrainMode() {
   const quickStart = locState?.quickStart;
 
   const [defaultDrills, setDefaultDrills] = useState<Drill[]>([]);
+  const [drillsLoading, setDrillsLoading] = useState(true);
   const [view, setView] = useState<View>(
     initialPlayerId ? "session-builder" : "drills",
   );
@@ -116,7 +117,10 @@ export default function TrainMode() {
   // Load drills
   useEffect(() => {
     import("../../data/drills").then((mod) => {
-      mod.loadDrills().then(setDefaultDrills);
+      mod.loadDrills().then((drills) => {
+        setDefaultDrills(drills);
+        setDrillsLoading(false);
+      });
     });
   }, []);
 
@@ -409,22 +413,32 @@ export default function TrainMode() {
         </div>
       )}
 
-      <DrillSelector
-        drills={allDrills}
-        selectedId={null}
-        onSelect={handleSelectDrill}
-        onNewDrill={() => {
-          setEditDrill(undefined);
-          setView("drill-editor");
-        }}
-        onEditDrill={(drill) => {
-          setEditDrill(drill);
-          setView("drill-editor");
-        }}
-        onDeleteDrill={(id) => setDeleteDrillId(id)}
-        recommendedDrillIds={recommendedDrillIds}
-        recommendLabel={recommendLabel}
-      />
+      {drillsLoading ? (
+        <div
+          className="flex items-center justify-center py-16"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="h-7 w-7 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+        </div>
+      ) : (
+        <DrillSelector
+          drills={allDrills}
+          selectedId={null}
+          onSelect={handleSelectDrill}
+          onNewDrill={() => {
+            setEditDrill(undefined);
+            setView("drill-editor");
+          }}
+          onEditDrill={(drill) => {
+            setEditDrill(drill);
+            setView("drill-editor");
+          }}
+          onDeleteDrill={(id) => setDeleteDrillId(id)}
+          recommendedDrillIds={recommendedDrillIds}
+          recommendLabel={recommendLabel}
+        />
+      )}
 
       <ConfirmDialog
         open={deleteDrillId !== null}
