@@ -132,5 +132,26 @@
     "ratingLabel": "Bewertung",
     "starValue_one": "{{count}} Stern",
     "starValue_other": "{{count}} Sterne"
+  },
+  "export": {
+    "button": "Als PDF exportieren",
+    "generating": "PDF wird erstellt …",
+    "failed": "PDF-Export fehlgeschlagen.",
+    "playerProfileTitle": "Spielerprofil",
+    "matchPlanTitle": "Matchplan",
+    "generatedOn": "Erstellt am {{date}}",
+    "skills": "Skill-Bewertungen",
+    "goals": "Ziele",
+    "evaluations": "Letzte Bewertungen",
+    "position": "Position",
+    "level": "Level",
+    "noData": "Keine Daten vorhanden",
+    "opponent": "Gegner",
+    "date": "Datum",
+    "analysis": "Analyse",
+    "gameplan": "Spielplan",
+    "strategies": "Timeout-Strategien",
+    "result": "Ergebnis",
+    "notes": "Notizen"
   }
 }

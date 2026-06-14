@@ -9,6 +9,7 @@ import { NotesFeed } from "./NotesFeed";
 import { ProgressView } from "./ProgressView";
 import { PlayerTechniques } from "./PlayerTechniques";
 import { printCurrentPage } from "../../utils/print";
+import { downloadBlob, slugify } from "../../utils/download";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "../../store";
 import type { Player } from "../../domain/models/Player";
@@ -56,6 +57,22 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
 
   const [showGoalForm, setShowGoalForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | undefined>();
+  const [exporting, setExporting] = useState(false);
+
+  const handleExportPdf = async () => {
+    setExporting(true);
+    try {
+      const { generatePlayerProfilePdf } = await import(
+        "../export/playerProfilePdf"
+      );
+      const blob = await generatePlayerProfilePdf({ player, goals, evaluations });
+      downloadBlob(blob, `kickercoach-${slugify(player.name)}.pdf`);
+    } catch {
+      alert(t("export.failed", { ns: "common" }));
+    } finally {
+      setExporting(false);
+    }
+  };
 
   // Compute skill trends from evaluations
   const skillTrends = useMemo(() => {
@@ -230,6 +247,9 @@ export function PlayerDetail({ player, onEdit, onBack, onDelete, onStartTraining
       <motion.div className="flex gap-3 no-print" variants={sectionVariants} transition={{ duration: 0.25 }}>
         <Button onClick={onEdit}>{t("detail.edit")}</Button>
         <Button variant="secondary" onClick={printCurrentPage}>{t("detail.printProfile")}</Button>
+        <Button variant="secondary" onClick={handleExportPdf} disabled={exporting}>
+          {exporting ? t("export.generating", { ns: "common" }) : t("export.button", { ns: "common" })}
+        </Button>
         <Button variant="danger" onClick={onDelete}>{t("detail.delete")}</Button>
       </motion.div>
     </motion.div>

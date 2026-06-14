@@ -1,0 +1,157 @@
+{
+  "appName": "KickerCoach",
+  "appTagline": "by SpielerGeist",
+  "skipToContent": "Skip to content",
+  "nav": {
+    "home": "Home",
+    "learn": "Learn",
+    "train": "Training",
+    "plan": "Match Plan",
+    "board": "Tactics",
+    "players": "Players",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "more": "More",
+    "moreAreas": "More areas",
+    "mainNav": "Main navigation"
+  },
+  "theme": {
+    "activateLight": "Activate light mode",
+    "activateDark": "Activate dark mode"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "back": "Back",
+    "close": "Close",
+    "retry": "Try again",
+    "search": "Search",
+    "confirm": "Confirm",
+    "later": "Later",
+    "update": "Update"
+  },
+  "error": {
+    "title": "An error occurred",
+    "titleWithFeature": "Error in {{featureName}}",
+    "description": "This area caused an error. The rest of the app keeps working.",
+    "unknown": "Unknown error"
+  },
+  "pwa": {
+    "updateAvailable": "New version available",
+    "updateDescription": "Update for the latest features and fixes."
+  },
+  "quickAction": {
+    "note": "Note",
+    "training": "Training",
+    "evaluation": "Evaluation",
+    "quickNote": "Quick note",
+    "notePlaceholder": "Coaching observation...",
+    "noPlayer": "No player",
+    "selectPlayer": "Select player",
+    "ariaLabel": "Quick actions"
+  },
+  "constants": {
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Pro"
+    },
+    "phase": {
+      "warmup": "Warm-up",
+      "technique": "Technique",
+      "game": "Game form",
+      "cooldown": "Cool-down"
+    },
+    "position": {
+      "offense": "Offense",
+      "defense": "Defense",
+      "both": "Both"
+    },
+    "techniqueStatus": {
+      "not_started": "Not started",
+      "learning": "Learning",
+      "developing": "Developing",
+      "proficient": "Proficient",
+      "mastered": "Mastered"
+    },
+    "star": ["", "Poor", "Fair", "OK", "Good", "Great"],
+    "evaluationType": {
+      "session": "Training",
+      "match": "Match",
+      "general": "General"
+    },
+    "mood": {
+      "great": "Great",
+      "good": "Good",
+      "ok": "OK",
+      "tired": "Tired",
+      "frustrated": "Frustrated"
+    },
+    "noteCategory": {
+      "tactical": "Tactics",
+      "technical": "Technique",
+      "mental": "Mental",
+      "communication": "Communication"
+    },
+    "notePriority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "rodPosition": {
+      "keeper": "Goalkeeper",
+      "defense": "Defense",
+      "midfield": "Midfield",
+      "offense": "Offense"
+    },
+    "goalStatus": {
+      "active": "Active",
+      "achieved": "Achieved",
+      "paused": "Paused",
+      "abandoned": "Abandoned"
+    },
+    "category": {
+      "Torschuss": "Shooting",
+      "Passspiel": "Passing",
+      "Ballkontrolle": "Ball control",
+      "Defensive": "Defense",
+      "Taktik": "Tactics",
+      "Offensive": "Offense",
+      "Mental": "Mental"
+    }
+  },
+  "ui": {
+    "clearSearch": "Clear search",
+    "closeModal": "Close",
+    "barChart": "Bar chart",
+    "searchPlaceholder": "Search...",
+    "goalTarget": "Target: {{date}}",
+    "ratingLabel": "Rating",
+    "starValue_one": "{{count}} star",
+    "starValue_other": "{{count}} stars"
+  },
+  "export": {
+    "button": "Export as PDF",
+    "generating": "Generating PDF …",
+    "failed": "PDF export failed.",
+    "playerProfileTitle": "Player profile",
+    "matchPlanTitle": "Match plan",
+    "generatedOn": "Generated on {{date}}",
+    "skills": "Skill ratings",
+    "goals": "Goals",
+    "evaluations": "Recent evaluations",
+    "position": "Position",
+    "level": "Level",
+    "noData": "No data available",
+    "opponent": "Opponent",
+    "date": "Date",
+    "analysis": "Analysis",
+    "gameplan": "Game plan",
+    "strategies": "Timeout strategies",
+    "result": "Result",
+    "notes": "Notes"
+  }
+}
